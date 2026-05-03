@@ -196,34 +196,56 @@ export default function RoadworthyPage() {
                 </Button>
               </div>
 
-              <dl className="grid grid-cols-1 gap-4 border-t border-line-soft pt-8 text-sm sm:grid-cols-2">
-                <div>
-                  <dt className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-mute">
-                    Workshop
-                  </dt>
-                  <dd className="mt-2 text-bone">
-                    <a
-                      href={site.address.mapsHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:text-accent"
-                    >
-                      {site.address.line1}
-                      <br />
-                      {site.address.suburb} {site.address.state}{" "}
-                      {site.address.postcode}
-                    </a>
-                  </dd>
+              <div className="grid grid-cols-1 gap-px overflow-hidden border-t border-line-soft bg-line-soft">
+                <div className="flex gap-5 bg-ink p-6">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
+                    <MapPin className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} aria-hidden />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
+                      Workshop
+                    </p>
+                    <div className="mt-1.5 text-sm font-medium leading-relaxed text-bone">
+                      <a
+                        href={site.address.mapsHref}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="hover:text-accent"
+                      >
+                        {site.address.line1}
+                        <br />
+                        {site.address.suburb} {site.address.state}{" "}
+                        {site.address.postcode}
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <dt className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-mute">
-                    Inspection hours
-                  </dt>
-                  <dd className="mt-2 text-bone">
-                    Tue – Thu, 7:00 AM – 4:00 PM
-                  </dd>
+
+                <div className="flex gap-5 bg-ink p-6">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
+                    <Clock className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} aria-hidden />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
+                      Inspection hours
+                    </p>
+                    <dl className="mt-1.5 grid gap-3 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-1.5">
+                      {[
+                        { label: "Tuesday", time: "6:00 AM – 4:00 PM" },
+                        { label: "Wednesday", time: "6:00 AM – 4:00 PM" },
+                        { label: "Thursday", time: "6:00 AM – 4:00 PM" },
+                      ].map((h) => (
+                        <div key={h.label} className="sm:contents">
+                          <dt className="font-medium text-bone">{h.label}</dt>
+                          <dd className="text-mute sm:text-right sm:tabular-nums">
+                            {h.time}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
                 </div>
-              </dl>
+              </div>
             </div>
 
             {/* Right — QR card */}
