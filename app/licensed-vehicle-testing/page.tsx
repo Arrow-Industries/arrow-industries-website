@@ -114,7 +114,7 @@ const faqs = [
   {
     question: "Do I need to book in advance?",
     answer:
-      "Yes — booking is recommended for all heavy vehicles and trailers. Use the booking link above, call the workshop, or scan the QR code.",
+      "Yes — inspections run Tuesday to Thursday only, so booking ahead is essential. Use the booking link above, call the workshop, or scan the QR code.",
   },
   {
     question: "What does an inspection cost?",
@@ -174,6 +174,10 @@ export default function RoadworthyPage() {
                   Secure a time, confirm your vehicle details and have your
                   inspection completed at our Campbellfield workshop.
                 </p>
+                <p className="mt-5 inline-flex items-center gap-2 border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent">
+                  <CalendarCheck className="h-4 w-4 shrink-0" aria-hidden />
+                  Inspections by appointment, Tuesday – Thursday only.
+                </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -213,10 +217,10 @@ export default function RoadworthyPage() {
                 </div>
                 <div>
                   <dt className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-mute">
-                    Hours
+                    Inspection hours
                   </dt>
                   <dd className="mt-2 text-bone">
-                    Mon – Fri, 7:00 AM – 4:00 PM
+                    Tue – Thu, 7:00 AM – 4:00 PM
                   </dd>
                 </div>
               </dl>
