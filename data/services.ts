@@ -17,7 +17,6 @@ export interface Service {
   tagline: string;
   description: string;
   icon: LucideIcon;
-  image: string;
   category: "product" | "service" | "parts";
   external?: boolean;
   ctaLabel?: string;
@@ -33,8 +32,7 @@ export const services: Service[] = [
     description:
       "Custom tipper bodies engineered to suit your chassis, payload and application — designed for civil, quarry, haulage and waste operations.",
     icon: Truck,
-    image: "/images/placeholders/service.svg",
-    category: "product",
+category: "product",
     ctaLabel: "View Builds →",
   },
   {
@@ -46,8 +44,7 @@ export const services: Service[] = [
     description:
       "Dog trailers matched to your tipper for legal payload, control and durability — built and tested in-house.",
     icon: Container,
-    image: "/images/placeholders/service.svg",
-    category: "product",
+category: "product",
     ctaLabel: "View Builds →",
   },
   {
@@ -59,8 +56,7 @@ export const services: Service[] = [
     description:
       "Tipping and flat-deck semi trailers built to ADR and VicRoads standards — focused on strength, efficiency and long-term use.",
     icon: Construction,
-    image: "/images/placeholders/service.svg",
-    category: "product",
+category: "product",
     ctaLabel: "View Builds →",
   },
   {
@@ -72,8 +68,7 @@ export const services: Service[] = [
     description:
       "Repairs, modifications, hydraulics and structural work for tipper bodies and trailers — keeping your equipment operating reliably.",
     icon: Wrench,
-    image: "/images/placeholders/service.svg",
-    category: "service",
+category: "service",
     ctaLabel: "View Services →",
   },
   {
@@ -85,8 +80,7 @@ export const services: Service[] = [
     description:
       "Licensed testing for heavy and light vehicles — roadworthy inspections and certificates issued in-house.",
     icon: ClipboardCheck,
-    image: "/images/placeholders/service.svg",
-    category: "service",
+category: "service",
     ctaLabel: "Book Inspection →",
   },
   {
@@ -98,8 +92,7 @@ export const services: Service[] = [
     description:
       "Access components, hydraulics and fittings used across our builds — available through our online store.",
     icon: Cog,
-    image: "/images/placeholders/service.svg",
-    category: "parts",
+category: "parts",
     external: true,
     ctaLabel: "Shop Parts →",
   },

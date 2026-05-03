@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import {
   CalendarCheck,
   CheckCircle2,
@@ -29,11 +30,6 @@ export const metadata: Metadata = {
 };
 
 const bookingUrl = site.booking.roadworthy;
-
-// QR rendered server-side from a public QR endpoint so the page works without
-// uploading Square's PNG. Swap to a local /images/lvt/booking-qr.png whenever
-// the Square-issued asset is dropped in.
-const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(bookingUrl)}`;
 
 const covered = [
   {
@@ -232,17 +228,13 @@ export default function RoadworthyPage() {
                 Scan to book
               </p>
               <div className="bg-white p-4">
-                {/*
-                  TODO: when Square's QR PNG is supplied, save it to
-                  /public/images/lvt/booking-qr.png and swap this <img> src.
-                */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={qrSrc}
+                <Image
+                  src="/images/lvt/booking-qr.png"
                   alt="QR code — book a roadworthy inspection at Arrow Industries"
                   width={240}
                   height={240}
                   className="h-60 w-60"
+                  unoptimized
                 />
               </div>
               <p className="max-w-xs text-center text-xs leading-relaxed text-mute">

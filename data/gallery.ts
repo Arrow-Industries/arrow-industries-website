@@ -26,7 +26,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Civil tipper — Q&T 450 floor",
     category: "Tipper",
     description: "Heavy-duty civil tipper built for site cycles in Melbourne's north.",
-    image: "/images/logo-white.png",
+    image: "/images/gallery/tipper-civil-01.jpg",
     aspect: "landscape",
   },
   {
@@ -66,7 +66,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Quarry tipper — abrasion-rated",
     category: "Tipper",
     description: "Abrasion-rated body for high-density quarry loads.",
-    image: "/images/logo-white.png",
+    image: "/images/gallery/tipper-quarry-01.jpg",
     aspect: "portrait",
   },
   {
@@ -82,7 +82,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Sealed waste-spec tipper",
     category: "Tipper",
     description: "Sealed-tailgate body for a metropolitan waste operator.",
-    image: "/images/logo-white.png",
+    image: "/images/gallery/tipper-waste-01.jpg",
     aspect: "landscape",
   },
 ];
