@@ -5,9 +5,9 @@ import { CTASection } from "@/components/CTASection";
 import { GalleryGrid } from "@/components/GalleryGrid";
 
 export const metadata: Metadata = {
-  title: "Gallery — Completed Tipper, Trailer & Repair Builds",
+  title: "Gallery — Completed Tipper & Trailer Builds",
   description:
-    "Recent Arrow Industries builds — custom tipper bodies, dog trailers, semi trailers and repair work from our Campbellfield workshop.",
+    "Recent Arrow Industries builds — custom tipper bodies, dog trailers and semi trailers from our Campbellfield workshop.",
   alternates: { canonical: "/gallery" },
 };
 
@@ -17,7 +17,7 @@ export default function GalleryPage() {
       <PageHero
         eyebrow="Gallery"
         heading="Completed builds and workshop projects."
-        body="A look at recent tipper, dog and semi-trailer builds, plus repair and modification work done in our Campbellfield workshop."
+        body="A look at recent tipper, dog and semi-trailer builds from our Campbellfield workshop."
         crumbs={[{ label: "Home", href: "/" }, { label: "Gallery" }]}
       />
 

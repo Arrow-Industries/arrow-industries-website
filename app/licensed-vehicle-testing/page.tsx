@@ -143,9 +143,9 @@ export default function RoadworthyPage() {
       <JsonLd data={faqPageSchema(faqs)} />
 
       <PageHero
-        eyebrow="Roadworthy / LVT"
+        eyebrow="Roadworthy / LVT · EX 12409"
         heading="VicRoads-licensed heavy vehicle and trailer inspections."
-        body="Prime movers, rigid trucks, trailers and fleet vehicles tested and certified from our Campbellfield workshop."
+        body="Licensed Vehicle Tester EX 12409. Prime movers, rigid trucks, trailers and fleet vehicles tested and certified from our Campbellfield workshop."
         crumbs={[{ label: "Home", href: "/" }, { label: "Roadworthy" }]}
         actions={
           <>
@@ -419,7 +419,7 @@ export default function RoadworthyPage() {
           href: bookingUrl,
         }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
-        footnote="VicRoads-licensed · Fast turnaround · Statewide-accepted certificates"
+        footnote="VicRoads Licensed Vehicle Tester EX 12409 · Fast turnaround · Statewide-accepted certificates"
       />
     </>
   );
