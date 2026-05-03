@@ -205,19 +205,27 @@ export function QuoteForm() {
         </div>
       </Field>
 
-      <Field
-        label="Vehicle / chassis details"
-        name="vehicleDetails"
-        hint="Include make, model, configuration or chassis details if known."
-      >
-        <input
-          id="vehicleDetails"
-          name="vehicleDetails"
-          type="text"
-          placeholder="e.g. Kenworth T410, Isuzu FVZ 8x4"
-          className={inputBase}
-        />
-      </Field>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Vehicle (make)" name="vehicleMake">
+          <input
+            id="vehicleMake"
+            name="vehicleMake"
+            type="text"
+            placeholder="e.g. Kenworth, Isuzu, Volvo"
+            className={inputBase}
+          />
+        </Field>
+
+        <Field label="Model" name="vehicleModel">
+          <input
+            id="vehicleModel"
+            name="vehicleModel"
+            type="text"
+            placeholder="e.g. T410, FVZ 8x4"
+            className={inputBase}
+          />
+        </Field>
+      </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Vehicle year" name="vehicleYear">

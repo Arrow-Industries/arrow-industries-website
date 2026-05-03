@@ -98,7 +98,9 @@ export async function submitQuoteForm(
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const enquiryTypeRaw = String(formData.get("enquiryType") ?? "").trim();
-  const vehicle = String(formData.get("vehicleDetails") ?? "").trim();
+  const vehicleMake = String(formData.get("vehicleMake") ?? "").trim();
+  const vehicleModel = String(formData.get("vehicleModel") ?? "").trim();
+  const vehicle = [vehicleMake, vehicleModel].filter(Boolean).join(" ");
   const vehicleYear = String(formData.get("vehicleYear") ?? "").trim();
   const vin = String(formData.get("vinNumber") ?? "").trim();
   const payload = String(formData.get("payloadDetails") ?? "").trim();
@@ -193,7 +195,8 @@ export async function submitQuoteForm(
     email,
     phone,
     enquiryType,
-    vehicle,
+    vehicleMake,
+    vehicleModel,
     vehicleYear,
     vin,
     payload,
@@ -249,7 +252,8 @@ interface EmailFields {
   email: string;
   phone: string;
   enquiryType: EnquiryType;
-  vehicle: string;
+  vehicleMake: string;
+  vehicleModel: string;
   vehicleYear: string;
   vin: string;
   payload: string;
@@ -271,7 +275,8 @@ function renderText(f: EmailFields) {
     `Email: ${dash(f.email)}`,
     `Phone: ${dash(f.phone)}`,
     `Enquiry Type: ${f.enquiryType}`,
-    `Vehicle / Chassis Details: ${dash(f.vehicle)}`,
+    `Vehicle (Make): ${dash(f.vehicleMake)}`,
+    `Model: ${dash(f.vehicleModel)}`,
     `Vehicle Year: ${dash(f.vehicleYear)}`,
     `VIN Number: ${dash(f.vin)}`,
     `Payload / Application: ${dash(f.payload)}`,
@@ -326,7 +331,8 @@ function renderHtml(f: EmailFields) {
             ${row("Email", f.email)}
             ${row("Phone", f.phone)}
             ${row("Enquiry Type", f.enquiryType)}
-            ${row("Vehicle / Chassis", f.vehicle, true)}
+            ${row("Vehicle (Make)", f.vehicleMake)}
+            ${row("Model", f.vehicleModel)}
             ${row("Vehicle Year", f.vehicleYear)}
             ${row("VIN Number", f.vin)}
             ${row("Payload / Application", f.payload, true)}

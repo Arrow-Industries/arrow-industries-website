@@ -88,29 +88,21 @@ function Hero() {
         className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,rgba(225,6,0,0.18),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(225,6,0,0.10),transparent_60%)]"
       />
 
-      <Container className="relative pt-24 pb-16 lg:pt-36 lg:pb-20">
+      <Container className="relative pt-12 pb-16 lg:pt-16 lg:pb-20">
         <div className="max-w-4xl">
-          <span
-            aria-label="Arrow Industries"
-            className="inline-flex items-center gap-3"
-          >
-            <Image
-              src="/images/logo.svg"
-              alt=""
-              width={44}
-              height={44}
-              priority
-              className="h-11 w-11"
-            />
-            <span className="font-display text-xl font-extrabold uppercase tracking-[0.18em] text-bone">
-              Arrow<span className="text-accent">.</span>
-            </span>
-          </span>
-          <p className="mt-4 inline-flex items-center gap-2 border border-line-soft/60 bg-ink-2/40 px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute backdrop-blur-sm">
+          <Image
+            src="/images/logo-white.png"
+            alt="Arrow Industries"
+            width={224}
+            height={224}
+            priority
+            className="h-36 w-36 sm:h-44 sm:w-44 lg:h-56 lg:w-56"
+          />
+          <p className="mt-2 inline-flex items-center gap-2 border border-line-soft/60 bg-ink-2/40 px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute backdrop-blur-sm">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
             Melbourne workshop · 25+ years
           </p>
-          <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.05] text-bone sm:text-5xl lg:text-[4.25rem]">
+          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] text-bone sm:text-5xl lg:text-[4.25rem]">
             Custom tipper bodies and trailers{" "}
             <span className="text-accent">engineered for real work.</span>
           </h1>
@@ -180,19 +172,19 @@ function ServicesSection() {
 function RecentBuildsSection() {
   const builds = [
     {
-      src: "/images/about/builds/build-1.jpg",
+      src: "/images/logo-white.png",
       alt: "Recent Arrow Industries 8x4 tipper body build for quarry application",
       buildType: "8x4 Tipper",
       application: "Quarry",
     },
     {
-      src: "/images/about/builds/build-2.jpg",
+      src: "/images/logo-white.png",
       alt: "Recent Arrow Industries dog trailer build for civil construction",
       buildType: "Dog Trailer",
       application: "Civil",
     },
     {
-      src: "/images/about/builds/build-3.jpg",
+      src: "/images/logo-white.png",
       alt: "Recent Arrow Industries semi trailer build for bulk haulage",
       buildType: "Semi Trailer",
       application: "Bulk Haulage",
@@ -208,9 +200,9 @@ function RecentBuildsSection() {
           </Button>
         </div>
         <ul className="mt-12 grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
-          {builds.map((b) => (
+          {builds.map((b, i) => (
             <li
-              key={b.src}
+              key={`${b.buildType}-${i}`}
               className="group relative aspect-[5/4] overflow-hidden bg-ink-2"
             >
               <Image

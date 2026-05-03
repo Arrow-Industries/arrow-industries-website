@@ -26,7 +26,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Civil tipper — Q&T 450 floor",
     category: "Tipper",
     description: "Heavy-duty civil tipper built for site cycles in Melbourne's north.",
-    image: "/images/placeholders/service.svg",
+    image: "/images/logo-white.png",
     aspect: "landscape",
   },
   {
@@ -34,7 +34,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Tri-Axle Dog Trailer",
     category: "Dog Trailer",
     description: "Tri-Axle dog trailer paired to a tipper for general bulk haulage.",
-    image: "/images/placeholders/service.svg",
+    image: "/images/logo-white.png",
     aspect: "portrait",
   },
   {
@@ -42,7 +42,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Tri-Axle Super Dog-Trailer",
     category: "Dog Trailer",
     description: "Tri-Axle super dog-trailer for maximum legal payload under PBS access.",
-    image: "/images/placeholders/service.svg",
+    image: "/images/logo-white.png",
     aspect: "portrait",
   },
   {
@@ -50,7 +50,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Quad-Axle Dog Trailer",
     category: "Dog Trailer",
     description: "Quad-Axle dog trailer paired to a Kenworth tipper for a quarry operator.",
-    image: "/images/placeholders/service.svg",
+    image: "/images/logo-white.png",
     aspect: "portrait",
   },
   {
@@ -58,7 +58,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Tipping semi trailer",
     category: "Semi Trailer",
     description: "Tipping semi-trailer built for inter-regional aggregate haulage.",
-    image: "/images/placeholders/service.svg",
+    image: "/images/logo-white.png",
     aspect: "landscape",
   },
   {
@@ -66,7 +66,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Quarry tipper — abrasion-rated",
     category: "Tipper",
     description: "Abrasion-rated body for high-density quarry loads.",
-    image: "/images/placeholders/service.svg",
+    image: "/images/logo-white.png",
     aspect: "portrait",
   },
   {
@@ -74,7 +74,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Flat-deck semi",
     category: "Semi Trailer",
     description: "PBS-aware flat-deck semi with WABCO EBS braking.",
-    image: "/images/placeholders/service.svg",
+    image: "/images/logo-white.png",
     aspect: "landscape",
   },
   {
@@ -82,7 +82,7 @@ export const galleryItems: GalleryItem[] = [
     title: "Sealed waste-spec tipper",
     category: "Tipper",
     description: "Sealed-tailgate body for a metropolitan waste operator.",
-    image: "/images/placeholders/service.svg",
+    image: "/images/logo-white.png",
     aspect: "landscape",
   },
 ];

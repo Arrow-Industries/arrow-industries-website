@@ -14,16 +14,13 @@ export function Logo({ className }: LogoProps) {
       className={`inline-flex items-center gap-3 ${className ?? ""}`}
     >
       <Image
-        src="/images/logo.svg"
-        alt=""
-        width={36}
-        height={36}
+        src="/images/logo-white.png"
+        alt={`${site.name} — home`}
+        width={56}
+        height={56}
         priority
-        className="h-9 w-9"
+        className="h-12 w-12 sm:h-14 sm:w-14"
       />
-      <span className="font-display text-lg font-extrabold uppercase tracking-[0.18em] text-bone">
-        Arrow<span className="text-accent">.</span>
-      </span>
     </Link>
   );
 }

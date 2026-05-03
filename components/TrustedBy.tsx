@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Container } from "@/components/Container";
 
 /**
@@ -20,14 +19,14 @@ interface Partner {
 }
 
 const partners: Partner[] = [
-  { name: "Partner 1" },
-  { name: "Partner 2" },
-  { name: "Partner 3" },
-  { name: "Partner 4" },
-  { name: "Partner 5" },
-  { name: "Partner 6" },
-  { name: "Partner 7" },
-  { name: "Partner 8" },
+  { name: "Arrow Industries", logo: "/images/logo-white.png" },
+  { name: "Arrow Industries", logo: "/images/logo-white.png" },
+  { name: "Arrow Industries", logo: "/images/logo-white.png" },
+  { name: "Arrow Industries", logo: "/images/logo-white.png" },
+  { name: "Arrow Industries", logo: "/images/logo-white.png" },
+  { name: "Arrow Industries", logo: "/images/logo-white.png" },
+  { name: "Arrow Industries", logo: "/images/logo-white.png" },
+  { name: "Arrow Industries", logo: "/images/logo-white.png" },
 ];
 
 export function TrustedBy() {
@@ -81,12 +80,12 @@ export function TrustedBy() {
 
 function PartnerMark({ partner }: { partner: Partner }) {
   const inner = partner.logo ? (
-    <Image
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
       src={partner.logo}
       alt={partner.name}
-      width={140}
-      height={40}
-      className="h-10 w-auto opacity-70 grayscale transition-all duration-300 group-hover:hover:opacity-100 group-hover:hover:grayscale-0"
+      loading="lazy"
+      className="block h-12 w-32 object-contain sm:h-14 sm:w-40"
     />
   ) : (
     <span className="block whitespace-nowrap text-xs font-bold uppercase tracking-[0.22em] text-mute opacity-70 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:text-sm">
