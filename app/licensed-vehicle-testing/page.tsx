@@ -160,9 +160,9 @@ export default function RoadworthyPage() {
       {/* Booking — the conversion centrepiece */}
       <section className="bg-ink-2 py-20 lg:py-28">
         <Container>
-          <div className="grid gap-10 overflow-hidden border border-line-soft bg-ink lg:grid-cols-12">
+          <div className="grid gap-10 overflow-hidden border border-line-soft bg-ink md:grid-cols-12">
             {/* Left — booking copy + CTAs */}
-            <div className="flex flex-col justify-between gap-10 p-8 sm:p-12 lg:col-span-7">
+            <div className="flex flex-col justify-between gap-10 p-8 sm:p-12 md:col-span-7">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
                   Book online
@@ -223,7 +223,7 @@ export default function RoadworthyPage() {
             </div>
 
             {/* Right — QR card */}
-            <div className="flex flex-col items-center justify-center gap-5 border-t border-line-soft bg-ink-2 p-8 sm:p-12 lg:col-span-5 lg:border-l lg:border-t-0">
+            <div className="flex flex-col items-center justify-center gap-5 border-t border-line-soft bg-ink-2 p-8 sm:p-12 md:col-span-5 md:border-l md:border-t-0">
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent">
                 Scan to book
               </p>
