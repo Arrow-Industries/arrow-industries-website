@@ -43,8 +43,11 @@ export function localBusinessSchema() {
         closes: "16:00",
       },
     ],
-    sameAs: [site.social.facebook, site.social.instagram, site.social.linkedin]
-      .filter((u) => u && u !== "#"),
+    sameAs: [
+      site.social.facebook,
+      site.social.instagram,
+      site.social.linkedin,
+    ].filter(Boolean),
     knowsAbout: [
       "Tipper truck bodies",
       "Dog trailers",
