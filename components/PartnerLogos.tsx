@@ -31,9 +31,19 @@ export function PartnerLogos() {
             aria-hidden={i >= partners.length ? "true" : undefined}
             className="shrink-0"
           >
-            <span className="block whitespace-nowrap text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute/60 opacity-90 grayscale transition-all duration-300 hover:text-mute hover:opacity-100 hover:grayscale-0 sm:text-xs">
-              {p.name}
-            </span>
+            {p.logo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={p.logo}
+                alt={p.name}
+                loading="lazy"
+                className="block h-12 w-32 object-contain sm:h-14 sm:w-40"
+              />
+            ) : (
+              <span className="block whitespace-nowrap text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute/60 opacity-90 grayscale transition-all duration-300 hover:text-mute hover:opacity-100 hover:grayscale-0 sm:text-xs">
+                {p.name}
+              </span>
+            )}
           </li>
         ))}
       </ul>
