@@ -61,7 +61,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-AU" className={inter.variable}>
-      <body className="min-h-dvh antialiased">
+      <body className="min-h-dvh pb-20 antialiased lg:pb-0">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"

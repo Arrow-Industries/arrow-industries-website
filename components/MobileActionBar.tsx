@@ -18,7 +18,7 @@ export function MobileActionBar() {
         </a>
         <Link
           href="/request-a-quote"
-          className="flex items-center justify-center gap-2 bg-accent px-4 py-4 text-sm font-semibold uppercase tracking-[0.12em] text-white transition-colors hover:bg-accent-hover"
+          className="flex items-center justify-center gap-2 bg-accent px-4 py-4 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-accent-hover sm:text-sm"
         >
           Request a Quote
         </Link>

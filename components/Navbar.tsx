@@ -22,8 +22,9 @@ export function Navbar() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line-soft bg-ink/80 backdrop-blur-xl">
-      <Container className="flex h-16 items-center justify-between gap-6 lg:h-20">
+    <>
+      <header className="sticky top-0 z-50 border-b border-line-soft bg-ink/80 backdrop-blur-xl">
+        <Container className="flex h-16 items-center justify-between gap-6 lg:h-20">
         <Logo />
 
         <nav aria-label="Primary" className="hidden lg:block">
@@ -56,10 +57,11 @@ export function Navbar() {
         >
           <Menu className="h-5 w-5" />
         </button>
-      </Container>
+        </Container>
+      </header>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-ink lg:hidden">
+        <div className="fixed inset-0 z-[60] flex flex-col bg-ink lg:hidden">
           <div className="flex h-16 items-center justify-between border-b border-line px-6">
             <Logo />
             <button
@@ -158,7 +160,7 @@ export function Navbar() {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 
