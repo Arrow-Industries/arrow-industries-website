@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" fill="none" aria-hidden="true">
+  <title>Arrow Industries</title>
+  <path d="M100 20 L185 180 L130 180 L100 120 L70 180 L15 180 Z" fill="#E10600"/>
+  <path d="M100 60 L150 160 L120 160 L100 120 L80 160 L50 160 Z" fill="#0A0A0A"/>
+  <rect x="80" y="200" width="40" height="6" fill="#E10600"/>
+</svg>

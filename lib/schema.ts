@@ -1,0 +1,141 @@
+import { site } from "@/data/site";
+import type { Service } from "@/data/services";
+import type { ServiceContent } from "@/data/serviceContent";
+import type { FAQ } from "@/data/faqs";
+
+export function localBusinessSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AutomotiveBusiness",
+    "@id": `${site.url}/#business`,
+    name: site.name,
+    legalName: site.legalName,
+    description: site.description,
+    url: site.url,
+    telephone: site.phone,
+    email: site.email,
+    taxID: `AU-ABN-${site.abn.replace(/\s/g, "")}`,
+    image: `${site.url}/images/logo.svg`,
+    logo: `${site.url}/images/logo.svg`,
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: site.address.line1,
+      addressLocality: site.address.suburb,
+      addressRegion: site.address.state,
+      postalCode: site.address.postcode,
+      addressCountry: "AU",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: -37.681,
+      longitude: 144.948,
+    },
+    areaServed: [
+      { "@type": "State", name: "Victoria" },
+      { "@type": "City", name: "Melbourne" },
+    ],
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "07:00",
+        closes: "16:00",
+      },
+    ],
+    sameAs: [site.social.facebook, site.social.instagram, site.social.linkedin]
+      .filter((u) => u && u !== "#"),
+    knowsAbout: [
+      "Tipper truck bodies",
+      "Dog trailers",
+      "Semi trailers",
+      "Truck repairs",
+      "Roadworthy certificates",
+      "Heavy vehicle servicing",
+    ],
+  };
+}
+
+export function serviceSchema(service: Service, content: ServiceContent) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${site.url}${service.href}#service`,
+    name: service.title,
+    description: content.metaDescription,
+    url: `${site.url}${service.href}`,
+    provider: { "@id": `${site.url}/#business` },
+    areaServed: [
+      { "@type": "State", name: "Victoria" },
+      { "@type": "City", name: "Melbourne" },
+    ],
+    serviceType: service.title,
+    category: service.category === "product" ? "Manufacturing" : "Vehicle services",
+  };
+}
+
+export function faqPageSchema(faqs: FAQ[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: f.answer,
+      },
+    })),
+  };
+}
+
+export interface BreadcrumbCrumb {
+  label: string;
+  href?: string;
+}
+
+export function breadcrumbSchema(crumbs: BreadcrumbCrumb[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: c.label,
+      ...(c.href ? { item: `${site.url}${c.href === "/" ? "" : c.href}` } : {}),
+    })),
+  };
+}
+
+export function organizationSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${site.url}/#organization`,
+    name: site.name,
+    url: site.url,
+    logo: `${site.url}/images/logo.svg`,
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: site.phone,
+        email: site.email,
+        contactType: "sales",
+        areaServed: "AU",
+        availableLanguage: ["English"],
+      },
+    ],
+  };
+}
+
+export function websiteSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${site.url}/#website`,
+    url: site.url,
+    name: site.name,
+    publisher: { "@id": `${site.url}/#organization` },
+    inLanguage: "en-AU",
+  };
+}
