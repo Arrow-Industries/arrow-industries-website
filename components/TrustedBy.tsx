@@ -1,36 +1,15 @@
 import { Container } from "@/components/Container";
+import { customers } from "@/data/customers";
 
 /**
- * Customer / dealer-partner trust strip.
+ * Customer trust strip — sliding logo marquee.
  *
- * Each entry can be a logo (logo path + name + optional href) or a wordmark
- * (name only). Replace the placeholder entries below with real partners.
- *
- * The list is rendered twice and a CSS animation translates the track to
- * -50% for a seamless infinite loop. Hover pauses the animation. The
- * container masks both edges so logos fade in / out cleanly.
+ * Matches the formatting of PartnerLogos (components section): track is
+ * rendered twice for a seamless infinite loop, edges fade out via a
+ * mask, hover pauses the animation.
  */
-interface Partner {
-  name: string;
-  /** Path under /public, e.g. /images/partners/acme.svg. Leave undefined for a wordmark. */
-  logo?: string;
-  /** Optional outbound link. */
-  href?: string;
-}
-
-const partners: Partner[] = [
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-];
-
 export function TrustedBy() {
-  const loopItems = [...partners, ...partners];
+  const loopItems = [...customers, ...customers];
 
   return (
     <section className="relative overflow-hidden bg-ink pt-12 pb-6 lg:pt-16 lg:pb-8">
@@ -58,17 +37,29 @@ export function TrustedBy() {
           }}
         >
           <ul
-            className="logo-marquee-track flex w-max items-center gap-14 py-3 group-hover:[animation-play-state:paused] sm:gap-20"
-            style={{ animation: "logo-scroll 80s linear infinite" }}
+            className="logo-marquee-track flex w-max items-center gap-12 py-3 group-hover:[animation-play-state:paused] sm:gap-16"
+            style={{ animation: "logo-scroll 70s linear infinite" }}
             aria-label="Customers and dealer partners"
           >
-            {loopItems.map((p, i) => (
+            {loopItems.map((c, i) => (
               <li
-                key={`${p.name}-${i}`}
-                aria-hidden={i >= partners.length ? "true" : undefined}
+                key={`${c.name}-${i}`}
+                aria-hidden={i >= customers.length ? "true" : undefined}
                 className="shrink-0"
               >
-                <PartnerMark partner={p} />
+                {c.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={c.logo}
+                    alt={c.name}
+                    loading="lazy"
+                    className="block h-12 w-32 object-contain sm:h-14 sm:w-40"
+                  />
+                ) : (
+                  <span className="block whitespace-nowrap text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute/60 opacity-90 grayscale transition-all duration-300 hover:text-mute hover:opacity-100 hover:grayscale-0 sm:text-xs">
+                    {c.name}
+                  </span>
+                )}
               </li>
             ))}
           </ul>
@@ -76,35 +67,4 @@ export function TrustedBy() {
       </Container>
     </section>
   );
-}
-
-function PartnerMark({ partner }: { partner: Partner }) {
-  const inner = partner.logo ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={partner.logo}
-      alt={partner.name}
-      loading="lazy"
-      className="block h-12 w-32 object-contain sm:h-14 sm:w-40"
-    />
-  ) : (
-    <span className="block whitespace-nowrap text-xs font-bold uppercase tracking-[0.22em] text-mute opacity-70 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 sm:text-sm">
-      {partner.name}
-    </span>
-  );
-
-  if (partner.href) {
-    return (
-      <a
-        href={partner.href}
-        target="_blank"
-        rel="noreferrer"
-        aria-label={partner.name}
-        className="flex items-center justify-center"
-      >
-        {inner}
-      </a>
-    );
-  }
-  return inner;
 }
