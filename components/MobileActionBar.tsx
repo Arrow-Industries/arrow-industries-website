@@ -8,7 +8,7 @@ export function MobileActionBar() {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line-soft bg-ink/95 backdrop-blur-md lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="grid grid-cols-2">
+      <nav aria-label="Mobile actions" className="grid grid-cols-2">
         <a
           href={site.phoneHref}
           className="flex items-center justify-center gap-2 px-4 py-4 text-sm font-semibold text-bone transition-colors hover:text-accent"
@@ -22,7 +22,7 @@ export function MobileActionBar() {
         >
           Request a Quote
         </Link>
-      </div>
+      </nav>
     </div>
   );
 }

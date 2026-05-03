@@ -40,6 +40,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
             <div
               id={id}
               role="region"
+              aria-hidden={!isOpen}
               hidden={!isOpen}
               className="pb-6 pr-10 text-sm leading-relaxed text-mute sm:text-base"
             >

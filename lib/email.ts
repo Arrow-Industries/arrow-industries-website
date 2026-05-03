@@ -40,7 +40,7 @@ const ALLOWED_EXT = /\.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?|pdf)$/i;
 /* ---------- Validation helpers ---------- */
 
 function isEmail(v: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 }
 
 function isPhone(v: string) {
