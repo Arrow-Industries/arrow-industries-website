@@ -3,14 +3,11 @@ export interface Customer {
   logo?: string;
 }
 
-// Placeholder entries — real customer logos pending written confirmation
-// from each operator. Swap each `logo` path back to /images/customers/<file>
-// once confirmed.
 export const customers: Customer[] = [
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
-  { name: "Arrow Industries", logo: "/images/logo-white.png" },
+  { name: "ASG", logo: "/images/customers/asg.webp" },
+  { name: "LTE", logo: "/images/customers/lte.jpeg" },
+  { name: "NLA", logo: "/images/customers/nla.png" },
+  { name: "Sitrak", logo: "/images/customers/sitrak.png" },
+  { name: "Starbuck", logo: "/images/customers/starbuck.png" },
+  { name: "Westgate Bin Hire", logo: "/images/customers/westgate-bin-hire.png" },
 ];
