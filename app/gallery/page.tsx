@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { CTASection } from "@/components/CTASection";
-import { GalleryGrid } from "@/components/GalleryGrid";
 import { InstagramStrip } from "@/components/InstagramStrip";
 
 export const metadata: Metadata = {
@@ -21,12 +19,6 @@ export default function GalleryPage() {
         body="A look at recent tipper, dog and semi-trailer builds from our Campbellfield workshop."
         crumbs={[{ label: "Home", href: "/" }, { label: "Gallery" }]}
       />
-
-      <section className="border-b border-line bg-ink py-16 lg:py-20">
-        <Container>
-          <GalleryGrid />
-        </Container>
-      </section>
 
       <InstagramStrip />
 
