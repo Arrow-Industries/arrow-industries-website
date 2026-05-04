@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { fetchInstagramMedia, thumbFor } from "@/lib/instagram";
 import { site } from "@/data/site";
 
-const MAX = 12;
+const MAX = 24;
 
 export async function InstagramStrip() {
   const items = await fetchInstagramMedia(MAX);
