@@ -3,6 +3,7 @@ import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { CTASection } from "@/components/CTASection";
 import { GalleryGrid } from "@/components/GalleryGrid";
+import { InstagramStrip } from "@/components/InstagramStrip";
 
 export const metadata: Metadata = {
   title: "Gallery — Completed Tipper & Trailer Builds",
@@ -26,6 +27,8 @@ export default function GalleryPage() {
           <GalleryGrid />
         </Container>
       </section>
+
+      <InstagramStrip />
 
       <CTASection
         eyebrow="Get a Quote"
