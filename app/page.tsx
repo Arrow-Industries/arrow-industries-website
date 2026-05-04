@@ -172,19 +172,19 @@ function ServicesSection() {
 function RecentBuildsSection() {
   const builds = [
     {
-      src: "/images/logo-white.png",
+      src: "/images/builds/build-1.jpg",
       alt: "Recent Arrow Industries 8x4 tipper body build for quarry application",
       buildType: "8x4 Tipper",
       application: "Quarry",
     },
     {
-      src: "/images/logo-white.png",
+      src: "/images/builds/build-2.jpg",
       alt: "Recent Arrow Industries dog trailer build for civil construction",
       buildType: "Dog Trailer",
       application: "Civil",
     },
     {
-      src: "/images/logo-white.png",
+      src: "/images/builds/build-3.jpg",
       alt: "Recent Arrow Industries semi trailer build for bulk haulage",
       buildType: "Semi Trailer",
       application: "Bulk Haulage",
@@ -201,25 +201,28 @@ function RecentBuildsSection() {
         </div>
         <ul className="mt-12 grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
           {builds.map((b, i) => (
-            <li
-              key={`${b.buildType}-${i}`}
-              className="group relative aspect-[5/4] overflow-hidden bg-ink-2"
-            >
-              <Image
-                src={b.src}
-                alt={b.alt}
-                fill
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-              />
-              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink via-ink/80 to-transparent px-5 pt-10 pb-5">
-                <span className="font-display text-base font-bold text-bone">
-                  {b.buildType}
-                </span>
-                <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
-                  {b.application}
-                </span>
-              </div>
+            <li key={`${b.buildType}-${i}`}>
+              <Link
+                href="/gallery"
+                aria-label={`${b.buildType} — ${b.application}. View gallery.`}
+                className="group relative block aspect-[5/4] overflow-hidden bg-ink-2"
+              >
+                <Image
+                  src={b.src}
+                  alt={b.alt}
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink via-ink/80 to-transparent px-5 pt-10 pb-5">
+                  <span className="font-display text-base font-bold text-bone">
+                    {b.buildType}
+                  </span>
+                  <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
+                    {b.application}
+                  </span>
+                </div>
+              </Link>
             </li>
           ))}
         </ul>
