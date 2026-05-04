@@ -1,11 +1,19 @@
+import { Redis } from "@upstash/redis";
+
 /**
  * Instagram Graph API — fetches the latest media from the connected
  * Business/Creator account.
  *
- * Token lifecycle: long-lived tokens last ~60 days. The site degrades
- * gracefully when the token is missing or invalid — the strip simply
- * renders nothing — so an expired token will never break the gallery
- * page, only stop refreshing posts.
+ * Token storage is layered:
+ *   1. Upstash/Vercel KV at key `instagram:access_token` (canonical, refreshed
+ *      weekly by the /api/cron/refresh-instagram-token cron job).
+ *   2. process.env.INSTAGRAM_ACCESS_TOKEN as a fallback. This is the only
+ *      thing populated on first deploy; once the cron runs, KV takes over.
+ *
+ * Lifecycle: long-lived tokens last ~60 days. The cron refreshes the KV
+ * token weekly so it never expires under normal operation. If both KV
+ * and the env token are missing/invalid, the strip silently renders
+ * nothing — the gallery page never breaks.
  */
 
 export type IgMediaType = "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
@@ -22,6 +30,7 @@ export interface IgMedia {
 }
 
 const API_BASE = "https://graph.instagram.com";
+export const KV_TOKEN_KEY = "instagram:access_token";
 const FIELDS = [
   "id",
   "caption",
@@ -33,8 +42,42 @@ const FIELDS = [
   "username",
 ].join(",");
 
+let cachedRedis: Redis | null | undefined;
+function getRedis(): Redis | null {
+  if (cachedRedis !== undefined) return cachedRedis;
+  const url =
+    process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+  const token =
+    process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
+  cachedRedis = url && token ? new Redis({ url, token }) : null;
+  return cachedRedis;
+}
+
+export async function getInstagramToken(): Promise<string | null> {
+  const redis = getRedis();
+  if (redis) {
+    try {
+      const fromKv = await redis.get<string>(KV_TOKEN_KEY);
+      if (fromKv) return fromKv;
+    } catch (err) {
+      console.error("[instagram] KV read failed", err);
+    }
+  }
+  return process.env.INSTAGRAM_ACCESS_TOKEN ?? null;
+}
+
+export async function setInstagramToken(token: string): Promise<void> {
+  const redis = getRedis();
+  if (!redis) {
+    throw new Error(
+      "Cannot persist Instagram token: Upstash/KV env vars not configured.",
+    );
+  }
+  await redis.set(KV_TOKEN_KEY, token);
+}
+
 export async function fetchInstagramMedia(limit = 12): Promise<IgMedia[]> {
-  const token = process.env.INSTAGRAM_ACCESS_TOKEN;
+  const token = await getInstagramToken();
   if (!token) return [];
 
   const url = new URL(`${API_BASE}/me/media`);
