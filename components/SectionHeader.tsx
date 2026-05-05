@@ -1,7 +1,8 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface SectionHeaderProps {
-  eyebrow?: string;
+  eyebrow?: ReactNode;
   heading: string;
   body?: string;
   align?: "left" | "center";
@@ -24,7 +25,12 @@ export function SectionHeader({
       )}
     >
       {eyebrow && (
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+        <p
+          className={cn(
+            "mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent",
+            align === "center" && "justify-center",
+          )}
+        >
           {eyebrow}
         </p>
       )}

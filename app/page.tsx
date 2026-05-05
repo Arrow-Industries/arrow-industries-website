@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight, Instagram, Phone } from "lucide-react";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { TrustBar } from "@/components/TrustBar";
@@ -193,7 +193,21 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeader
-            eyebrow={usingIg ? "Most loved on Instagram" : "Recent work"}
+            eyebrow={
+              usingIg ? (
+                <a
+                  href={site.social.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 transition-colors hover:text-bone"
+                >
+                  <Instagram className="h-3.5 w-3.5" aria-hidden />
+                  Follow us on Instagram
+                </a>
+              ) : (
+                "Recent work"
+              )
+            }
             heading="Recent builds"
           />
           <Button href="/gallery" variant="ghost" size="md">
