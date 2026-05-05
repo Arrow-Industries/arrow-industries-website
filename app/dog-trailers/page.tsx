@@ -38,7 +38,7 @@ const faqs = [
   {
     question: "Do you offer PBS-compatible builds?",
     answer:
-      "Yes — we build dog trailers to suit PBS combinations where you have the access permit in place. Send us the permit and we'll engineer to it.",
+      "Yes — we build dog trailers to suit PBS combinations. If you already have the access permit in place we'll engineer to it; if you don't, we can take care of the PBS engineering and certification as part of the build. Either way, you end up with a combination that matches the permit.",
   },
 ];
 

@@ -33,7 +33,7 @@ const faqs = [
   {
     question: "Do you offer PBS-compatible builds?",
     answer:
-      "Yes — we build semi trailers to suit B-double, A-double and rigid-and-dog combinations where you have the access permit in place.",
+      "Yes — we build semi trailers to suit B-double, A-double and rigid-and-dog combinations. If you already have the access permit in place we'll engineer to it; if you don't, we can take care of the PBS engineering and certification as part of the build.",
   },
   {
     question: "Tipping or flat-deck?",
