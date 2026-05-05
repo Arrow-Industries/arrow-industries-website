@@ -162,7 +162,7 @@ export const serviceContent: Record<string, ServiceContent> = {
       {
         title: "Matched to your tipper",
         description:
-          "Body, sub-frame and finish specified to mirror the lead unit — built as a working pair, not a mismatched combination.",
+          "Body, chassis and finish specified to mirror the lead unit — built as a working pair, not a mismatched combination.",
       },
       {
         title: "Tri or quad axle",
@@ -175,19 +175,14 @@ export const serviceContent: Record<string, ServiceContent> = {
           "Engineered drawbar with reinforced bushings and quality couplings — built for real cornering, not catalogue test cases.",
       },
       {
-        title: "Air or mechanical suspension",
+        title: "Premium air suspension",
         description:
-          "Air suspension for ride and load equalisation, mechanical for heavy off-highway use.",
+          "SAF-Holland axles paired with BASE Air bag suspension — premium ride quality, even load equalisation and reliable durability.",
       },
       {
         title: "Wear-rated body plate",
         description:
           "Same abrasion-resistant body construction as our tippers — dent-tolerant and easy to repair.",
-      },
-      {
-        title: "Tow members and coupling options",
-        description:
-          "28.5T and 34T rated tow members, compatible with ringfeeder, pintle and Bartlett ball couplings — configured to suit your trailer and operating setup.",
       },
     ],
     useCases: [
@@ -207,7 +202,7 @@ export const serviceContent: Record<string, ServiceContent> = {
       {
         title: "Suspension & axles",
         description:
-          "Air or mechanical suspension matched to load and route, with disc or drum brake options.",
+          "SAF-Holland axles with BASE Air bag suspension matched to load and route, with disc or drum brake options.",
       },
       {
         title: "Tailgate style",
@@ -272,7 +267,7 @@ export const serviceContent: Record<string, ServiceContent> = {
     h1: "Semi trailers engineered for long-haul performance.",
     lede: "Tipping and flat-deck semi trailers built to ADR and VicRoads standards — focused on strength, efficiency and long-term use.",
     intro:
-      "Our semi trailers are built around the load you'll actually carry. Tipping or flat-deck, single or B-double, we engineer the chassis, sub-frame and body to put your payload on the road safely and cost-effectively.",
+      "Our semi trailers are built around the load you'll actually carry. Tipping or flat-deck, single or B-double, we engineer the chassis and body to put your payload on the road safely and cost-effectively.",
     keyFeatures: [
       {
         title: "Engineered chassis",
@@ -298,11 +293,6 @@ export const serviceContent: Record<string, ServiceContent> = {
         title: "Tipping bodies built to last",
         description:
           "Wear-rated body plate construction — long life, low maintenance, easy to repair.",
-      },
-      {
-        title: "Tow members and coupling options",
-        description:
-          "28.5T and 34T rated tow members, compatible with ringfeeder, pintle and Bartlett ball couplings — configured to suit your trailer and operating setup.",
       },
     ],
     useCases: [
