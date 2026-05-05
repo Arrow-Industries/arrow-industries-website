@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface SectionHeaderProps {
   eyebrow?: ReactNode;
-  heading: string;
+  heading: ReactNode;
   body?: string;
   align?: "left" | "center";
   className?: string;

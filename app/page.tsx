@@ -193,22 +193,25 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeader
-            eyebrow={
+            eyebrow={usingIg ? "Recent builds" : "Recent work"}
+            heading={
               usingIg ? (
                 <a
                   href={site.social.instagram}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 transition-colors hover:text-bone"
+                  className="inline-flex items-center gap-3 transition-colors hover:text-accent sm:gap-4"
                 >
-                  <Instagram className="h-3.5 w-3.5" aria-hidden />
+                  <Instagram
+                    className="h-7 w-7 sm:h-8 sm:w-8 lg:h-10 lg:w-10"
+                    aria-hidden
+                  />
                   Follow us on Instagram
                 </a>
               ) : (
-                "Recent work"
+                "Recent builds"
               )
             }
-            heading="Recent builds"
           />
           <Button href="/gallery" variant="ghost" size="md">
             View gallery →
