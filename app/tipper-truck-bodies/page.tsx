@@ -137,39 +137,48 @@ const ourBuilds = {
   ],
 };
 
+const completeSetup = {
+  outcomes: [
+    "Proper balance on the chassis",
+    "Correct load distribution",
+    "Reliable operation on-site",
+  ],
+  features: [
+    "Reinforced subframes and heavy-duty main bearers",
+    "Multi-stage hoist systems matched to application",
+    "Tailgate systems designed for real unloading conditions",
+    "Integrated tarp systems and practical site features",
+    "Full truck and trailer connection setups where required",
+  ],
+};
+
 const materials = [
   {
-    title: "450-grade & Hardox steel",
-    body: "Floors, walls and high-wear zones built from Q&T 450 and Hardox plate — abrasion-rated for quarry, civil and high-density loads.",
+    title: "Pressed side sheets and reinforced structures",
+    body: "Side panels pressed for stiffness and dent resistance. Internal structure reinforced where the load actually works the body.",
   },
   {
-    title: "Reinforced sub-frames",
-    body: "Engineered sub-frames spread hoist and payload forces across the chassis — no flex, no fatigue points, no unplanned cracks down the track.",
+    title: "Heavy-duty bearers and pivot systems",
+    body: "Main bearers, cross members and pivot assemblies sized to handle real cycle counts — not catalogue-minimum sections.",
   },
   {
-    title: "Precision welds & fabrication",
-    body: "Welds laid by qualified fabricators, inspected before paint. Clean lines, full penetration where it matters, repair-friendly construction.",
+    title: "Clean welds and consistent fabrication",
+    body: "Welds laid by qualified fabricators, inspected before paint. Repeatable construction across one-offs and fleet runs alike.",
   },
   {
-    title: "Engineered for heavy use",
-    body: "Designed around real cycle counts and harsh operating environments — quarries, tip sites, unsealed roads and continuous fleet work.",
+    title: "Built for heavy loads and harsh conditions",
+    body: "Engineered around continuous on-site work — quarries, tip sites, unsealed roads — not occasional light duty.",
   },
 ];
 
-const features = {
-  body: [
-    "Tailgate styles — barn-door, top-hinged, grain, sealed waste",
-    "Hoist options — front-mount or under-body twin-ram",
-    "Retractable tarp systems with manual or electric drive",
-    "Wear-rated body plate to suit material density",
-  ],
-  fitOut: [
-    "LED rear, side-marker and work lighting",
-    "Reverse and side-view camera systems",
-    "Tool boxes, ladder racks and mud flap kits",
-    "Site-spec features — chains, beacons, isolators",
-  ],
-};
+const features = [
+  "Tailgate configurations (including 2-way systems)",
+  "Hoist setups (matched to application)",
+  "Tarp systems (manual or electric)",
+  "Lighting and safety systems",
+  "Access steps, racks and practical operator features",
+  "Spray suppression and protection options",
+];
 
 const whyArrow = [
   {
@@ -177,16 +186,20 @@ const whyArrow = [
     body: "Engineered to spec, not styled for a showroom. Every detail justified by how the unit will work.",
   },
   {
-    title: "Clean fabrication, premium finish",
+    title: "Designed around real-world use",
+    body: "Specified around the route, the load and the cycle — not catalogue assumptions.",
+  },
+  {
+    title: "Clean fabrication and finish",
     body: "Visible welds laid clean. 2-pack paint to your colour. The unit looks the way it works.",
   },
   {
-    title: "Designed for payload",
-    body: "Tare watched, structural steel sized to the load. More legal payload, more revenue per cycle.",
+    title: "Consistent build quality",
+    body: "Repeat builds match the first one. No drift on dimensions, finish or hardware between units.",
   },
   {
-    title: "Consistent across the fleet",
-    body: "Repeat builds match the first one. No drift on dimensions, finish or hardware between units.",
+    title: "Setups that actually work on-site",
+    body: "Hydraulics, hoist, tailgate and connections balanced as one system — not parts bolted together.",
   },
 ];
 
@@ -198,18 +211,18 @@ const process = [
   },
   {
     step: "02",
-    title: "We design your build",
-    body: "GA drawings, body length, hoist style, tailgate config and fit-out — all signed off before steel is cut.",
+    title: "We design the setup",
+    body: "GA drawings, body length, hoist configuration, tailgate, hydraulics and fit-out — signed off before any steel is cut.",
   },
   {
     step: "03",
-    title: "Fabrication",
+    title: "Fabrication and build",
     body: "Built in our Campbellfield workshop. Welded, finished and inspected by the same team end-to-end.",
   },
   {
     step: "04",
-    title: "Delivery",
-    body: "Compliance plates, weight stamps and handover paperwork. Backed by the same workshop after delivery.",
+    title: "Delivery ready for work",
+    body: "Compliance plates, weight stamps and handover paperwork. Delivered ready for work — and backed by the same workshop after handover.",
   },
 ];
 
@@ -335,10 +348,10 @@ export default async function Page() {
           </div>
           <div className="lg:col-span-7">
             <p className="text-base leading-relaxed text-mute sm:text-lg">
-              Arrow doesn&rsquo;t build catalogue bodies. Every tipper is
-              engineered around the application, the payload and the chassis
-              it&rsquo;s running on &mdash; sized correctly, balanced for the
-              truck, and finished for the work it needs to do.
+              Every Arrow tipper is engineered around the application, the
+              payload and the chassis it&rsquo;s running on &mdash; sized
+              correctly, balanced for the truck, and finished for the work it
+              needs to do.
             </p>
           </div>
         </Container>
@@ -479,7 +492,63 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 6 — MATERIALS & ENGINEERING */}
+      {/* 6 — BUILT AS A COMPLETE SETUP (critical differentiator) */}
+      <section className="bg-ink py-24 lg:py-32">
+        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+          <div className="lg:col-span-5">
+            <SectionHeader
+              eyebrow="Complete working setup"
+              heading="Built as a complete working setup."
+            />
+            <p className="mt-6 text-base leading-relaxed text-mute sm:text-lg">
+              A tipper body is only one part of the system. Every Arrow build
+              is designed as a complete working setup &mdash; from the body
+              and subframe through to hydraulics, hoist configuration, and
+              trailer connections where required.
+            </p>
+            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+              The result
+            </p>
+            <ul className="mt-4 divide-y divide-line-soft">
+              {completeSetup.outcomes.map((o) => (
+                <li
+                  key={o}
+                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+                >
+                  <Check
+                    className="mt-1 h-4 w-4 shrink-0 text-accent"
+                    strokeWidth={2}
+                    aria-hidden
+                  />
+                  <p className="text-sm leading-relaxed text-bone sm:text-base">
+                    {o}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="lg:col-span-7">
+            <ul className="grid gap-px overflow-hidden bg-line-soft sm:grid-cols-1">
+              {completeSetup.features.map((f) => (
+                <li
+                  key={f}
+                  className="flex items-start gap-4 bg-ink-2 p-7"
+                >
+                  <span
+                    aria-hidden
+                    className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent"
+                  />
+                  <p className="text-sm leading-relaxed text-bone sm:text-base">
+                    {f}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Container>
+      </section>
+
+      {/* 7 — MATERIALS & ENGINEERING */}
       <section className="bg-ink py-24 lg:py-32">
         <Container>
           <SectionHeader
@@ -525,72 +594,43 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 7 — FEATURES & OPTIONS */}
+      {/* 8 — FEATURES & OPTIONS */}
       <section className="bg-ink py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-12">
-            <SectionHeader
-              eyebrow="Features & options"
-              heading="Configure the unit to suit the work."
-            />
-          </div>
-          <div className="lg:col-span-6">
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-              Body & hoist
-            </p>
-            <ul className="divide-y divide-line-soft">
-              {features.body.map((b) => (
-                <li
-                  key={b}
-                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
-                >
-                  <Check
-                    className="mt-1 h-4 w-4 shrink-0 text-accent"
-                    strokeWidth={2}
-                    aria-hidden
-                  />
-                  <p className="text-sm leading-relaxed text-bone sm:text-base">
-                    {b}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="lg:col-span-6">
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-              Fit-out & site features
-            </p>
-            <ul className="divide-y divide-line-soft">
-              {features.fitOut.map((f) => (
-                <li
-                  key={f}
-                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
-                >
-                  <Check
-                    className="mt-1 h-4 w-4 shrink-0 text-accent"
-                    strokeWidth={2}
-                    aria-hidden
-                  />
-                  <p className="text-sm leading-relaxed text-bone sm:text-base">
-                    {f}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <Container>
+          <SectionHeader
+            eyebrow="Features & options"
+            heading="Configure the unit to suit the work."
+          />
+          <ul className="mt-14 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((f) => (
+              <li
+                key={f}
+                className="flex items-start gap-4 bg-ink-2 p-7"
+              >
+                <Check
+                  className="mt-1 h-4 w-4 shrink-0 text-accent"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <p className="text-sm leading-relaxed text-bone sm:text-base">
+                  {f}
+                </p>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 
-      {/* 8 — WHY ARROW */}
+      {/* 9 — WHY ARROW */}
       <section className="bg-ink-2 py-24 lg:py-32">
         <Container>
           <SectionHeader
             eyebrow="Why Arrow"
             heading="Built for the operator, not the showroom."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-5">
             {whyArrow.map((w) => (
-              <li key={w.title} className="flex flex-col gap-3 bg-ink p-8">
+              <li key={w.title} className="flex flex-col gap-3 bg-ink p-7">
                 <h3 className="font-display text-base font-bold text-bone sm:text-lg">
                   {w.title}
                 </h3>
@@ -601,10 +641,10 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 9 — REAL BUILDS (expanded IG gallery) */}
+      {/* 10 — REAL BUILDS (expanded IG gallery) */}
       <RealBuildsSection posts={igPosts} />
 
-      {/* 10 — PROCESS */}
+      {/* 11 — PROCESS */}
       <section className="bg-ink-2 py-24 lg:py-32">
         <Container>
           <SectionHeader
@@ -637,7 +677,7 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 11 — FINAL CTA */}
+      {/* 12 — FINAL CTA */}
       <CTASection
         eyebrow="Get a Quote"
         heading={tipperContent.ctaHeading}
