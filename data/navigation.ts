@@ -67,7 +67,6 @@ export const footerLinks = {
   services: [
     { label: "Repairs & Servicing", href: "/repairs-servicing" },
     { label: "Licensed Vehicle Testing", href: "/licensed-vehicle-testing" },
-    { label: "Custom Manufacturing", href: "/repairs-servicing" },
   ],
   company: [
     { label: "About", href: "/about" },
