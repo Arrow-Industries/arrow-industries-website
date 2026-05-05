@@ -94,14 +94,38 @@ const tipperContent: ServiceContent = {
 const builtFor = [
   "Owner operators",
   "Fleet operators",
-  "Civil & quarry work",
-  "High-payload applications",
+  "Civil and quarry work",
+  "High workload applications",
+];
+
+const recentBuilds = [
+  {
+    src: "/images/builds/build-1.jpg",
+    alt: "Arrow Industries 8x4 tipper body — civil application",
+    title: "8x4 Tipper Build",
+    application: "Civil application",
+    specs: ["6.5m body", "2-way tailgate", "Retractable tarp"],
+  },
+  {
+    src: "/images/builds/build-2.jpg",
+    alt: "Arrow Industries 6x4 tipper body — quarry application",
+    title: "6x4 Tipper Build",
+    application: "Quarry application",
+    specs: ["Heavy-duty floor", "Twin-ram hoist", "Wear-rated lining"],
+  },
+  {
+    src: "/images/builds/build-3.jpg",
+    alt: "Arrow Industries 10x4 tipper body — fleet setup",
+    title: "10x4 Tipper Build",
+    application: "Fleet setup",
+    specs: ["Custom body length", "Full LED kit", "On-site ready"],
+  },
 ];
 
 const ourBuilds = {
   configurations: [
-    "4x2, 6x4 and 8x4 truck configurations",
-    "6.0m–6.5m bodies — custom lengths to suit chassis",
+    "4x2, 6x4, 8x4 and 10x4 truck configurations",
+    "Custom body lengths sized to your chassis",
     "PBS combinations up to ~49.5T",
     "450-grade and Hardox steel construction",
   ],
@@ -285,30 +309,98 @@ export default async function Page() {
               Speak to the team
             </Button>
           </div>
+          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-mute">
+            Built for civil, quarry and fleet applications
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-bone/70">
+            <span>4x2</span>
+            <span aria-hidden className="text-line">•</span>
+            <span>6x4</span>
+            <span aria-hidden className="text-line">•</span>
+            <span>8x4</span>
+            <span aria-hidden className="text-line">•</span>
+            <span>10x4</span>
+          </div>
         </Container>
       </section>
 
-      {/* 2 — INTRO */}
+      {/* 2 — NO CATALOGUE BUILDS */}
       <section className="bg-ink-2 py-20 lg:py-28">
         <Container className="grid gap-10 lg:grid-cols-12 lg:gap-20">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="No catalogue builds"
-              heading="Built around the job — not pulled off a shelf."
+              heading="Built around the job — not the template."
             />
           </div>
           <div className="lg:col-span-7">
             <p className="text-base leading-relaxed text-mute sm:text-lg">
               Arrow doesn&rsquo;t build catalogue bodies. Every tipper is
               engineered around the application, the payload and the chassis
-              it&rsquo;ll run on &mdash; sized for legal mass, balanced for the
-              truck, finished for the work in front of it.
+              it&rsquo;s running on &mdash; sized correctly, balanced for the
+              truck, and finished for the work it needs to do.
             </p>
           </div>
         </Container>
       </section>
 
-      {/* 3 — BUILT FOR */}
+      {/* 3 — RECENT BUILDS (curated cards, high priority) */}
+      <section className="bg-ink py-24 lg:py-32">
+        <Container>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <SectionHeader
+              eyebrow="Recent builds"
+              heading="Real trucks. Real jobs."
+              body="A snapshot of recent units off the workshop floor."
+            />
+            <Button href="/gallery" variant="ghost" size="md">
+              View gallery →
+            </Button>
+          </div>
+          <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {recentBuilds.map((b) => (
+              <li
+                key={b.title}
+                className="group flex flex-col overflow-hidden bg-ink-2"
+              >
+                <div className="relative aspect-[5/4] overflow-hidden">
+                  <Image
+                    src={b.src}
+                    alt={b.alt}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col gap-4 p-6">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="font-display text-lg font-bold text-bone sm:text-xl">
+                      {b.title}
+                    </h3>
+                    <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
+                      {b.application}
+                    </span>
+                  </div>
+                  <ul className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-mute sm:text-sm">
+                    {b.specs.map((s, i) => (
+                      <li key={s} className="flex items-center gap-3">
+                        {i > 0 && (
+                          <span aria-hidden className="text-line">
+                            •
+                          </span>
+                        )}
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
+      {/* 4 — BUILT FOR */}
       <section className="bg-ink py-20 lg:py-24">
         <Container>
           <SectionHeader eyebrow="Built for" heading="Who we build for." />
@@ -328,7 +420,7 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 4 — OUR BUILDS */}
+      {/* 5 — OUR BUILDS (technical depth) */}
       <section className="bg-ink-2 py-24 lg:py-32">
         <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
           <div className="lg:col-span-5">
@@ -387,7 +479,7 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 5 — MATERIALS & ENGINEERING */}
+      {/* 6 — MATERIALS & ENGINEERING */}
       <section className="bg-ink py-24 lg:py-32">
         <Container>
           <SectionHeader
@@ -433,7 +525,7 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 6 — FEATURES & OPTIONS */}
+      {/* 7 — FEATURES & OPTIONS */}
       <section className="bg-ink py-24 lg:py-32">
         <Container className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-12">
@@ -489,7 +581,7 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 7 — WHY ARROW */}
+      {/* 8 — WHY ARROW */}
       <section className="bg-ink-2 py-24 lg:py-32">
         <Container>
           <SectionHeader
@@ -509,10 +601,10 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 8 — REAL BUILDS */}
+      {/* 9 — REAL BUILDS (expanded IG gallery) */}
       <RealBuildsSection posts={igPosts} />
 
-      {/* 9 — PROCESS */}
+      {/* 10 — PROCESS */}
       <section className="bg-ink-2 py-24 lg:py-32">
         <Container>
           <SectionHeader
@@ -545,7 +637,7 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 10 — FINAL CTA */}
+      {/* 11 — FINAL CTA */}
       <CTASection
         eyebrow="Get a Quote"
         heading={tipperContent.ctaHeading}
@@ -565,7 +657,7 @@ function RealBuildsSection({ posts }: { posts: IgMedia[] }) {
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeader
-            eyebrow="Real builds"
+            eyebrow="Workshop gallery"
             heading={
               usingIg ? (
                 <a
@@ -578,12 +670,13 @@ function RealBuildsSection({ posts }: { posts: IgMedia[] }) {
                     className="h-7 w-7 sm:h-8 sm:w-8 lg:h-10 lg:w-10"
                     aria-hidden
                   />
-                  Latest from the workshop
+                  From the workshop floor
                 </a>
               ) : (
-                "Latest from the workshop"
+                "From the workshop floor"
               )
             }
+            body="Full truck shots, fabrication detail and on-site work — pulled live from Instagram."
           />
           <Button href="/gallery" variant="ghost" size="md">
             View gallery →
