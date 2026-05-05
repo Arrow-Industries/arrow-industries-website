@@ -218,15 +218,10 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     />
-                    <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink via-ink/80 to-transparent px-5 pt-10 pb-5">
+                    <div className="absolute inset-x-0 bottom-0 flex items-center bg-gradient-to-t from-ink via-ink/80 to-transparent px-5 pt-10 pb-5">
                       <span className="font-display text-base font-bold text-bone">
                         @{p.username || "arrowindustries"}
                       </span>
-                      {typeof p.like_count === "number" && (
-                        <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
-                          {p.like_count.toLocaleString()} likes
-                        </span>
-                      )}
                     </div>
                   </a>
                 </li>
