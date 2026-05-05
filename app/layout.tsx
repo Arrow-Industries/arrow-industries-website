@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { MobileActionBar } from "@/components/MobileActionBar";
@@ -79,6 +80,7 @@ export default function RootLayout({
             localBusinessSchema(),
           ]}
         />
+        <SpeedInsights />
       </body>
     </html>
   );
