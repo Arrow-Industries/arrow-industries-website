@@ -5,6 +5,7 @@ export interface Customer {
 
 export const customers: Customer[] = [
   { name: "ASG", logo: "/images/customers/asg.webp" },
+  { name: "CC Earthmoving", logo: "/images/customers/cc-earthmoving.png" },
   { name: "LTE", logo: "/images/customers/lte.jpeg" },
   { name: "NLA", logo: "/images/customers/nla.png" },
   { name: "Sitrak", logo: "/images/customers/sitrak.png" },
