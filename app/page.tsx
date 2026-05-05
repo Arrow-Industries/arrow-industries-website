@@ -11,8 +11,10 @@ import { PartnerLogos } from "@/components/PartnerLogos";
 import { SectionHeader } from "@/components/SectionHeader";
 import { services } from "@/data/services";
 import { site } from "@/data/site";
+import { fetchTopInstagramMedia, thumbFor, type IgMedia } from "@/lib/instagram";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const topPosts = await fetchTopInstagramMedia(3, 30);
   return (
     <>
       <Hero />
@@ -20,7 +22,7 @@ export default function HomePage() {
       <SpecPromise />
       <ServicesSection />
       <TrustedBy />
-      <RecentBuildsSection />
+      <RecentBuildsSection posts={topPosts} />
       <PartnersSection />
       <CTASection
         eyebrow="Get a Quote"
@@ -169,62 +171,83 @@ function ServicesSection() {
   );
 }
 
-function RecentBuildsSection() {
-  const builds = [
-    {
-      src: "/images/builds/build-1.jpg",
-      alt: "Recent Arrow Industries 8x4 tipper body build for quarry application",
-      buildType: "8x4 Tipper",
-      application: "Quarry",
-    },
-    {
-      src: "/images/builds/build-2.jpg",
-      alt: "Recent Arrow Industries dog trailer build for civil construction",
-      buildType: "Dog Trailer",
-      application: "Civil",
-    },
-    {
-      src: "/images/builds/build-3.jpg",
-      alt: "Recent Arrow Industries semi trailer build for bulk haulage",
-      buildType: "Semi Trailer",
-      application: "Bulk Haulage",
-    },
-  ];
+const FALLBACK_BUILDS = [
+  {
+    src: "/images/builds/build-1.jpg",
+    alt: "Recent Arrow Industries 8x4 tipper body build for quarry application",
+  },
+  {
+    src: "/images/builds/build-2.jpg",
+    alt: "Recent Arrow Industries dog trailer build for civil construction",
+  },
+  {
+    src: "/images/builds/build-3.jpg",
+    alt: "Recent Arrow Industries semi trailer build for bulk haulage",
+  },
+];
+
+function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
+  const usingIg = posts.length > 0;
   return (
     <section className="bg-ink pt-4 pb-20 lg:pt-6 lg:pb-28">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeader eyebrow="Recent work" heading="Recent builds" />
+          <SectionHeader
+            eyebrow={usingIg ? "Most loved on Instagram" : "Recent work"}
+            heading="Recent builds"
+          />
           <Button href="/gallery" variant="ghost" size="md">
             View gallery →
           </Button>
         </div>
         <ul className="mt-12 grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
-          {builds.map((b, i) => (
-            <li key={`${b.buildType}-${i}`}>
-              <Link
-                href="/gallery"
-                aria-label={`${b.buildType} — ${b.application}. View gallery.`}
-                className="group relative block aspect-[5/4] overflow-hidden bg-ink-2"
-              >
-                <Image
-                  src={b.src}
-                  alt={b.alt}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink via-ink/80 to-transparent px-5 pt-10 pb-5">
-                  <span className="font-display text-base font-bold text-bone">
-                    {b.buildType}
-                  </span>
-                  <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
-                    {b.application}
-                  </span>
-                </div>
-              </Link>
-            </li>
-          ))}
+          {usingIg
+            ? posts.map((p) => (
+                <li key={p.id}>
+                  <a
+                    href={p.permalink}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={p.caption?.slice(0, 120) || "View on Instagram"}
+                    className="group relative block aspect-[5/4] overflow-hidden bg-ink-2"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={thumbFor(p)}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink via-ink/80 to-transparent px-5 pt-10 pb-5">
+                      <span className="font-display text-base font-bold text-bone">
+                        @{p.username || "arrowindustries"}
+                      </span>
+                      {typeof p.like_count === "number" && (
+                        <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
+                          {p.like_count.toLocaleString()} likes
+                        </span>
+                      )}
+                    </div>
+                  </a>
+                </li>
+              ))
+            : FALLBACK_BUILDS.map((b, i) => (
+                <li key={`fallback-${i}`}>
+                  <Link
+                    href="/gallery"
+                    aria-label="View gallery"
+                    className="group relative block aspect-[5/4] overflow-hidden bg-ink-2"
+                  >
+                    <Image
+                      src={b.src}
+                      alt={b.alt}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                  </Link>
+                </li>
+              ))}
         </ul>
       </Container>
     </section>

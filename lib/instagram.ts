@@ -27,6 +27,8 @@ export interface IgMedia {
   permalink: string;
   timestamp: string;
   username?: string;
+  like_count?: number;
+  comments_count?: number;
 }
 
 const API_BASE = "https://graph.instagram.com";
@@ -40,6 +42,8 @@ const FIELDS = [
   "permalink",
   "timestamp",
   "username",
+  "like_count",
+  "comments_count",
 ].join(",");
 
 let cachedRedis: Redis | null | undefined;
@@ -115,4 +119,14 @@ export function thumbFor(m: IgMedia): string {
   return m.media_type === "VIDEO" && m.thumbnail_url
     ? m.thumbnail_url
     : m.media_url;
+}
+
+export async function fetchTopInstagramMedia(
+  top = 3,
+  pool = 30,
+): Promise<IgMedia[]> {
+  const items = await fetchInstagramMedia(pool);
+  return [...items]
+    .sort((a, b) => (b.like_count ?? 0) - (a.like_count ?? 0))
+    .slice(0, top);
 }
