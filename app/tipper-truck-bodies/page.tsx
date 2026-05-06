@@ -126,7 +126,6 @@ const ourBuilds = {
   configurations: [
     "4x2, 6x4, 8x4 and 10x4 truck configurations",
     "Custom body lengths sized to your chassis",
-    "PBS combinations up to ~49.5T",
     "450-grade and Hardox steel construction",
   ],
   realFeatures: [
