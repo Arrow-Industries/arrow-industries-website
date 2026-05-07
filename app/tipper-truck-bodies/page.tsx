@@ -33,9 +33,9 @@ const slug = "tipper-truck-bodies";
 
 const meta = {
   title:
-    "Tipper Truck Bodies — Custom-Built for Operators, Fleets & Civil Work",
+    "Tipper Truck Bodies Melbourne — Custom 4x2, 6x4, 8x4 & 10x4 Builds",
   description:
-    "Premium custom tipper bodies engineered to your truck and application. 4x2, 6x4, 8x4 builds in 450-grade and Hardox steel — built in Melbourne for civil, quarry and high-payload work.",
+    "Heavy-duty custom tipper truck bodies built in Melbourne for civil, quarry, demolition, construction and fleet operators. 4x2, 6x4, 8x4 and 10x4 chassis — engineered for serious Australian worksites.",
 };
 
 export const metadata: Metadata = {
@@ -75,27 +75,57 @@ const faqs = [
 const tipperContent: ServiceContent = {
   metaTitle: meta.title,
   metaDescription: meta.description,
-  h1: "Built for the Job. Engineered to Last.",
+  h1: "Tipper bodies engineered for serious work.",
   lede:
-    "Premium custom tipper bodies for operators, fleets and civil work — built with high-grade materials and engineered for real-world performance.",
+    "Built in Melbourne for civil, quarry, demolition, construction and fleet operators who need durable, cleanly finished equipment that performs on site.",
   intro:
-    "Arrow doesn't build catalogue bodies. Every tipper is engineered around the application, the payload and the chassis it'll run on — sized to the job, not pulled off a shelf.",
+    "Every Arrow tipper is engineered around the application, the payload and the chassis it's running on — sized correctly, balanced for the truck, and finished for the work it needs to do.",
   keyFeatures: [],
   useCases: [],
   buildOptions: [],
   compliance: [],
   faqs,
-  ctaHeading: "Tell us your setup. We'll build it right.",
+  ctaHeading: "Discuss your next build.",
   ctaBody:
-    "Send us your truck, application and target payload — we'll return a build proposal, lead time and pricing.",
-  ctaPrimaryLabel: "Get a Quote",
+    "Send us your chassis, application and target payload — we'll come back with a build proposal, lead time and pricing.",
+  ctaPrimaryLabel: "Discuss Your Next Build",
 };
 
-const builtFor = [
-  "Owner operators",
-  "Fleet operators",
-  "Civil and quarry work",
-  "High workload applications",
+const credibilityPoints = [
+  "Melbourne-built",
+  "Custom body configurations",
+  "Heavy-duty materials",
+  "Operator-focused layouts",
+  "Built for Australian worksites",
+];
+
+const applications = [
+  "Civil works",
+  "Quarry haulage",
+  "Demolition",
+  "Construction",
+  "Landscaping",
+  "Bulk material transport",
+  "Fleet operations",
+];
+
+const chassisConfigs = [
+  {
+    title: "4x2 tipper bodies",
+    use: "Light-to-mid payload work — urban supply, landscape and tight-access sites where manoeuvrability matters.",
+  },
+  {
+    title: "6x4 tipper bodies",
+    use: "Civil cycles, contractor fleet work and mid-range haulage — the workhorse pairing for most operators.",
+  },
+  {
+    title: "8x4 tipper bodies",
+    use: "Heavy civil, demolition and quarry work where every legal tonne and every cycle counts.",
+  },
+  {
+    title: "10x4 tipper bodies",
+    use: "Maximum-payload builds for quarry, bulk haulage and high-output fleet operations.",
+  },
 ];
 
 const recentBuilds = [
@@ -121,20 +151,6 @@ const recentBuilds = [
     specs: ["Custom body length", "Full LED kit", "On-site ready"],
   },
 ];
-
-const ourBuilds = {
-  configurations: [
-    "4x2, 6x4, 8x4 and 10x4 truck configurations",
-    "Custom body lengths sized to your chassis",
-    "450-grade and Hardox steel construction",
-  ],
-  realFeatures: [
-    "Raised tailgates with 2-way swing",
-    "Internal ramp storage",
-    "Retractable tarp systems",
-    "Heavy-duty cross members",
-  ],
-};
 
 const completeSetup = {
   outcomes: [
@@ -170,58 +186,68 @@ const materials = [
   },
 ];
 
-const features = [
-  "Tailgate configurations (including 2-way systems)",
-  "Hoist setups (matched to application)",
+const buildOptions = [
+  "Custom body sizing",
+  "Hydraulic systems",
+  "Underbody hoists",
   "Tarp systems (manual or electric)",
-  "Lighting and safety systems",
-  "Access steps, racks and practical operator features",
-  "Spray suppression and protection options",
+  "Toolbox setups",
+  "Water tanks",
+  "Tow couplings",
+  "Lighting and electrical",
+  "Mudguards and guards",
+  "Camera and safety system integration",
+  "Custom finishing details",
 ];
 
 const whyArrow = [
   {
-    title: "Built for operators",
-    body: "Engineered to spec, not styled for a showroom. Every detail justified by how the unit will work.",
+    title: "Cleaner fabrication",
+    body: "Tighter finish, consistent weld quality and cleaner body lines across every build — visible whether you're standing next to a one-off or a fleet run.",
   },
   {
-    title: "Designed around real-world use",
-    body: "Specified around the route, the load and the cycle — not catalogue assumptions.",
+    title: "Built around the chassis",
+    body: "Each body is designed to suit the chassis, application, axle setup and operator requirements — not adapted from a generic template.",
   },
   {
-    title: "Clean fabrication and finish",
-    body: "Visible welds laid clean. 2-pack paint to your colour. The unit looks the way it works.",
+    title: "Designed for daily work",
+    body: "Engineered for high-use operators across civil, construction, demolition, quarry and transport — where the unit earns its keep five to seven days a week.",
   },
   {
-    title: "Consistent build quality",
-    body: "Repeat builds match the first one. No drift on dimensions, finish or hardware between units.",
+    title: "Premium component integration",
+    body: "Hydraulics, suspension, towing, lighting and body accessories specified and installed to work as one system — not parts bolted together at the end.",
   },
   {
-    title: "Setups that actually work on-site",
-    body: "Hydraulics, hoist, tailgate and connections balanced as one system — not parts bolted together.",
+    title: "Workshop-backed support",
+    body: "Direct communication, practical advice and after-sales backing from the people who actually build the unit — not a sales desk reading off a screen.",
   },
 ];
 
 const process = [
   {
     step: "01",
-    title: "Tell us your truck and application",
-    body: "Chassis make, wheelbase, payload, route, access permits — and any photos or drawings you have.",
+    title: "Chassis and application review",
+    body: "Truck make, wheelbase, payload, route and any photos or drawings you have. We work back from how the unit needs to perform on-site.",
   },
   {
     step: "02",
-    title: "We design the setup",
-    body: "GA drawings, body length, hoist configuration, tailgate, hydraulics and fit-out — signed off before any steel is cut.",
+    title: "Build specification",
+    body: "Body length, hoist style, tailgate, hydraulics layout and fit-out — GA drawings signed off before any steel is cut.",
   },
   {
     step: "03",
-    title: "Fabrication and build",
+    title: "Fabrication",
     body: "Built in our Campbellfield workshop. Welded, finished and inspected by the same team end-to-end.",
   },
   {
     step: "04",
-    title: "Delivery ready for work",
-    body: "Compliance plates, weight stamps and handover paperwork. Delivered ready for work — and backed by the same workshop after handover.",
+    title: "Hydraulics, electrical and fit-off",
+    body: "PTO, pump, valves, lines, lighting and accessories installed and pressure-tested before the unit leaves the floor.",
+  },
+  {
+    step: "05",
+    title: "Testing and handover",
+    body: "Compliance plates, weight stamps and documentation. Delivered ready for work — and backed by the same workshop after handover.",
   },
 ];
 
@@ -303,36 +329,39 @@ export default async function Page() {
             Tipper Truck Bodies
           </p>
           <h1 className="max-w-4xl font-display text-4xl font-extrabold leading-[1.02] text-bone sm:text-5xl lg:text-[4.5rem]">
-            Built for the job.{" "}
-            <span className="text-accent">Engineered to last.</span>
+            Tipper bodies engineered for{" "}
+            <span className="text-accent">serious work.</span>
           </h1>
           <p className="mt-7 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
-            Premium custom tipper bodies for operators, fleets and civil work —
-            built with high-grade materials and designed for real-world
-            performance.
+            Built in Melbourne for civil, quarry, demolition, construction and
+            fleet operators who need durable, cleanly finished equipment that
+            performs on site.
+          </p>
+          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-bone/80">
+            Custom-built for 4x2, 6x4, 8x4 and 10x4 chassis.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <Button href="/request-a-quote" size="lg">
-              Get a Quote
+              Discuss Your Next Build
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
               <Phone className="h-4 w-4 text-accent" aria-hidden />
-              Speak to the team
+              Talk to Arrow
             </Button>
           </div>
-          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-mute">
-            Built for civil, quarry and fleet applications
-          </p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-bone/70">
-            <span>4x2</span>
-            <span aria-hidden className="text-line">•</span>
-            <span>6x4</span>
-            <span aria-hidden className="text-line">•</span>
-            <span>8x4</span>
-            <span aria-hidden className="text-line">•</span>
-            <span>10x4</span>
-          </div>
+          <ul className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute">
+            {credibilityPoints.map((c, i) => (
+              <li key={c} className="flex items-center gap-3">
+                {i > 0 && (
+                  <span aria-hidden className="text-line">
+                    •
+                  </span>
+                )}
+                <span>{c}</span>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 
@@ -412,18 +441,21 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 4 — BUILT FOR */}
+      {/* 4 — BUILT FOR REAL APPLICATIONS */}
       <section className="bg-ink py-20 lg:py-24">
         <Container>
-          <SectionHeader eyebrow="Built for" heading="Who we build for." />
-          <ul className="mt-12 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
-            {builtFor.map((item) => (
+          <SectionHeader
+            eyebrow="Built for real applications"
+            heading="Where Arrow tippers earn their keep."
+          />
+          <ul className="mt-12 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+            {applications.map((item) => (
               <li
                 key={item}
-                className="flex items-center gap-3 bg-ink-2 px-7 py-8"
+                className="flex items-center gap-3 bg-ink-2 px-6 py-7"
               >
                 <span className="h-2 w-2 shrink-0 bg-accent" aria-hidden />
-                <span className="font-display text-base font-bold text-bone sm:text-lg">
+                <span className="font-display text-sm font-bold text-bone sm:text-base">
                   {item}
                 </span>
               </li>
@@ -432,62 +464,24 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 5 — OUR BUILDS (technical depth) */}
+      {/* 5 — CONFIGURATIONS (4 chassis types with typical use) */}
       <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Our builds"
-              heading="Configurations and features that earn their keep."
-              body="We build to the spec sheet your job actually needs — not a generic catalogue model."
-            />
-          </div>
-          <div className="lg:col-span-7 space-y-10">
-            <div>
-              <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-                Configurations
-              </p>
-              <ul className="divide-y divide-line-soft">
-                {ourBuilds.configurations.map((c) => (
-                  <li
-                    key={c}
-                    className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
-                  >
-                    <Check
-                      className="mt-1 h-4 w-4 shrink-0 text-accent"
-                      strokeWidth={2}
-                      aria-hidden
-                    />
-                    <p className="text-sm leading-relaxed text-bone sm:text-base">
-                      {c}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-                Real-build features
-              </p>
-              <ul className="divide-y divide-line-soft">
-                {ourBuilds.realFeatures.map((c) => (
-                  <li
-                    key={c}
-                    className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
-                  >
-                    <Check
-                      className="mt-1 h-4 w-4 shrink-0 text-accent"
-                      strokeWidth={2}
-                      aria-hidden
-                    />
-                    <p className="text-sm leading-relaxed text-bone sm:text-base">
-                      {c}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+        <Container>
+          <SectionHeader
+            eyebrow="Configurations"
+            heading="4x2, 6x4, 8x4 and 10x4 — built to the chassis."
+            body="Custom-built for the chassis you run and the work the unit will actually do."
+          />
+          <ul className="mt-14 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+            {chassisConfigs.map((c) => (
+              <li key={c.title} className="flex flex-col gap-4 bg-ink p-7">
+                <h3 className="font-display text-lg font-bold text-bone sm:text-xl">
+                  {c.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-mute">{c.use}</p>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
 
@@ -582,7 +576,7 @@ export default async function Page() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Button href="/request-a-quote" size="md">
-              Get a Quote
+              Get a Build Proposal
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
             <Button href={site.phoneHref} size="md" variant="secondary">
@@ -593,15 +587,16 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 8 — FEATURES & OPTIONS */}
+      {/* 8 — BUILD OPTIONS */}
       <section className="bg-ink py-24 lg:py-32">
         <Container>
           <SectionHeader
-            eyebrow="Features & options"
+            eyebrow="Build options"
             heading="Configure the unit to suit the work."
+            body="Practical options operators actually ask for — specified up front, integrated into the build, supported after delivery."
           />
           <ul className="mt-14 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
+            {buildOptions.map((f) => (
               <li
                 key={f}
                 className="flex items-start gap-4 bg-ink-2 p-7"
@@ -648,9 +643,9 @@ export default async function Page() {
         <Container>
           <SectionHeader
             eyebrow="The build process"
-            heading="From first call to delivery — four steps."
+            heading="From first call to delivery — five steps."
           />
-          <ol className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-5">
             {process.map((p) => (
               <li key={p.step} className="flex flex-col gap-3 bg-ink p-8">
                 <span className="font-display text-3xl font-extrabold text-accent">
@@ -678,10 +673,13 @@ export default async function Page() {
 
       {/* 12 — FINAL CTA */}
       <CTASection
-        eyebrow="Get a Quote"
+        eyebrow="Talk to Arrow"
         heading={tipperContent.ctaHeading}
         body={tipperContent.ctaBody}
-        primaryCta={{ label: "Get a Quote", href: "/request-a-quote" }}
+        primaryCta={{
+          label: "Discuss Your Next Build",
+          href: "/request-a-quote",
+        }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
         footnote="Built in Melbourne. Backed by the team that built it."
       />
