@@ -116,8 +116,21 @@ export function organizationSchema() {
     "@type": "Organization",
     "@id": `${site.url}/#organization`,
     name: site.name,
+    legalName: site.legalName,
     url: site.url,
     logo: `${site.url}/images/logo.svg`,
+    image: `${site.url}/images/logo.svg`,
+    description: site.description,
+    telephone: site.phone,
+    email: site.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: site.address.line1,
+      addressLocality: site.address.suburb,
+      addressRegion: site.address.state,
+      postalCode: site.address.postcode,
+      addressCountry: "AU",
+    },
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -128,6 +141,37 @@ export function organizationSchema() {
         availableLanguage: ["English"],
       },
     ],
+    sameAs: [
+      site.social.facebook,
+      site.social.instagram,
+      site.social.linkedin,
+    ].filter(Boolean),
+  };
+}
+
+export function productSchema(service: Service, content: ServiceContent) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": `${site.url}${service.href}#product`,
+    name: service.title,
+    description: content.metaDescription,
+    url: `${site.url}${service.href}`,
+    image: `${site.url}/images/logo.svg`,
+    category: "Heavy vehicle equipment",
+    brand: {
+      "@type": "Brand",
+      name: site.name,
+    },
+    manufacturer: { "@id": `${site.url}/#organization` },
+    offers: {
+      "@type": "Offer",
+      url: `${site.url}/request-a-quote`,
+      availability: "https://schema.org/InStock",
+      priceCurrency: "AUD",
+      seller: { "@id": `${site.url}/#organization` },
+      areaServed: { "@type": "Country", name: "Australia" },
+    },
   };
 }
 

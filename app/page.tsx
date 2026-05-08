@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Instagram, Phone } from "lucide-react";
@@ -12,6 +13,10 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { services } from "@/data/services";
 import { site } from "@/data/site";
 import { fetchTopInstagramMedia, thumbFor, type IgMedia } from "@/lib/instagram";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function HomePage() {
   const topPosts = await fetchTopInstagramMedia(3, 30);
@@ -54,12 +59,14 @@ function Hero() {
     <section className="relative isolate overflow-hidden border-b border-line">
       {/* Background layer — poster image (always present) + looping video over the top */}
       <div aria-hidden className="absolute inset-0 -z-10">
-        {/* Static poster fallback — visible until the video loads, on prefers-reduced-motion, or if the video fails */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        {/* Static poster fallback — visible until the video loads, on prefers-reduced-motion, or if the video fails. LCP element on the homepage so we use next/image with priority. */}
+        <Image
           src="/images/home/hero-poster.jpg"
           alt=""
-          className="h-full w-full object-cover"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
         <video
           className="hero-bg-video absolute inset-0 h-full w-full object-cover"

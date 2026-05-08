@@ -20,10 +20,14 @@ import { CTASection } from "@/components/CTASection";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
-import { faqPageSchema } from "@/lib/schema";
+import { faqPageSchema, serviceSchema } from "@/lib/schema";
+import { getServiceBySlug } from "@/data/services";
+import { getServiceContent } from "@/data/serviceContent";
 import { site } from "@/data/site";
 
 const SLUG = "repairs-servicing";
+const repairsService = getServiceBySlug(SLUG);
+const repairsContent = getServiceContent(SLUG);
 
 export const metadata: Metadata = {
   title: "Truck Body & Trailer Repairs Campbellfield — Tipper Repair Workshop",
@@ -141,7 +145,14 @@ const faqs = [
 export default function RepairsPage() {
   return (
     <>
-      <JsonLd data={faqPageSchema(faqs)} />
+      <JsonLd
+        data={[
+          ...(repairsService
+            ? [serviceSchema(repairsService, repairsContent)]
+            : []),
+          faqPageSchema(faqs),
+        ]}
+      />
 
       <PageHero
         eyebrow="Repairs & Servicing"

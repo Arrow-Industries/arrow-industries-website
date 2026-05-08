@@ -5,7 +5,7 @@ export const site = {
   tradingAs: "Samaro Pty Ltd t/a Arrow Industries & Co",
   tagline: "Heavy-duty tipper bodies and trailers, built in Melbourne.",
   description:
-    "Family-owned Melbourne manufacturer engineering custom tipper bodies, dog trailers and semi trailers. Q&T 450 grade steel. Built for civil, quarry, haulage and waste.",
+    "Family-owned Melbourne manufacturer building custom tipper truck bodies, dog trailers and semi trailers. Built for civil, quarry, demolition, construction and fleet operators across Australia.",
   url: "https://arrowindustries.com.au",
   phone: "0468 067 280",
   phoneHref: "tel:+61468067280",

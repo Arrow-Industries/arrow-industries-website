@@ -6,7 +6,7 @@ import { InstagramStrip } from "@/components/InstagramStrip";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: "Gallery | Arrow Industries",
+  title: "Gallery",
   description:
     "View recent Arrow Industries builds, repairs and workshop projects including custom tipper bodies, dog trailers and heavy vehicle fabrication.",
   alternates: { canonical: "/gallery" },

@@ -16,10 +16,14 @@ import { CTASection } from "@/components/CTASection";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
-import { faqPageSchema } from "@/lib/schema";
+import { faqPageSchema, serviceSchema } from "@/lib/schema";
+import { getServiceBySlug } from "@/data/services";
+import { getServiceContent } from "@/data/serviceContent";
 import { site } from "@/data/site";
 
 const SLUG = "licensed-vehicle-testing";
+const lvtService = getServiceBySlug(SLUG);
+const lvtContent = getServiceContent(SLUG);
 
 export const metadata: Metadata = {
   title:
@@ -136,7 +140,12 @@ const faqs = [
 export default function RoadworthyPage() {
   return (
     <>
-      <JsonLd data={faqPageSchema(faqs)} />
+      <JsonLd
+        data={[
+          ...(lvtService ? [serviceSchema(lvtService, lvtContent)] : []),
+          faqPageSchema(faqs),
+        ]}
+      />
 
       <PageHero
         eyebrow="Roadworthy / LVT · EX 12409"
