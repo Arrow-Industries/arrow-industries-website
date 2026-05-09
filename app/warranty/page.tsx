@@ -19,7 +19,10 @@ export default function WarrantyPage() {
         eyebrow="Legal"
         heading="Warranty"
         body={`Arrow Industries & Co — Samaro Pty Ltd, ABN ${site.abn}.`}
-        crumbs={[{ label: "Home", href: "/" }, { label: "Warranty" }]}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Warranty", href: "/warranty" },
+        ]}
       />
 
       <section className="bg-ink py-20 lg:py-28">

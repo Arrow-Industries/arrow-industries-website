@@ -39,7 +39,10 @@ export default function ContactPage() {
         eyebrow="Contact"
         heading="Contact Arrow Industries"
         body="Call, email, or visit our Campbellfield workshop."
-        crumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Contact", href: "/contact" },
+        ]}
       />
 
       {/* Primary contact actions — phone is dominant, email secondary */}

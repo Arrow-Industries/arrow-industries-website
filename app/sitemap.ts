@@ -1,3 +1,5 @@
+import { statSync } from "node:fs";
+import { join } from "node:path";
 import type { MetadataRoute } from "next";
 import { site } from "@/data/site";
 
@@ -17,9 +19,9 @@ const routes = [
 ];
 
 /**
- * Stable build-time timestamp so sitemap lastmod values stay consistent
- * within a deploy (don't churn per-request). On Vercel we prefer the
- * commit date; locally fall back to module load time.
+ * Build-time fallback timestamp. On Vercel we prefer the git commit
+ * date; locally fall back to module load time. Used when a per-page
+ * mtime can't be resolved.
  */
 const BUILD_LAST_MODIFIED = (() => {
   const fromEnv = process.env.VERCEL_GIT_COMMIT_DATE;
@@ -30,10 +32,32 @@ const BUILD_LAST_MODIFIED = (() => {
   return new Date();
 })();
 
+/**
+ * Resolve a route's `lastmod` from its `page.tsx` file mtime when
+ * possible, so sitemap entries reflect when each page was actually
+ * touched (not the deploy time of the whole site). Falls back to
+ * BUILD_LAST_MODIFIED if the stat fails (e.g. running in an
+ * environment without filesystem access to source).
+ *
+ * Caveat: pages whose copy lives in shared data files (e.g. the
+ * service pages reading from data/serviceContent.ts) won't update
+ * here unless their page.tsx is also touched. This is a heuristic,
+ * not a full content-derivation tracker.
+ */
+function pageLastModified(routePath: string): Date {
+  const slug = routePath === "/" ? "" : routePath.slice(1);
+  const filePath = join(process.cwd(), "app", slug, "page.tsx");
+  try {
+    return statSync(filePath).mtime;
+  } catch {
+    return BUILD_LAST_MODIFIED;
+  }
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return routes.map((r) => ({
-    url: `${site.url}${r.path === "/" ? "" : r.path}`,
-    lastModified: BUILD_LAST_MODIFIED,
+    url: `${site.url}${r.path === "/" ? "/" : r.path}`,
+    lastModified: pageLastModified(r.path),
     changeFrequency: r.changeFrequency,
     priority: r.priority,
   }));

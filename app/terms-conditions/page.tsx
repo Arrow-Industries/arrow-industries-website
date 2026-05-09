@@ -19,7 +19,10 @@ export default function TermsPage() {
         eyebrow="Legal"
         heading="Terms & Conditions of Supply"
         body={`Arrow Industries & Co — Samaro Pty Ltd, ABN ${site.abn}.`}
-        crumbs={[{ label: "Home", href: "/" }, { label: "Terms & Conditions" }]}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Terms & Conditions", href: "/terms-conditions" },
+        ]}
       />
 
       <section className="bg-ink py-16 lg:py-20">

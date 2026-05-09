@@ -26,7 +26,10 @@ export default function GalleryPage() {
         eyebrow="Gallery"
         heading="Recent builds, repairs and workshop projects."
         body="A look inside the Arrow workshop — finished builds, repairs and fabrication work."
-        crumbs={[{ label: "Home", href: "/" }, { label: "Gallery" }]}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Gallery", href: "/gallery" },
+        ]}
         actions={
           <>
             <Button

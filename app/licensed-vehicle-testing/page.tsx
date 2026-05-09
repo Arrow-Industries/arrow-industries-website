@@ -151,7 +151,10 @@ export default function RoadworthyPage() {
         eyebrow="Roadworthy / LVT · EX 12409"
         heading="VicRoads-licensed heavy vehicle and trailer inspections."
         body="Licensed Vehicle Tester EX 12409. Prime movers, rigid trucks, trailers and fleet vehicles tested and certified from our Campbellfield workshop."
-        crumbs={[{ label: "Home", href: "/" }, { label: "Roadworthy" }]}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Roadworthy", href: "/licensed-vehicle-testing" },
+        ]}
         actions={
           <>
             <Button href={bookingUrl} size="lg" target="_blank" rel="noreferrer">

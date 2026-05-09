@@ -98,14 +98,22 @@ export interface BreadcrumbCrumb {
 }
 
 export function breadcrumbSchema(crumbs: BreadcrumbCrumb[]) {
+  // Schema.org / Google require every ListItem to have a position, name and
+  // item URL. We filter out unlinked taxonomy steps (e.g. a "Products"
+  // category label that has no dedicated page) so every emitted ListItem
+  // carries all three required fields. The visual breadcrumb in PageHero
+  // still renders the unlinked steps for navigation context.
+  const linked = crumbs.filter((c): c is Required<BreadcrumbCrumb> =>
+    Boolean(c.href),
+  );
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: crumbs.map((c, i) => ({
+    itemListElement: linked.map((c, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: c.label,
-      ...(c.href ? { item: `${site.url}${c.href === "/" ? "" : c.href}` } : {}),
+      item: c.href === "/" ? `${site.url}/` : `${site.url}${c.href}`,
     })),
   };
 }

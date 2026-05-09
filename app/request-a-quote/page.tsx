@@ -38,7 +38,10 @@ export default function RequestAQuotePage() {
         eyebrow="Request a Quote"
         heading="Tell us what you need built, repaired or certified."
         body="The more you tell us up front — chassis, payload, application, target lead time — the faster we can come back with a build proposal and price."
-        crumbs={[{ label: "Home", href: "/" }, { label: "Request a Quote" }]}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Request a Quote", href: "/request-a-quote" },
+        ]}
       />
 
       <section className="border-b border-line bg-ink py-16 lg:py-20">

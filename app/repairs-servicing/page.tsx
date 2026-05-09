@@ -160,7 +160,7 @@ export default function RepairsPage() {
         body="Tipper bodies, trailers and heavy vehicle components repaired, rebuilt and maintained from our Campbellfield workshop."
         crumbs={[
           { label: "Home", href: "/" },
-          { label: "Repairs & Servicing" },
+          { label: "Repairs & Servicing", href: "/repairs-servicing" },
         ]}
         actions={
           <>

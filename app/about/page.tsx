@@ -83,7 +83,10 @@ export default function AboutPage() {
         eyebrow="About"
         heading="Custom truck bodies and trailers built to handle demanding conditions."
         body="Designed, fabricated and serviced from our Campbellfield workshop — supporting operators across construction, quarry, transport and waste across Australia."
-        crumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "About", href: "/about" },
+        ]}
         actions={
           <>
             <Button href="/request-a-quote" size="lg">
