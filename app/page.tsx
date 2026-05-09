@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Instagram, Phone } from "lucide-react";
@@ -14,14 +13,19 @@ import { services } from "@/data/services";
 import { site } from "@/data/site";
 import { fetchTopInstagramMedia, thumbFor, type IgMedia } from "@/lib/instagram";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-};
+// Canonical for the home page is emitted directly in JSX (not via the
+// Metadata.alternates.canonical API) so the trailing slash is preserved.
+// Next.js's metadata pipeline calls stripTrailingSlash on canonical URLs,
+// and flipping trailingSlash: true in next.config would force trailing
+// slashes on every other page too — which we don't want. The other pages
+// keep using Metadata.alternates.canonical (no trailing slash, matches
+// their URL) as normal.
 
 export default async function HomePage() {
   const topPosts = await fetchTopInstagramMedia(3, 30);
   return (
     <>
+      <link rel="canonical" href={`${site.url}/`} />
       <Hero />
       <TrustBar />
       <SpecPromise />
