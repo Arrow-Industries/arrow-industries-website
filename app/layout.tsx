@@ -26,14 +26,17 @@ export const metadata: Metadata = {
     template: `%s | ${site.name}`,
   },
   description: site.description,
+  // Location-agnostic terms — Google handles local relevance ranking
+  // from the LocalBusiness / address schema. These mirror the
+  // localBusinessSchema().knowsAbout list so the site's topical scope is
+  // consistent across keywords and structured data.
   keywords: [
-    "tipper bodies Melbourne",
-    "tipper truck bodies Victoria",
-    "dog trailers Melbourne",
-    "semi trailers Melbourne",
-    "custom truck bodies Melbourne",
-    "roadworthy Campbellfield",
-    "truck repairs Melbourne",
+    "tipper truck bodies",
+    "dog trailers",
+    "semi trailers",
+    "truck repairs",
+    "roadworthy certificates",
+    "heavy vehicle servicing",
   ],
   openGraph: {
     type: "website",
