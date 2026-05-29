@@ -118,7 +118,7 @@ const faqs = [
   {
     question: "Do I need to book in advance?",
     answer:
-      "Yes — inspections run Tuesday to Thursday only, so booking ahead is essential. Use the booking link above, call the workshop, or scan the QR code.",
+      "Yes — booking ahead is essential. Inspections run Monday to Friday by appointment only. Use the booking link above, call the workshop, or scan the QR code.",
   },
   {
     question: "What does an inspection cost?",
@@ -188,7 +188,7 @@ export default function RoadworthyPage() {
                 </p>
                 <p className="mt-5 inline-flex items-center gap-2 border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent">
                   <CalendarCheck className="h-4 w-4 shrink-0" aria-hidden />
-                  Inspections by appointment, Tuesday – Thursday only.
+                  Inspections by appointment, Monday – Friday.
                 </p>
               </div>
 
@@ -243,9 +243,11 @@ export default function RoadworthyPage() {
                     </p>
                     <dl className="mt-1.5 grid gap-3 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-1.5">
                       {[
+                        { label: "Monday", time: "6:00 AM – 4:00 PM" },
                         { label: "Tuesday", time: "6:00 AM – 4:00 PM" },
                         { label: "Wednesday", time: "6:00 AM – 4:00 PM" },
                         { label: "Thursday", time: "6:00 AM – 4:00 PM" },
+                        { label: "Friday", time: "6:00 AM – 4:00 PM" },
                       ].map((h) => (
                         <div key={h.label} className="sm:contents">
                           <dt className="font-medium text-bone">{h.label}</dt>
