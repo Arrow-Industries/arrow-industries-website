@@ -66,8 +66,8 @@ const TO =
   process.env.FINANCE_EMAIL_TO ??
   process.env.QUOTE_EMAIL_TO ??
   "sales@arrowindustries.com.au";
-// Optional CC — set to the Linx finance partner inbox in production.
-const CC = process.env.FINANCE_EMAIL_CC;
+// CC the Linx finance partner on every enquiry. Override via env if needed.
+const CC = process.env.FINANCE_EMAIL_CC ?? "angelo@linxfinance.com.au";
 const FROM_NAME = "Arrow Industries Finance";
 const FROM_ADDRESS =
   process.env.QUOTE_EMAIL_FROM ?? "website@arrowindustries.com.au";
