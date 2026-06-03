@@ -71,6 +71,7 @@ export const footerLinks = {
   company: [
     { label: "About", href: "/about" },
     { label: "Gallery", href: "/gallery" },
+    { label: "Careers", href: "/careers" },
     { label: "Request a Quote", href: "/request-a-quote" },
     { label: "Contact", href: "/contact" },
     { label: "Warranty", href: "/warranty" },
