@@ -50,6 +50,11 @@ export const primaryNav: NavItem[] = [
         href: "/repairs-servicing",
         description: "Workshop repairs, maintenance and modifications.",
       },
+      {
+        label: "Finance",
+        href: "/finance",
+        description: "Finance your build through Linx Australia Group.",
+      },
     ],
   },
   { label: "Roadworthy", href: "/licensed-vehicle-testing" },
@@ -67,6 +72,7 @@ export const footerLinks = {
   services: [
     { label: "Repairs & Servicing", href: "/repairs-servicing" },
     { label: "Licensed Vehicle Testing", href: "/licensed-vehicle-testing" },
+    { label: "Finance", href: "/finance" },
   ],
   company: [
     { label: "About", href: "/about" },
