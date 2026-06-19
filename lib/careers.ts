@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { Resend } from "resend";
 import { createMondayCandidate } from "@/lib/monday";
+import { saveApplication } from "@/lib/leads";
 
 // Internal-only consts/types. A `"use server"` module is restricted to
 // exporting async functions, so these stay private to this file.
@@ -349,6 +350,33 @@ export async function submitCareersForm(
     attachmentNames: attachments.map((a) => a.filename),
   };
   const { score, category } = scoreCandidate(fields);
+
+  // Persist to Supabase (source of truth for the dashboard) — best effort,
+  // never blocks the submission.
+  await saveApplication({
+    name: fullName,
+    email,
+    mobile,
+    suburb,
+    role,
+    industryExperience,
+    yearsExperience,
+    workRights,
+    availability,
+    score,
+    category,
+    whyHire,
+    message,
+    resumeNames: fields.attachmentNames,
+    details: {
+      licenceClass,
+      forklift,
+      tradeQualified,
+      weldingTickets,
+      readDrawings,
+      drugAlcohol,
+    },
+  });
 
   // Build the email
   const subject = `New Arrow Job Application — ${role} (${category}, score ${score})`;

@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { Resend } from "resend";
+import { saveLead } from "@/lib/leads";
 
 // Internal-only consts/types. A `"use server"` module is restricted to
 // exporting async functions, so these stay private to this file.
@@ -296,6 +297,32 @@ export async function submitFinanceForm(
   };
   const text = renderText(fields);
   const html = renderHtml(fields);
+
+  // Persist to Supabase (source of truth for the dashboard) — best effort,
+  // never blocks the submission.
+  await saveLead({
+    source: "finance",
+    name: fullName,
+    businessName,
+    email,
+    phone,
+    location,
+    enquiryType: equipmentType,
+    financeType,
+    estimatedAmount,
+    timeframe,
+    message,
+    attachments: attachmentNames,
+    details: {
+      abn,
+      contactPreference,
+      deposit,
+      businessStructure,
+      yearsTrading,
+      tradeIn,
+      tradeInDetails,
+    },
+  });
 
   // If RESEND_API_KEY isn't set (e.g. local dev), log + return success so the
   // form flow can still be tested. Production deployments must have the key.
