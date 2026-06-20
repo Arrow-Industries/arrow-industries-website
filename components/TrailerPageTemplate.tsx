@@ -21,7 +21,6 @@ import { thumbFor, type IgMedia } from "@/lib/instagram";
 import {
   breadcrumbSchema,
   faqPageSchema,
-  productSchema,
   serviceSchema,
 } from "@/lib/schema";
 
@@ -186,7 +185,6 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
     <>
       <JsonLd
         data={[
-          productSchema(service, schemaContent),
           serviceSchema(service, schemaContent),
           faqPageSchema(faqs),
           breadcrumbSchema(crumbs),

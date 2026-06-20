@@ -15,8 +15,9 @@ export function localBusinessSchema() {
     telephone: site.phone,
     email: site.email,
     taxID: `AU-ABN-${site.abn.replace(/\s/g, "")}`,
-    image: `${site.url}/images/logo.svg`,
-    logo: `${site.url}/images/logo.svg`,
+    // Google requires a raster logo (PNG/JPG); SVG is not accepted.
+    image: `${site.url}/images/logo-black.png`,
+    logo: `${site.url}/images/logo-black.png`,
     priceRange: "$$",
     address: {
       "@type": "PostalAddress",
@@ -126,8 +127,9 @@ export function organizationSchema() {
     name: site.name,
     legalName: site.legalName,
     url: site.url,
-    logo: `${site.url}/images/logo.svg`,
-    image: `${site.url}/images/logo.svg`,
+    // Google requires a raster logo (PNG/JPG); SVG is not accepted.
+    logo: `${site.url}/images/logo-black.png`,
+    image: `${site.url}/images/logo-black.png`,
     description: site.description,
     telephone: site.phone,
     email: site.email,
@@ -154,32 +156,6 @@ export function organizationSchema() {
       site.social.instagram,
       site.social.linkedin,
     ].filter(Boolean),
-  };
-}
-
-export function productSchema(service: Service, content: ServiceContent) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "@id": `${site.url}${service.href}#product`,
-    name: service.title,
-    description: content.metaDescription,
-    url: `${site.url}${service.href}`,
-    image: `${site.url}/images/logo.svg`,
-    category: "Heavy vehicle equipment",
-    brand: {
-      "@type": "Brand",
-      name: site.name,
-    },
-    manufacturer: { "@id": `${site.url}/#organization` },
-    offers: {
-      "@type": "Offer",
-      url: `${site.url}/request-a-quote`,
-      availability: "https://schema.org/InStock",
-      priceCurrency: "AUD",
-      seller: { "@id": `${site.url}/#organization` },
-      areaServed: { "@type": "Country", name: "Australia" },
-    },
   };
 }
 

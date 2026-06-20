@@ -26,7 +26,6 @@ import {
 import {
   breadcrumbSchema,
   faqPageSchema,
-  productSchema,
   serviceSchema,
 } from "@/lib/schema";
 import type { ServiceContent } from "@/data/serviceContent";
@@ -274,7 +273,6 @@ export default async function Page() {
     <>
       <JsonLd
         data={[
-          productSchema(service, tipperContent),
           serviceSchema(service, tipperContent),
           faqPageSchema(faqs),
           breadcrumbSchema(crumbs),
