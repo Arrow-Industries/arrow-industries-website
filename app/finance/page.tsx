@@ -27,7 +27,7 @@ import { site } from "@/data/site";
 export const metadata: Metadata = pageMetadata({
   title: "Equipment & Truck Finance — Tipper Bodies & Trailers",
   description:
-    "Finance your next Arrow tipper body, trailer or truck-and-body package. Competitive asset finance arranged through Linx Australia Group — apply online in minutes.",
+    "Finance your next Arrow tipper body, trailer or truck-and-body package — competitive asset finance via Linx Australia Group. Apply online in minutes.",
   path: "/finance",
 });
 

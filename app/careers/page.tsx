@@ -29,7 +29,7 @@ import { site } from "@/data/site";
 export const metadata: Metadata = pageMetadata({
   title: "Careers — Trades & Workshop Jobs at Arrow Industries",
   description:
-    "Join Arrow Industries' Campbellfield workshop. We hire boilermakers, auto electricians, painters, hydraulic fitters, trade assistants and apprentices — apply in under 2 minutes.",
+    "Trades and workshop jobs at Arrow Industries, Campbellfield — boilermakers, auto electricians, painters, hydraulic fitters and apprentices. Apply in minutes.",
   path: "/careers",
 });
 

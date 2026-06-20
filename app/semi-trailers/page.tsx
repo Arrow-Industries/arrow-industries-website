@@ -11,7 +11,7 @@ const meta = {
   title:
     "Semi Trailers — Built for Bulk Haulage and Long-Haul Work",
   description:
-    "Tipping and flat-deck semi trailers engineered to integrate with your prime mover. 2 and 3 axle setups built for higher volume, longer haul and consistent tipping performance.",
+    "Tipping and flat-deck semi trailers built to match your prime mover — 2 and 3 axle setups for higher volume, longer haul and consistent tipping.",
 };
 
 export const metadata: Metadata = pageMetadata({

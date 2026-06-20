@@ -30,7 +30,7 @@ export const metadata: Metadata = pageMetadata({
   title:
     "Heavy Vehicle & Trailer Roadworthy Inspections — Campbellfield",
   description:
-    "VicRoads-licensed heavy vehicle and trailer inspections at our Campbellfield workshop. Prime movers, rigid trucks, tippers, dog trailers and semi trailers — book online.",
+    "VicRoads-licensed heavy vehicle and trailer inspections in Campbellfield — prime movers, rigid trucks, tippers, dog and semi trailers. Book online.",
   path: `/${SLUG}`,
 });
 
