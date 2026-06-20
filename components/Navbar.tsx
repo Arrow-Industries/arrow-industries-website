@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
@@ -10,16 +10,51 @@ import { primaryNav, type NavItem } from "@/data/navigation";
 import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
 
+const FOCUSABLE =
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const openerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
+  // While the mobile menu is open: lock scroll, move focus into the dialog,
+  // and restore focus to the trigger when it closes.
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    document.body.style.overflow = "hidden";
+    const opener = openerRef.current;
+    closeRef.current?.focus();
     return () => {
       document.body.style.overflow = "";
+      opener?.focus();
     };
   }, [open]);
+
+  // Escape closes; Tab is trapped within the dialog.
+  function onDialogKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      return;
+    }
+    if (e.key !== "Tab") return;
+    const nodes = dialogRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE);
+    if (!nodes || nodes.length === 0) return;
+    const list = Array.from(nodes);
+    const first = list[0];
+    const last = list[list.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
 
   return (
     <>
@@ -49,9 +84,11 @@ export function Navbar() {
         </div>
 
         <button
+          ref={openerRef}
           type="button"
           className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-line text-bone lg:hidden"
           aria-label="Open menu"
+          aria-haspopup="dialog"
           aria-expanded={open}
           onClick={() => setOpen(true)}
         >
@@ -61,10 +98,18 @@ export function Navbar() {
       </header>
 
       {open && (
-        <div className="fixed inset-0 z-[60] flex flex-col bg-ink lg:hidden">
+        <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site menu"
+          onKeyDown={onDialogKeyDown}
+          className="fixed inset-0 z-[60] flex flex-col bg-ink lg:hidden"
+        >
           <div className="flex h-16 items-center justify-between border-b border-line px-6">
             <Logo />
             <button
+              ref={closeRef}
               type="button"
               className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-line text-bone"
               aria-label="Close menu"
@@ -103,6 +148,7 @@ export function Navbar() {
                           "h-4 w-4 transition-transform",
                           openGroup === item.label && "rotate-180",
                         )}
+                        aria-hidden="true"
                       />
                     </button>
                     {openGroup === item.label && (
@@ -166,6 +212,8 @@ export function Navbar() {
 
 function DesktopNavItem({ item }: { item: NavItem }) {
   const [open, setOpen] = useState(false);
+  const submenuId = useId();
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   if (!item.children) {
     const className =
@@ -198,12 +246,27 @@ function DesktopNavItem({ item }: { item: NavItem }) {
       className="relative"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
+      // Close when focus leaves the group entirely (keyboard navigation).
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && open) {
+          setOpen(false);
+          buttonRef.current?.focus();
+        }
+      }}
     >
       <button
+        ref={buttonRef}
         type="button"
         className="inline-flex items-center gap-1 rounded-sm px-3 py-2 text-sm font-medium text-bone/85 transition-colors hover:text-bone"
+        aria-haspopup="true"
         aria-expanded={open}
+        aria-controls={submenuId}
         onClick={() => setOpen((p) => !p)}
+        // Open on keyboard focus so the submenu is reachable without a mouse.
+        onFocus={() => setOpen(true)}
       >
         {item.label}
         <ChevronDown
@@ -211,6 +274,7 @@ function DesktopNavItem({ item }: { item: NavItem }) {
             "h-3.5 w-3.5 transition-transform",
             open && "rotate-180",
           )}
+          aria-hidden="true"
         />
       </button>
       {open && (
@@ -218,7 +282,10 @@ function DesktopNavItem({ item }: { item: NavItem }) {
           className="absolute left-0 top-full w-72 pt-2"
           onMouseEnter={() => setOpen(true)}
         >
-          <ul className="overflow-hidden rounded-sm border border-line bg-ink-2 shadow-2xl">
+          <ul
+            id={submenuId}
+            className="overflow-hidden rounded-sm border border-line bg-ink-2 shadow-2xl"
+          >
             {item.children.map((child) => (
               <li key={child.href}>
                 <Link
