@@ -25,7 +25,9 @@ const enquiryTypes = [
 
 type EnquiryType = (typeof enquiryTypes)[number];
 
-type SubmitResult = { ok: true } | { ok: false; error: string };
+type SubmitResult =
+  | { ok: true }
+  | { ok: false; error: string; field?: string };
 
 const TO = process.env.QUOTE_EMAIL_TO ?? "sales@arrowindustries.com.au";
 const FROM_NAME = "Arrow Industries Website";
@@ -71,27 +73,43 @@ export async function submitQuoteForm(
   const message = String(formData.get("description") ?? "").trim();
 
   // Validation
-  if (!name) return { ok: false, error: "Please provide your name." };
+  if (!name) {
+    return { ok: false, error: "Please provide your name.", field: "fullName" };
+  }
   if (!email && !phone) {
     return {
       ok: false,
       error: "Please provide either an email address or a phone number.",
+      field: "email",
     };
   }
   if (email && !isEmail(email)) {
-    return { ok: false, error: "Please provide a valid email address." };
+    return {
+      ok: false,
+      error: "Please provide a valid email address.",
+      field: "email",
+    };
   }
   if (phone && !isPhone(phone)) {
-    return { ok: false, error: "Please provide a valid phone number." };
+    return {
+      ok: false,
+      error: "Please provide a valid phone number.",
+      field: "phone",
+    };
   }
   if (!enquiryTypes.includes(enquiryTypeRaw as EnquiryType)) {
-    return { ok: false, error: "Please select an enquiry type." };
+    return {
+      ok: false,
+      error: "Please select an enquiry type.",
+      field: "enquiryType",
+    };
   }
   if (!message && !vehicle) {
     return {
       ok: false,
       error:
         "Please describe what you need or provide vehicle / chassis details.",
+      field: "description",
     };
   }
 

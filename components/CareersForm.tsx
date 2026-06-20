@@ -1,6 +1,13 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -117,9 +124,20 @@ export function CareersForm() {
   );
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
   const [whyHireCount, setWhyHireCount] = useState(0);
+
+  // On a failed submit, focus the offending field (fall back to the summary).
+  useEffect(() => {
+    if (state && !state.ok) {
+      const target = state.field
+        ? document.getElementById(state.field)
+        : errorRef.current;
+      target?.focus();
+    }
+  }, [state]);
 
   function syncFileInput(next: File[]) {
     if (!fileInputRef.current) return;
@@ -394,12 +412,17 @@ export function CareersForm() {
             rows={4}
             required
             maxLength={WHY_HIRE_MAX}
+            aria-describedby="whyHire-counter"
             placeholder="Tell us briefly what makes you a good fit."
             onChange={(e) => setWhyHireCount(e.target.value.length)}
             className={cn(inputBase, "resize-y")}
           />
-          <p className="text-right text-xs text-mute">
-            {whyHireCount} / {WHY_HIRE_MAX}
+          <p
+            id="whyHire-counter"
+            aria-live="polite"
+            className="text-right text-xs text-mute"
+          >
+            {whyHireCount} / {WHY_HIRE_MAX} characters
           </p>
         </Field>
       </fieldset>
@@ -489,8 +512,10 @@ export function CareersForm() {
 
       {state && !state.ok && (
         <p
+          ref={errorRef}
+          tabIndex={-1}
           role="alert"
-          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text"
+          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
         >
           {state.error}
         </p>
@@ -567,14 +592,26 @@ function Field({
   hint?: string;
   children: React.ReactNode;
 }) {
+  const hintId = hint ? `${name}-hint` : undefined;
+  const control =
+    hintId && isValidElement(children)
+      ? cloneElement(
+          children as React.ReactElement<{ "aria-describedby"?: string }>,
+          { "aria-describedby": hintId },
+        )
+      : children;
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={name} className={labelBase}>
         {label}
         {required && <span className="ml-1 text-accent-text">*</span>}
       </label>
-      {children}
-      {hint && <p className="text-xs text-mute">{hint}</p>}
+      {control}
+      {hint && (
+        <p id={hintId} className="text-xs text-mute">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }

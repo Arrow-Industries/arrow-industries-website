@@ -1,6 +1,13 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -41,8 +48,20 @@ export function QuoteForm() {
   const [state, formAction, isPending] = useActionState(submitQuoteForm, null);
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
+
+  // On a failed submit, move focus to the offending field (so keyboard and
+  // screen-reader users land on the problem); fall back to the error summary.
+  useEffect(() => {
+    if (state && !state.ok) {
+      const target = state.field
+        ? document.getElementById(state.field)
+        : errorRef.current;
+      target?.focus();
+    }
+  }, [state]);
 
   function syncFileInput(next: File[]) {
     // Replace the underlying <input> file list so FormData picks up the
@@ -355,8 +374,10 @@ export function QuoteForm() {
 
       {state && !state.ok && (
         <p
+          ref={errorRef}
+          tabIndex={-1}
           role="alert"
-          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text"
+          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
         >
           {state.error}
         </p>
@@ -389,14 +410,26 @@ function Field({
   hint?: string;
   children: React.ReactNode;
 }) {
+  const hintId = hint ? `${name}-hint` : undefined;
+  const control =
+    hintId && isValidElement(children)
+      ? cloneElement(
+          children as React.ReactElement<{ "aria-describedby"?: string }>,
+          { "aria-describedby": hintId },
+        )
+      : children;
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={name} className={labelBase}>
         {label}
         {required && <span className="ml-1 text-accent-text">*</span>}
       </label>
-      {children}
-      {hint && <p className="text-xs text-mute">{hint}</p>}
+      {control}
+      {hint && (
+        <p id={hintId} className="text-xs text-mute">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }

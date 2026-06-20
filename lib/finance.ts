@@ -68,7 +68,9 @@ const yearsTradingOptions = [
 
 const tradeInOptions = ["Yes", "No"] as const;
 
-type SubmitResult = { ok: true } | { ok: false; error: string };
+type SubmitResult =
+  | { ok: true }
+  | { ok: false; error: string; field?: string };
 
 const TO =
   process.env.FINANCE_EMAIL_TO ??
@@ -137,49 +139,104 @@ export async function submitFinanceForm(
 
   /* ---------- Validation (return on first failure) ---------- */
 
-  if (!fullName) return { ok: false, error: "Please provide your name." };
-  if (!email) return { ok: false, error: "Please provide an email address." };
-  if (!isEmail(email)) {
-    return { ok: false, error: "Please provide a valid email address." };
+  if (!fullName) {
+    return { ok: false, error: "Please provide your name.", field: "fullName" };
   }
-  if (!phone) return { ok: false, error: "Please provide a phone number." };
+  if (!email) {
+    return {
+      ok: false,
+      error: "Please provide an email address.",
+      field: "email",
+    };
+  }
+  if (!isEmail(email)) {
+    return {
+      ok: false,
+      error: "Please provide a valid email address.",
+      field: "email",
+    };
+  }
+  if (!phone) {
+    return { ok: false, error: "Please provide a phone number.", field: "phone" };
+  }
   if (!isPhone(phone)) {
-    return { ok: false, error: "Please provide a valid phone number." };
+    return {
+      ok: false,
+      error: "Please provide a valid phone number.",
+      field: "phone",
+    };
   }
   if (!location) {
-    return { ok: false, error: "Please provide your suburb or town." };
+    return {
+      ok: false,
+      error: "Please provide your suburb or town.",
+      field: "location",
+    };
   }
   if (!equipmentTypeOptions.includes(equipmentType as never)) {
-    return { ok: false, error: "Please select what you'd like to finance." };
+    return {
+      ok: false,
+      error: "Please select what you'd like to finance.",
+      field: "equipmentType",
+    };
   }
   if (!financeTypeOptions.includes(financeType as never)) {
-    return { ok: false, error: "Please select a finance type." };
+    return {
+      ok: false,
+      error: "Please select a finance type.",
+      field: "financeType",
+    };
   }
   if (!amountOptions.includes(estimatedAmount as never)) {
-    return { ok: false, error: "Please select an estimated amount." };
+    return {
+      ok: false,
+      error: "Please select an estimated amount.",
+      field: "estimatedAmount",
+    };
   }
   if (!timeframeOptions.includes(timeframe as never)) {
-    return { ok: false, error: "Please select a timeframe." };
+    return {
+      ok: false,
+      error: "Please select a timeframe.",
+      field: "timeframe",
+    };
   }
   if (!consent) {
     return {
       ok: false,
       error:
         "Please agree to be contacted and to your details being shared with Linx Australia Group to arrange finance.",
+      field: "consent",
     };
   }
   // Optional selects: validate only when provided.
   if (contactPreference && !contactPreferenceOptions.includes(contactPreference as never)) {
-    return { ok: false, error: "Please select a valid contact preference." };
+    return {
+      ok: false,
+      error: "Please select a valid contact preference.",
+      field: "contactPreference",
+    };
   }
   if (businessStructure && !businessStructureOptions.includes(businessStructure as never)) {
-    return { ok: false, error: "Please select a valid business structure." };
+    return {
+      ok: false,
+      error: "Please select a valid business structure.",
+      field: "businessStructure",
+    };
   }
   if (yearsTrading && !yearsTradingOptions.includes(yearsTrading as never)) {
-    return { ok: false, error: "Please select a valid years-trading option." };
+    return {
+      ok: false,
+      error: "Please select a valid years-trading option.",
+      field: "yearsTrading",
+    };
   }
   if (tradeIn && !tradeInOptions.includes(tradeIn as never)) {
-    return { ok: false, error: "Please select a valid trade-in option." };
+    return {
+      ok: false,
+      error: "Please select a valid trade-in option.",
+      field: "tradeIn",
+    };
   }
 
   // Rate limit (after validation so attackers can't spam to identify limits)

@@ -1,6 +1,13 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -91,7 +98,18 @@ export function FinanceForm() {
   );
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
   const [files, setFiles] = useState<File[]>([]);
+
+  // On a failed submit, focus the offending field (fall back to the summary).
+  useEffect(() => {
+    if (state && !state.ok) {
+      const target = state.field
+        ? document.getElementById(state.field)
+        : errorRef.current;
+      target?.focus();
+    }
+  }, [state]);
   const [fileError, setFileError] = useState<string | null>(null);
 
   function syncFileInput(next: File[]) {
@@ -443,8 +461,10 @@ export function FinanceForm() {
 
       {state && !state.ok && (
         <p
+          ref={errorRef}
+          tabIndex={-1}
           role="alert"
-          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text"
+          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
         >
           {state.error}
         </p>
@@ -478,14 +498,26 @@ function Field({
   hint?: string;
   children: React.ReactNode;
 }) {
+  const hintId = hint ? `${name}-hint` : undefined;
+  const control =
+    hintId && isValidElement(children)
+      ? cloneElement(
+          children as React.ReactElement<{ "aria-describedby"?: string }>,
+          { "aria-describedby": hintId },
+        )
+      : children;
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={name} className={labelBase}>
         {label}
         {required && <span className="ml-1 text-accent-text">*</span>}
       </label>
-      {children}
-      {hint && <p className="text-xs text-mute">{hint}</p>}
+      {control}
+      {hint && (
+        <p id={hintId} className="text-xs text-mute">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }

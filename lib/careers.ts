@@ -64,7 +64,9 @@ const availabilityOptions = [
   "More Than 1 Month",
 ] as const;
 
-type SubmitResult = { ok: true } | { ok: false; error: string };
+type SubmitResult =
+  | { ok: true }
+  | { ok: false; error: string; field?: string };
 
 const TO =
   process.env.CAREERS_EMAIL_TO ??
@@ -179,24 +181,46 @@ export async function submitCareersForm(
 
   /* ---------- Validation (return on first failure) ---------- */
 
-  if (!fullName) return { ok: false, error: "Please provide your name." };
+  if (!fullName) {
+    return { ok: false, error: "Please provide your name.", field: "fullName" };
+  }
   if (!mobile) {
-    return { ok: false, error: "Please provide your mobile number." };
+    return {
+      ok: false,
+      error: "Please provide your mobile number.",
+      field: "mobile",
+    };
   }
   if (!isPhone(mobile)) {
-    return { ok: false, error: "Please provide a valid mobile number." };
+    return {
+      ok: false,
+      error: "Please provide a valid mobile number.",
+      field: "mobile",
+    };
   }
   if (!email) {
-    return { ok: false, error: "Please provide an email address." };
+    return {
+      ok: false,
+      error: "Please provide an email address.",
+      field: "email",
+    };
   }
   if (!isEmail(email)) {
-    return { ok: false, error: "Please provide a valid email address." };
+    return {
+      ok: false,
+      error: "Please provide a valid email address.",
+      field: "email",
+    };
   }
   if (!suburb) {
-    return { ok: false, error: "Please provide your suburb." };
+    return { ok: false, error: "Please provide your suburb.", field: "suburb" };
   }
   if (!roleOptions.includes(role as (typeof roleOptions)[number])) {
-    return { ok: false, error: "Please select the role you're interested in." };
+    return {
+      ok: false,
+      error: "Please select the role you're interested in.",
+      field: "role",
+    };
   }
   if (
     !industryExperienceOptions.includes(
@@ -206,6 +230,7 @@ export async function submitCareersForm(
     return {
       ok: false,
       error: "Please select your relevant industry experience.",
+      field: "industryExperience",
     };
   }
   if (
@@ -213,27 +238,44 @@ export async function submitCareersForm(
       yearsExperience as (typeof yearsExperienceOptions)[number],
     )
   ) {
-    return { ok: false, error: "Please select your years of experience." };
+    return {
+      ok: false,
+      error: "Please select your years of experience.",
+      field: "yearsExperience",
+    };
   }
   if (
     !workRightsOptions.includes(workRights as (typeof workRightsOptions)[number])
   ) {
-    return { ok: false, error: "Please select your Australian work rights." };
+    return {
+      ok: false,
+      error: "Please select your Australian work rights.",
+      field: "workRights",
+    };
   }
   if (
     !availabilityOptions.includes(
       availability as (typeof availabilityOptions)[number],
     )
   ) {
-    return { ok: false, error: "Please select your availability." };
+    return {
+      ok: false,
+      error: "Please select your availability.",
+      field: "availability",
+    };
   }
   if (!whyHire) {
-    return { ok: false, error: "Please tell us why we should hire you." };
+    return {
+      ok: false,
+      error: "Please tell us why we should hire you.",
+      field: "whyHire",
+    };
   }
   if (whyHire.length > 250) {
     return {
       ok: false,
       error: "Please keep your response to 250 characters or fewer.",
+      field: "whyHire",
     };
   }
 
