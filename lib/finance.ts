@@ -3,6 +3,7 @@
 import { Resend } from "resend";
 import { saveLead } from "@/lib/leads";
 import { uploadLeadAttachments } from "@/lib/lead-attachments";
+import { getEmailSetting } from "@/lib/email-config";
 import {
   isEmail,
   isPhone,
@@ -332,10 +333,12 @@ export async function submitFinanceForm(
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
+    const financeTo = await getEmailSetting("finance_email_to", TO);
+    const financeCc = await getEmailSetting("finance_email_cc", CC || "");
     const result = await resend.emails.send({
       from: FROM,
-      to: [TO],
-      cc: CC ? [CC] : undefined,
+      to: [financeTo],
+      cc: financeCc ? [financeCc] : undefined,
       replyTo: email || undefined,
       subject,
       text,

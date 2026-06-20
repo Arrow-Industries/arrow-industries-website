@@ -3,6 +3,7 @@
 import { Resend } from "resend";
 import { saveLead } from "@/lib/leads";
 import { uploadLeadAttachments } from "@/lib/lead-attachments";
+import { getEmailSetting } from "@/lib/email-config";
 import {
   isEmail,
   isPhone,
@@ -202,7 +203,7 @@ export async function submitQuoteForm(
     const resend = new Resend(process.env.RESEND_API_KEY);
     const result = await resend.emails.send({
       from: FROM,
-      to: [TO],
+      to: [await getEmailSetting("quote_email_to", TO)],
       replyTo: email || undefined,
       subject,
       text,

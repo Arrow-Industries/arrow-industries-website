@@ -3,6 +3,7 @@
 import { Resend } from "resend";
 import { createMondayCandidate } from "@/lib/monday";
 import { saveApplication } from "@/lib/leads";
+import { getEmailSetting } from "@/lib/email-config";
 import {
   isEmail,
   isPhone,
@@ -374,7 +375,7 @@ export async function submitCareersForm(
     const resend = new Resend(process.env.RESEND_API_KEY);
     const result = await resend.emails.send({
       from: FROM,
-      to: [TO],
+      to: [await getEmailSetting("careers_email_to", TO)],
       replyTo: email || undefined,
       subject,
       text,
