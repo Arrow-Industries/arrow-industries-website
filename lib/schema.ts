@@ -29,8 +29,9 @@ export function localBusinessSchema() {
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: -37.681,
-      longitude: 144.948,
+      // 62–66 Lara Way, Campbellfield (geocoded via OpenStreetMap).
+      latitude: -37.66366,
+      longitude: 144.96753,
     },
     areaServed: [
       { "@type": "State", name: "Victoria" },
