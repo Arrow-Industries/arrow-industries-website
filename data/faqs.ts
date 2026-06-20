@@ -1,13 +1,16 @@
+import { site } from "@/data/site";
+
 export interface FAQ {
   question: string;
   answer: string;
 }
 
+const fullAddress = `${site.address.line1}, ${site.address.suburb} ${site.address.state} ${site.address.postcode}`;
+
 export const generalFAQs: FAQ[] = [
   {
     question: "Where is Arrow Industries based?",
-    answer:
-      "Our workshop is at Unit 3/62-66 Lara Way, Campbellfield VIC 3061 — north of Melbourne, easy access from the Hume Freeway and the Western and Metropolitan Ring Roads.",
+    answer: `Our workshop is at ${fullAddress} — north of Melbourne, easy access from the Hume Freeway and the Western and Metropolitan Ring Roads.`,
   },
   {
     question: "Do you build to spec or work from a catalogue?",

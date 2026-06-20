@@ -12,7 +12,7 @@ export function localBusinessSchema() {
     legalName: site.legalName,
     description: site.description,
     url: site.url,
-    telephone: site.phone,
+    telephone: site.phoneIntl,
     email: site.email,
     taxID: `AU-ABN-${site.abn.replace(/\s/g, "")}`,
     // Google requires a raster logo (PNG/JPG); SVG is not accepted.
@@ -131,7 +131,7 @@ export function organizationSchema() {
     logo: `${site.url}/images/logo-black.png`,
     image: `${site.url}/images/logo-black.png`,
     description: site.description,
-    telephone: site.phone,
+    telephone: site.phoneIntl,
     email: site.email,
     address: {
       "@type": "PostalAddress",
@@ -144,7 +144,7 @@ export function organizationSchema() {
     contactPoint: [
       {
         "@type": "ContactPoint",
-        telephone: site.phone,
+        telephone: site.phoneIntl,
         email: site.email,
         contactType: "sales",
         areaServed: "AU",

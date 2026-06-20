@@ -21,6 +21,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
           <li key={item.question}>
             <button
               type="button"
+              id={`${id}-q`}
               aria-expanded={isOpen}
               aria-controls={id}
               className="flex w-full items-center justify-between gap-6 py-5 text-left"
@@ -40,6 +41,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
             <div
               id={id}
               role="region"
+              aria-labelledby={`${id}-q`}
               aria-hidden={!isOpen}
               hidden={!isOpen}
               className="pb-6 pr-10 text-sm leading-relaxed text-mute sm:text-base"

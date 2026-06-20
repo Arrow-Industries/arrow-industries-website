@@ -99,6 +99,18 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Honour the user's motion preference globally: near-instant animations and
+     transitions (covers hover scale/zoom transforms and smooth scrolling). */
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
   .logo-marquee-track {
     animation: none !important;
   }

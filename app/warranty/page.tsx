@@ -6,9 +6,9 @@ import { PageHero } from "@/components/PageHero";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Warranty",
+  title: "Warranty — Tipper Bodies, Trailers & Repairs",
   description:
-    "Warranty information for Arrow Industries products and services.",
+    "Warranty cover for Arrow Industries custom tipper bodies, dog trailers, semi trailers and workshop repairs — what's covered, for how long, and how to claim.",
   path: "/warranty",
 });
 

@@ -11,7 +11,7 @@ const meta = {
   title:
     "Dog Trailers — Built to Match Your Truck Setup",
   description:
-    "Tri-axle and quad-axle dog trailers engineered to integrate with your tipper. Drawbar, hydraulics, brakes and electrical built as one matched setup — for civil, quarry and fleet work.",
+    "Tri-axle and quad-axle dog trailers engineered to match your tipper — drawbar, hydraulics, brakes and electricals built as one setup for civil and quarry fleets.",
 };
 
 export const metadata: Metadata = pageMetadata({

@@ -25,7 +25,7 @@ import { site } from "@/data/site";
 export const metadata: Metadata = pageMetadata({
   title: "About Arrow Industries — Australian Truck Body & Trailer Manufacturer",
   description:
-    "Arrow Industries designs, fabricates and services custom tipper bodies, dog trailers and semi trailers from our Campbellfield workshop. 25+ years supporting operators across construction, quarry, transport and waste across Australia.",
+    "Custom tipper bodies, dog trailers and semi trailers designed, built and serviced at our Campbellfield workshop — 25+ years backing operators Australia-wide.",
   path: "/about",
 });
 

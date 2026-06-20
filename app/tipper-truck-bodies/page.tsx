@@ -36,7 +36,7 @@ const meta = {
   title:
     "Tipper Truck Bodies Melbourne — Custom 4x2, 6x4, 8x4 & 10x4 Builds",
   description:
-    "Heavy-duty custom tipper truck bodies built in Melbourne for civil, quarry, demolition, construction and fleet operators. 4x2, 6x4, 8x4 and 10x4 chassis — engineered for serious Australian worksites.",
+    "Custom heavy-duty tipper truck bodies built in Melbourne — 4x2, 6x4, 8x4 and 10x4 chassis engineered for civil, quarry, demolition and fleet worksites.",
 };
 
 export const metadata: Metadata = pageMetadata({

@@ -7,9 +7,9 @@ import { InstagramStrip } from "@/components/InstagramStrip";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Gallery",
+  title: "Gallery — Recent Tipper, Dog & Semi Trailer Builds",
   description:
-    "View recent Arrow Industries builds, repairs and workshop projects including custom tipper bodies, dog trailers and heavy vehicle fabrication.",
+    "Recent Arrow Industries builds, repairs and workshop projects — custom tipper bodies, dog trailers, semi trailers and heavy vehicle fabrication.",
   path: "/gallery",
 });
 

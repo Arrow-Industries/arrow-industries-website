@@ -8,6 +8,8 @@ export const site = {
     "Family-owned Melbourne manufacturer building custom tipper truck bodies, dog trailers and semi trailers. Built for civil, quarry, demolition, construction and fleet operators across Australia.",
   url: "https://arrowindustries.com.au",
   phone: "0468 067 280",
+  /** E.164 international format — preferred for schema.org/structured data NAP. */
+  phoneIntl: "+61 468 067 280",
   phoneHref: "tel:+61468067280",
   email: "sales@arrowindustries.com.au",
   emailHref: "mailto:sales@arrowindustries.com.au",
