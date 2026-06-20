@@ -1,6 +1,6 @@
 "use server";
 
-import { Resend } from "resend";
+import { sendMail, bufferAttachments, isMailerConfigured } from "@/lib/mailer";
 import { saveLead } from "@/lib/leads";
 import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import { getEmailSetting } from "@/lib/email-config";
@@ -80,10 +80,6 @@ const TO =
   "sales@arrowindustries.com.au";
 // CC the Linx finance partner on every enquiry. Override via env if needed.
 const CC = process.env.FINANCE_EMAIL_CC ?? "angelo@linxfinance.com.au";
-const FROM_NAME = "Arrow Industries Finance";
-const FROM_ADDRESS =
-  process.env.QUOTE_EMAIL_FROM ?? "website@arrowindustries.com.au";
-const FROM = `${FROM_NAME} <${FROM_ADDRESS}>`;
 
 const GENERIC_ERROR =
   "Something went wrong. Please call us on 0468 067 280 or email sales@arrowindustries.com.au.";
@@ -321,41 +317,33 @@ export async function submitFinanceForm(
     },
   });
 
-  // If RESEND_API_KEY isn't set (e.g. local dev), log + return success so the
-  // form flow can still be tested. Production deployments must have the key.
-  if (!process.env.RESEND_API_KEY) {
+  // If the M365 mailer isn't configured (e.g. local dev), log + return success
+  // so the form flow can still be tested. Production must have the Azure vars.
+  if (!isMailerConfigured()) {
     console.warn(
-      "[finance] RESEND_API_KEY not set — email not sent. Payload:\n",
+      "[finance] M365 mailer not configured — email not sent. Payload:\n",
       text,
     );
     return { ok: true };
   }
 
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
     const financeTo = await getEmailSetting("finance_email_to", TO);
     const financeCc = await getEmailSetting("finance_email_cc", CC || "");
-    const result = await resend.emails.send({
-      from: FROM,
-      to: [financeTo],
-      cc: financeCc ? [financeCc] : undefined,
+    await sendMail({
+      to: financeTo,
+      cc: financeCc ? financeCc : undefined,
       replyTo: email || undefined,
       subject,
-      text,
       html,
-      attachments: attachments.length > 0 ? attachments : undefined,
+      attachments: attachments.length > 0 ? bufferAttachments(attachments) : undefined,
     });
-
-    if (result.error) {
-      console.error("[finance] Resend error:", result.error);
-      if (attachments.length > 0) {
-        return { ok: false, error: UPLOAD_ERROR };
-      }
-      return { ok: false, error: GENERIC_ERROR };
-    }
     return { ok: true };
   } catch (err) {
-    console.error("[finance] Submission error:", err);
+    console.error("[finance] sendMail error:", err);
+    if (attachments.length > 0) {
+      return { ok: false, error: UPLOAD_ERROR };
+    }
     return { ok: false, error: GENERIC_ERROR };
   }
 }

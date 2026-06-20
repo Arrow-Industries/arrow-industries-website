@@ -1,6 +1,6 @@
 "use server";
 
-import { Resend } from "resend";
+import { sendMail, bufferAttachments, isMailerConfigured } from "@/lib/mailer";
 import { createMondayCandidate } from "@/lib/monday";
 import { saveApplication } from "@/lib/leads";
 import { getEmailSetting } from "@/lib/email-config";
@@ -73,10 +73,6 @@ const TO =
   process.env.CAREERS_EMAIL_TO ??
   process.env.QUOTE_EMAIL_TO ??
   "sales@arrowindustries.com.au";
-const FROM_NAME = "Arrow Industries Careers";
-const FROM_ADDRESS =
-  process.env.QUOTE_EMAIL_FROM ?? "website@arrowindustries.com.au";
-const FROM = `${FROM_NAME} <${FROM_ADDRESS}>`;
 
 const GENERIC_ERROR =
   "Something went wrong. Please call us on 0468 067 280 or email sales@arrowindustries.com.au.";
@@ -359,11 +355,11 @@ export async function submitCareersForm(
   const text = renderText(fields, score, category);
   const html = renderHtml(fields, score, category);
 
-  // If RESEND_API_KEY isn't set (e.g. local dev), log + return success so the
-  // form flow can still be tested. Production deployments must have the key.
-  if (!process.env.RESEND_API_KEY) {
+  // If the M365 mailer isn't configured (e.g. local dev), log + return success
+  // so the form flow can still be tested. Production must have the Azure vars.
+  if (!isMailerConfigured()) {
     console.warn(
-      "[careers] RESEND_API_KEY not set — email not sent. Payload:\n",
+      "[careers] M365 mailer not configured — email not sent. Payload:\n",
       text,
     );
     // Still attempt the best-effort Monday sync in dev if it's configured.
@@ -372,26 +368,18 @@ export async function submitCareersForm(
   }
 
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const result = await resend.emails.send({
-      from: FROM,
-      to: [await getEmailSetting("careers_email_to", TO)],
+    await sendMail({
+      to: await getEmailSetting("careers_email_to", TO),
       replyTo: email || undefined,
       subject,
-      text,
       html,
-      attachments: attachments.length > 0 ? attachments : undefined,
+      attachments: attachments.length > 0 ? bufferAttachments(attachments) : undefined,
     });
-
-    if (result.error) {
-      console.error("[careers] Resend error:", result.error);
-      if (attachments.length > 0) {
-        return { ok: false, error: UPLOAD_ERROR };
-      }
-      return { ok: false, error: GENERIC_ERROR };
-    }
   } catch (err) {
-    console.error("[careers] Submission error:", err);
+    console.error("[careers] sendMail error:", err);
+    if (attachments.length > 0) {
+      return { ok: false, error: UPLOAD_ERROR };
+    }
     return { ok: false, error: GENERIC_ERROR };
   }
 

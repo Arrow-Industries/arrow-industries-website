@@ -2,7 +2,7 @@
  * Upload lead/enquiry attachments to Supabase Storage so they're viewable in
  * the Arrow dashboard (not just emailed). Best-effort: if Storage isn't
  * configured or an upload fails, returns whatever uploaded (caller falls back
- * to filenames). Files still get emailed via Resend regardless.
+ * to filenames). Files still get emailed via Microsoft 365 regardless.
  *
  * Bucket `lead-attachments` is PRIVATE — the dashboard serves files through
  * short-lived signed URLs generated server-side with the service-role key.

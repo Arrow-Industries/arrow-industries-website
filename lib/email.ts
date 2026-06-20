@@ -1,6 +1,6 @@
 "use server";
 
-import { Resend } from "resend";
+import { sendMail, bufferAttachments, isMailerConfigured } from "@/lib/mailer";
 import { saveLead } from "@/lib/leads";
 import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import { getEmailSetting } from "@/lib/email-config";
@@ -32,10 +32,6 @@ type SubmitResult =
   | { ok: false; error: string; field?: string };
 
 const TO = process.env.QUOTE_EMAIL_TO ?? "sales@arrowindustries.com.au";
-const FROM_NAME = "Arrow Industries Website";
-const FROM_ADDRESS =
-  process.env.QUOTE_EMAIL_FROM ?? "website@arrowindustries.com.au";
-const FROM = `${FROM_NAME} <${FROM_ADDRESS}>`;
 
 const GENERIC_ERROR =
   "Something went wrong. Please call us on 0468 067 280 or email sales@arrowindustries.com.au.";
@@ -189,39 +185,31 @@ export async function submitQuoteForm(
     },
   });
 
-  // If RESEND_API_KEY isn't set (e.g. local dev), log + return success so the
-  // form flow can still be tested. Production deployments must have the key.
-  if (!process.env.RESEND_API_KEY) {
+  // If the M365 mailer isn't configured (e.g. local dev), log + return success
+  // so the form flow can still be tested. Production must have the Azure vars.
+  if (!isMailerConfigured()) {
     console.warn(
-      "[quote] RESEND_API_KEY not set — email not sent. Payload:\n",
+      "[quote] M365 mailer not configured — email not sent. Payload:\n",
       text,
     );
     return { ok: true };
   }
 
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const result = await resend.emails.send({
-      from: FROM,
-      to: [await getEmailSetting("quote_email_to", TO)],
+    await sendMail({
+      to: await getEmailSetting("quote_email_to", TO),
       replyTo: email || undefined,
       subject,
-      text,
       html,
-      attachments: attachments.length > 0 ? attachments : undefined,
+      attachments: attachments.length > 0 ? bufferAttachments(attachments) : undefined,
     });
-
-    if (result.error) {
-      console.error("[quote] Resend error:", result.error);
-      // Distinguish attachment-related failures from generic delivery errors.
-      if (attachments.length > 0) {
-        return { ok: false, error: UPLOAD_ERROR };
-      }
-      return { ok: false, error: GENERIC_ERROR };
-    }
     return { ok: true };
   } catch (err) {
-    console.error("[quote] Submission error:", err);
+    console.error("[quote] sendMail error:", err);
+    // Distinguish attachment-related failures from generic delivery errors.
+    if (attachments.length > 0) {
+      return { ok: false, error: UPLOAD_ERROR };
+    }
     return { ok: false, error: GENERIC_ERROR };
   }
 }
