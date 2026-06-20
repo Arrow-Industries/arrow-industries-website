@@ -2,6 +2,7 @@
 
 import { Resend } from "resend";
 import { saveLead } from "@/lib/leads";
+import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import {
   isEmail,
   isPhone,
@@ -62,6 +63,7 @@ export async function submitQuoteForm(
   const business = String(formData.get("companyName") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
+  const location = String(formData.get("location") ?? "").trim();
   const enquiryTypeRaw = String(formData.get("enquiryType") ?? "").trim();
   const vehicleMake = String(formData.get("vehicleMake") ?? "").trim();
   const vehicleModel = String(formData.get("vehicleModel") ?? "").trim();
@@ -146,6 +148,7 @@ export async function submitQuoteForm(
     business,
     email,
     phone,
+    location,
     enquiryType,
     vehicleMake,
     vehicleModel,
@@ -159,6 +162,10 @@ export async function submitQuoteForm(
   const text = renderText(fields);
   const html = renderHtml(fields);
 
+  // Upload attachments to Storage so they're viewable in the dashboard
+  // (best-effort; falls back to filenames if Storage isn't configured).
+  const storedAttachments = await uploadLeadAttachments(attachments, "quote");
+
   // Persist to Supabase (source of truth for the dashboard) — best effort,
   // never blocks the submission.
   await saveLead({
@@ -167,10 +174,11 @@ export async function submitQuoteForm(
     businessName: business,
     email,
     phone,
+    location,
     enquiryType,
     timeframe,
     message,
-    attachments: attachmentNames,
+    attachments: storedAttachments.length ? storedAttachments : attachmentNames,
     details: {
       vehicleMake,
       vehicleModel,
@@ -224,6 +232,7 @@ interface EmailFields {
   business: string;
   email: string;
   phone: string;
+  location: string;
   enquiryType: EnquiryType;
   vehicleMake: string;
   vehicleModel: string;
@@ -243,6 +252,7 @@ function renderText(f: EmailFields) {
     `Business: ${dash(f.business)}`,
     `Email: ${dash(f.email)}`,
     `Phone: ${dash(f.phone)}`,
+    `Location: ${dash(f.location)}`,
     `Enquiry Type: ${f.enquiryType}`,
     `Vehicle (Make): ${dash(f.vehicleMake)}`,
     `Model: ${dash(f.vehicleModel)}`,
@@ -290,6 +300,7 @@ function renderHtml(f: EmailFields) {
             ${row("Business", f.business)}
             ${row("Email", f.email)}
             ${row("Phone", f.phone)}
+            ${row("Location", f.location)}
             ${row("Enquiry Type", f.enquiryType)}
             ${row("Vehicle (Make)", f.vehicleMake)}
             ${row("Model", f.vehicleModel)}

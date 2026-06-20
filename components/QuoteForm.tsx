@@ -194,6 +194,20 @@ export function QuoteForm() {
         </Field>
       </div>
 
+      <Field
+        label="Location / suburb"
+        name="location"
+        hint="Helps us plan delivery, transport & site access."
+      >
+        <input
+          id="location"
+          name="location"
+          autoComplete="address-level2"
+          placeholder="e.g. Campbellfield VIC, or your job site"
+          className={inputBase}
+        />
+      </Field>
+
       <Field label="Enquiry type" name="enquiryType" required>
         <div className="relative">
           <select

@@ -2,6 +2,7 @@
 
 import { Resend } from "resend";
 import { saveLead } from "@/lib/leads";
+import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import {
   isEmail,
   isPhone,
@@ -289,6 +290,10 @@ export async function submitFinanceForm(
   const text = renderText(fields);
   const html = renderHtml(fields);
 
+  // Upload attachments to Storage so they're viewable in the dashboard
+  // (best-effort; falls back to filenames if Storage isn't configured).
+  const storedAttachments = await uploadLeadAttachments(attachments, "finance");
+
   // Persist to Supabase (source of truth for the dashboard) — best effort,
   // never blocks the submission.
   await saveLead({
@@ -303,7 +308,7 @@ export async function submitFinanceForm(
     estimatedAmount,
     timeframe,
     message,
-    attachments: attachmentNames,
+    attachments: storedAttachments.length ? storedAttachments : attachmentNames,
     details: {
       abn,
       contactPreference,
