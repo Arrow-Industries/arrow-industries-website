@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import {
   CheckCircle2,
   Clock,
@@ -25,12 +26,12 @@ import { faqPageSchema } from "@/lib/schema";
 import type { FAQ } from "@/data/faqs";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Careers — Trades & Workshop Jobs at Arrow Industries",
   description:
     "Join Arrow Industries' Campbellfield workshop. We hire boilermakers, auto electricians, painters, hydraulic fitters, trade assistants and apprentices — apply in under 2 minutes.",
-  alternates: { canonical: "/careers" },
-};
+  path: "/careers",
+});
 
 const whyArrow = [
   {
@@ -153,7 +154,7 @@ export default function CareersPage() {
       {/* Trust strip */}
       <div className="border-b border-line bg-ink-2">
         <Container className="py-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
             Family-owned workshop.{" "}
             <span className="text-bone">Steady work. Real builds.</span>
           </p>
@@ -284,7 +285,7 @@ export default function CareersPage() {
                   </p>
                   <a
                     href={site.emailHref}
-                    className="mt-4 inline-flex items-center gap-2 break-all text-base font-bold text-accent hover:underline"
+                    className="mt-4 inline-flex items-center gap-2 break-all text-base font-bold text-accent-text hover:underline"
                   >
                     <Mail className="h-5 w-5 shrink-0" aria-hidden />
                     {site.email}
@@ -306,7 +307,7 @@ export default function CareersPage() {
                       href={site.address.mapsHref}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-sm font-medium leading-relaxed text-bone hover:text-accent"
+                      className="text-sm font-medium leading-relaxed text-bone hover:text-accent-text"
                     >
                       {site.address.line1}
                       <br />

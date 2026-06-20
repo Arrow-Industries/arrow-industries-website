@@ -21,6 +21,10 @@ import { fetchTopInstagramMedia, thumbFor, type IgMedia } from "@/lib/instagram"
 // keep using Metadata.alternates.canonical (no trailing slash, matches
 // their URL) as normal.
 
+// Cache the page (incl. the Instagram fetch below) so the external Graph API
+// call never sits on a user's request path. Refreshes at most hourly.
+export const revalidate = 3600;
+
 export default async function HomePage() {
   const topPosts = await fetchTopInstagramMedia(3, 30);
   return (
@@ -137,7 +141,7 @@ function Hero() {
           <div className="mt-3">
             <Link
               href="/gallery"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-mute transition-colors hover:text-accent"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-mute transition-colors hover:text-accent-text"
             >
               View our builds
               <ArrowRight className="h-3.5 w-3.5" aria-hidden />
@@ -211,7 +215,7 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
                   href={site.social.instagram}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-3 transition-colors hover:text-accent sm:gap-4"
+                  className="inline-flex items-center gap-3 transition-colors hover:text-accent-text sm:gap-4"
                 >
                   <Instagram
                     className="h-7 w-7 sm:h-8 sm:w-8 lg:h-10 lg:w-10"
@@ -282,7 +286,7 @@ function PartnersSection() {
     <section className="bg-ink-2 py-16 lg:py-20">
       <Container>
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent-text">
             Components
           </p>
           <h2 className="mt-3 font-display text-lg font-extrabold leading-[1.15] text-bone sm:text-xl">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import {
   CalendarCheck,
   CheckCircle2,
@@ -29,12 +30,12 @@ const SLUG = "repairs-servicing";
 const repairsService = getServiceBySlug(SLUG);
 const repairsContent = getServiceContent(SLUG);
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Truck Body & Trailer Repairs Campbellfield — Tipper Repair Workshop",
   description:
     "Tipper body, trailer and heavy vehicle component repairs, rebuilds and servicing from our Campbellfield workshop. Insurance work, hydraulics and fabrication.",
-  alternates: { canonical: `/${SLUG}` },
-};
+  path: `/${SLUG}`,
+});
 
 const bookingUrl = site.booking.roadworthy;
 

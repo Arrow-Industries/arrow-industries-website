@@ -35,7 +35,7 @@ export function SpecTable({
       {(eyebrow || heading) && (
         <div className="mb-8">
           {eyebrow && (
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
               {eyebrow}
             </p>
           )}

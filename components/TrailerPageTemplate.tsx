@@ -337,7 +337,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
                     <h3 className="font-display text-lg font-bold text-bone sm:text-xl">
                       {b.title}
                     </h3>
-                    <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
+                    <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent-text">
                       {b.application}
                     </span>
                   </div>
@@ -446,7 +446,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
               added on after. The full combination is engineered to perform
               under load and on-site.
             </p>
-            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
               The result
             </p>
             <ul className="mt-4 divide-y divide-line-soft">
@@ -599,7 +599,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
                     href={site.social.instagram}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-3 transition-colors hover:text-accent sm:gap-4"
+                    className="inline-flex items-center gap-3 transition-colors hover:text-accent-text sm:gap-4"
                   >
                     <Instagram
                       className="h-7 w-7 sm:h-8 sm:w-8 lg:h-10 lg:w-10"

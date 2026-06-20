@@ -51,7 +51,7 @@ export function PageHero({ eyebrow, heading, body, crumbs, compact, actions }: P
           </nav>
         )}
         {eyebrow && (
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
             {eyebrow}
           </p>
         )}

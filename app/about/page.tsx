@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Image from "next/image";
 import {
   Building2,
@@ -21,12 +22,12 @@ import { Button } from "@/components/Button";
 import { whyChooseArrow } from "@/data/features";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About Arrow Industries — Australian Truck Body & Trailer Manufacturer",
   description:
     "Arrow Industries designs, fabricates and services custom tipper bodies, dog trailers and semi trailers from our Campbellfield workshop. 25+ years supporting operators across construction, quarry, transport and waste across Australia.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 const aboutTrustItems = [
   "25+ years experience",
@@ -244,7 +245,7 @@ export default function AboutPage() {
           <ol className="mt-12 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
             {milestones.map((m) => (
               <li key={m.title} className="flex flex-col gap-3 bg-ink-2 p-6">
-                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
                   {m.year}
                 </span>
                 <h3 className="text-base font-bold text-bone">{m.title}</h3>
@@ -310,7 +311,7 @@ export default function AboutPage() {
       <section className="bg-ink-2 py-24 lg:py-32">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
               Custom-built
             </p>
             <h2 className="mt-5 font-display text-3xl font-extrabold leading-[1.08] text-bone sm:text-4xl lg:text-[2.75rem]">
@@ -371,7 +372,7 @@ export default function AboutPage() {
                   <span className="font-display text-base font-bold text-bone">
                     {b.label}
                   </span>
-                  <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
+                  <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent-text">
                     {b.location}
                   </span>
                 </div>

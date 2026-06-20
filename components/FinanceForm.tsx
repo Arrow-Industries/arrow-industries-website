@@ -74,7 +74,7 @@ const labelBase =
   "block text-xs font-semibold uppercase tracking-[0.16em] text-mute";
 
 const subHeadingBase =
-  "text-xs font-semibold uppercase tracking-[0.22em] text-accent";
+  "text-xs font-semibold uppercase tracking-[0.22em] text-accent-text";
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
@@ -141,7 +141,7 @@ export function FinanceForm() {
         </p>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-mute">
           Need to talk sooner? Call us on{" "}
-          <a href={site.phoneHref} className="text-accent hover:underline">
+          <a href={site.phoneHref} className="text-accent-text hover:underline">
             {site.phone}
           </a>
           .
@@ -403,7 +403,7 @@ export function FinanceForm() {
             )}
 
             {fileError && (
-              <p className="text-xs text-accent" role="alert">
+              <p className="text-xs text-accent-text" role="alert">
                 {fileError}
               </p>
             )}
@@ -444,7 +444,7 @@ export function FinanceForm() {
       {state && !state.ok && (
         <p
           role="alert"
-          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent"
+          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text"
         >
           {state.error}
         </p>
@@ -482,7 +482,7 @@ function Field({
     <div className="flex flex-col gap-2">
       <label htmlFor={name} className={labelBase}>
         {label}
-        {required && <span className="ml-1 text-accent">*</span>}
+        {required && <span className="ml-1 text-accent-text">*</span>}
       </label>
       {children}
       {hint && <p className="text-xs text-mute">{hint}</p>}

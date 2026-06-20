@@ -11,7 +11,7 @@ export function MobileActionBar() {
       <nav aria-label="Mobile actions" className="grid grid-cols-2">
         <a
           href={site.phoneHref}
-          className="flex items-center justify-center gap-2 px-4 py-4 text-sm font-semibold text-bone transition-colors hover:text-accent"
+          className="flex items-center justify-center gap-2 px-4 py-4 text-sm font-semibold text-bone transition-colors hover:text-accent-text"
         >
           <Phone className="h-4 w-4 text-accent" aria-hidden />
           Call Now

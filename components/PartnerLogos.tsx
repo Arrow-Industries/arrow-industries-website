@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { partners } from "@/data/partners";
 
 /**
@@ -32,10 +33,11 @@ export function PartnerLogos() {
             className="shrink-0"
           >
             {p.logo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={p.logo}
                 alt={p.name}
+                width={160}
+                height={56}
                 loading="lazy"
                 className="block h-12 w-32 object-contain sm:h-14 sm:w-40"
               />

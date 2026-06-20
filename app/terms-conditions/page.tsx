@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import type { ReactNode } from "react";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Terms & Conditions for the Supply of Goods and Services",
   description:
     "Arrow Industries & Co terms and conditions for the supply of goods and services. Samaro Pty Ltd t/a Arrow Industries & Co.",
-  alternates: { canonical: "/terms-conditions" },
-};
+  path: "/terms-conditions",
+});
 
 export default function TermsPage() {
   return (
@@ -44,13 +45,13 @@ export default function TermsPage() {
                 </dd>
                 <dt className="text-mute">Phone</dt>
                 <dd className="text-bone">
-                  <a href={site.phoneHref} className="hover:text-accent">
+                  <a href={site.phoneHref} className="hover:text-accent-text">
                     {site.phone}
                   </a>
                 </dd>
                 <dt className="text-mute">Email</dt>
                 <dd className="text-bone">
-                  <a href={site.emailHref} className="hover:text-accent">
+                  <a href={site.emailHref} className="hover:text-accent-text">
                     {site.email}
                   </a>
                 </dd>
@@ -513,7 +514,7 @@ export default function TermsPage() {
             <div className="mt-16 border-t border-line pt-6 text-sm">
               <p>
                 Questions about these terms can be directed to{" "}
-                <a href={site.emailHref} className="text-accent hover:underline">
+                <a href={site.emailHref} className="text-accent-text hover:underline">
                   {site.email}
                 </a>
                 .
@@ -561,7 +562,7 @@ function Subsection({
   return (
     <div className="mt-6">
       <h3 className="font-display text-base font-bold text-bone sm:text-lg">
-        <span className="text-accent/80">{number}</span>{" "}
+        <span className="text-accent-text/80">{number}</span>{" "}
         <span className="ml-1">{heading}</span>
       </h3>
       <div className="mt-3 space-y-3">{children}</div>

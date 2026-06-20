@@ -27,7 +27,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
       <p className="mt-6 text-sm leading-relaxed text-mute sm:text-base">
         {service.tagline}
       </p>
-      <span className="mt-auto pt-12 text-xs font-semibold uppercase tracking-[0.18em] text-mute transition-colors group-hover:text-accent">
+      <span className="mt-auto pt-12 text-xs font-semibold uppercase tracking-[0.18em] text-mute transition-colors group-hover:text-accent-text">
         {ctaLabel}
       </span>
     </>

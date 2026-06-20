@@ -27,7 +27,7 @@ export function SectionHeader({
       {eyebrow && (
         <p
           className={cn(
-            "mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent",
+            "mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent-text",
             align === "center" && "justify-center",
           )}
         >

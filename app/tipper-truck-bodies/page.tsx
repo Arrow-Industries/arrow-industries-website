@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -39,11 +40,11 @@ const meta = {
     "Heavy-duty custom tipper truck bodies built in Melbourne for civil, quarry, demolition, construction and fleet operators. 4x2, 6x4, 8x4 and 10x4 chassis — engineered for serious Australian worksites.",
 };
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: meta.title,
   description: meta.description,
-  alternates: { canonical: `/${slug}` },
-};
+  path: `/${slug}`,
+});
 
 const faqs = [
   {
@@ -420,7 +421,7 @@ export default async function Page() {
                     <h3 className="font-display text-lg font-bold text-bone sm:text-xl">
                       {b.title}
                     </h3>
-                    <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent">
+                    <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent-text">
                       {b.application}
                     </span>
                   </div>
@@ -501,7 +502,7 @@ export default async function Page() {
               and subframe through to hydraulics, hoist configuration, and
               trailer connections where required.
             </p>
-            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
               The result
             </p>
             <ul className="mt-4 divide-y divide-line-soft">
@@ -703,7 +704,7 @@ function RealBuildsSection({ posts }: { posts: IgMedia[] }) {
                   href={site.social.instagram}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-3 transition-colors hover:text-accent sm:gap-4"
+                  className="inline-flex items-center gap-3 transition-colors hover:text-accent-text sm:gap-4"
                 >
                   <Instagram
                     className="h-7 w-7 sm:h-8 sm:w-8 lg:h-10 lg:w-10"

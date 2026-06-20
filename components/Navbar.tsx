@@ -226,7 +226,7 @@ function DesktopNavItem({ item }: { item: NavItem }) {
                   className="group block px-4 py-3 transition-colors hover:bg-ink-3"
                   onClick={() => setOpen(false)}
                 >
-                  <span className="block text-sm font-semibold text-bone group-hover:text-accent">
+                  <span className="block text-sm font-semibold text-bone group-hover:text-accent-text">
                     {child.label}
                   </span>
                   {child.description && (

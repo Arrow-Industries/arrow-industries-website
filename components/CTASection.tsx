@@ -29,7 +29,7 @@ export function CTASection({
       <Container className="relative pt-24 pb-32 lg:pt-32 lg:pb-44">
         <div className="mx-auto max-w-3xl text-center">
           {eyebrow && (
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
               {eyebrow}
             </p>
           )}

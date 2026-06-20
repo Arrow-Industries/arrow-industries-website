@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ArrowRight, CheckCircle2, Clock, Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
@@ -6,12 +7,12 @@ import { CTASection } from "@/components/CTASection";
 import { Button } from "@/components/Button";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact Arrow Industries — Campbellfield Workshop",
   description:
     "Contact Arrow Industries at our Campbellfield workshop. Phone, email, address and hours for tipper, trailer, repair and roadworthy enquiries.",
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 const socials = [
   { label: "Instagram", href: site.social.instagram, icon: Instagram },
@@ -116,7 +117,7 @@ export default function ContactPage() {
                       href={site.address.mapsHref}
                       target="_blank"
                       rel="noreferrer"
-                      className="hover:text-accent"
+                      className="hover:text-accent-text"
                     >
                       {site.address.line1}
                       <br />
@@ -196,7 +197,7 @@ export default function ContactPage() {
           <div className="lg:col-span-7">
             <div className="overflow-hidden border border-line bg-ink-2">
               <div className="border-b border-line p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
                   Workshop Location
                 </p>
                 <p className="mt-2 font-display text-lg font-bold text-bone sm:text-xl">
@@ -208,7 +209,7 @@ export default function ContactPage() {
                     href={site.address.mapsHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 border border-line bg-ink px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-bone transition-colors hover:border-accent hover:text-accent"
+                    className="inline-flex items-center justify-center gap-1.5 border border-line bg-ink px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-bone transition-colors hover:border-accent hover:text-accent-text"
                   >
                     <MapPin className="h-3.5 w-3.5" aria-hidden />
                     Open in Google Maps

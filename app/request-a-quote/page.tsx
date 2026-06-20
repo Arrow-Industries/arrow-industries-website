@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { ListChecks, Phone, ShieldCheck, Wrench } from "lucide-react";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
@@ -6,12 +7,12 @@ import { QuoteForm } from "@/components/QuoteForm";
 import { ContactInfoBlock } from "@/components/ContactInfoBlock";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Request a Quote — Tipper, Trailer, Repair or Roadworthy",
   description:
     "Request a quote for a custom tipper body, dog trailer, semi trailer, repair or roadworthy from Arrow Industries' Campbellfield workshop.",
-  alternates: { canonical: "/request-a-quote" },
-};
+  path: "/request-a-quote",
+});
 
 const reassurance = [
   {
@@ -62,7 +63,7 @@ export default function RequestAQuotePage() {
                 </p>
                 <a
                   href={site.phoneHref}
-                  className="mt-4 inline-flex items-center gap-2 text-lg font-bold text-accent hover:underline"
+                  className="mt-4 inline-flex items-center gap-2 text-lg font-bold text-accent-text hover:underline"
                 >
                   <Phone className="h-5 w-5" aria-hidden />
                   {site.phone}

@@ -1,8 +1,15 @@
 "use server";
 
-import { headers } from "next/headers";
 import { Resend } from "resend";
 import { saveLead } from "@/lib/leads";
+import {
+  isEmail,
+  isPhone,
+  dash,
+  escapeHtml,
+  createRateLimiter,
+  readAttachments,
+} from "@/lib/form-utils";
 
 // Internal-only consts/types. A `"use server"` module is restricted to
 // exporting async functions, so these stay private to this file.
@@ -31,58 +38,13 @@ const GENERIC_ERROR =
 const UPLOAD_ERROR =
   "File upload failed. Please try again or email your files to sales@arrowindustries.com.au.";
 
-/* ---------- Attachment limits & whitelist ---------- */
+/* ---------- Attachment whitelist (images + PDF) ---------- */
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB per file
-const MAX_TOTAL_BYTES = 25 * 1024 * 1024; // 25 MB combined (under Resend's per-email cap)
 const ALLOWED_MIME = /^(image\/|application\/pdf$)/i;
 const ALLOWED_EXT = /\.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?|pdf)$/i;
 
-/* ---------- Validation helpers ---------- */
-
-function isEmail(v: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-}
-
-function isPhone(v: string) {
-  // Accepts AU mobile/landline formats: 7–15 digits after stripping spaces,
-  // dashes, parentheses and a leading +.
-  const digits = v.replace(/[^\d]/g, "");
-  return digits.length >= 7 && digits.length <= 15;
-}
-
-/* ---------- Naive in-memory rate limit ----------
-   Keyed by client IP. 5 submissions per 10 minutes per server instance.
-   Resets on cold-start; fine for a low-traffic marketing site. */
-
-const rateLimit = new Map<string, number[]>();
-const RATE_WINDOW_MS = 10 * 60 * 1000;
-const RATE_MAX = 5;
-
-async function rateLimitCheck(): Promise<{ ok: true } | { ok: false; retryIn: number }> {
-  let ip = "anon";
-  try {
-    const h = await headers();
-    ip =
-      h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      h.get("x-real-ip") ||
-      "anon";
-  } catch {
-    // headers() can fail outside a request context — fall through
-  }
-
-  const now = Date.now();
-  const recent = (rateLimit.get(ip) ?? []).filter(
-    (t) => now - t < RATE_WINDOW_MS,
-  );
-  if (recent.length >= RATE_MAX) {
-    const retryIn = RATE_WINDOW_MS - (now - recent[0]);
-    return { ok: false, retryIn };
-  }
-  recent.push(now);
-  rateLimit.set(ip, recent);
-  return { ok: true };
-}
+// 5 submissions per 10 minutes per IP (per server instance).
+const checkRateLimit = createRateLimiter();
 
 /* ---------- Server action ---------- */
 
@@ -134,7 +96,7 @@ export async function submitQuoteForm(
   }
 
   // Rate limit (after validation so attackers can't spam to identify limits)
-  const rl = await rateLimitCheck();
+  const rl = await checkRateLimit();
   if (!rl.ok) {
     return {
       ok: false,
@@ -144,47 +106,18 @@ export async function submitQuoteForm(
   }
 
   // Attachments — validate, read into Buffers, build Resend attachments array
-  const rawFiles = formData.getAll("attachments");
-  const incomingFiles = rawFiles.filter(
-    (f): f is File => f instanceof File && f.size > 0,
-  );
-
-  let totalBytes = 0;
-  for (const file of incomingFiles) {
-    if (file.size > MAX_FILE_BYTES) {
-      return {
-        ok: false,
-        error: `${file.name} is over 10MB. Please attach a smaller file.`,
-      };
-    }
-    if (!ALLOWED_MIME.test(file.type) && !ALLOWED_EXT.test(file.name)) {
-      return {
-        ok: false,
-        error: `${file.name} isn't a supported type. Images and PDFs only.`,
-      };
-    }
-    totalBytes += file.size;
-  }
-  if (totalBytes > MAX_TOTAL_BYTES) {
-    return {
-      ok: false,
-      error:
-        "Attachments are too large to email. Please email them directly to sales@arrowindustries.com.au.",
-    };
-  }
-
-  let attachments: { filename: string; content: Buffer }[] = [];
-  try {
-    attachments = await Promise.all(
-      incomingFiles.map(async (file) => ({
-        filename: file.name,
-        content: Buffer.from(await file.arrayBuffer()),
-      })),
-    );
-  } catch (err) {
-    console.error("[quote] Attachment read error:", err);
-    return { ok: false, error: UPLOAD_ERROR };
-  }
+  const att = await readAttachments(formData.getAll("attachments"), {
+    allowedMime: ALLOWED_MIME,
+    allowedExt: ALLOWED_EXT,
+    typeError: (name) =>
+      `${name} isn't a supported type. Images and PDFs only.`,
+    tooLargeError:
+      "Attachments are too large to email. Please email them directly to sales@arrowindustries.com.au.",
+    uploadError: UPLOAD_ERROR,
+    logTag: "quote",
+  });
+  if (!att.ok) return { ok: false, error: att.error };
+  const attachments = att.attachments;
 
   // Build the email
   const enquiryType = enquiryTypeRaw as EnquiryType;
@@ -284,10 +217,6 @@ interface EmailFields {
   attachmentNames: string[];
 }
 
-function dash(v: string) {
-  return v.length > 0 ? v : "—";
-}
-
 function renderText(f: EmailFields) {
   return [
     "New Arrow Industries quote request",
@@ -317,15 +246,6 @@ function renderText(f: EmailFields) {
     "Submitted from: Arrow Industries website",
     `Submitted at: ${new Date().toISOString()}`,
   ].join("\n");
-}
-
-function escapeHtml(s: string) {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }
 
 function renderHtml(f: EmailFields) {

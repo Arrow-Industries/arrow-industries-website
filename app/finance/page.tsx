@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import {
   Banknote,
   CheckCircle2,
@@ -23,12 +24,12 @@ import { faqPageSchema } from "@/lib/schema";
 import type { FAQ } from "@/data/faqs";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Equipment & Truck Finance — Tipper Bodies & Trailers",
   description:
     "Finance your next Arrow tipper body, trailer or truck-and-body package. Competitive asset finance arranged through Linx Australia Group — apply online in minutes.",
-  alternates: { canonical: "/finance" },
-};
+  path: "/finance",
+});
 
 const benefits = [
   {
@@ -175,7 +176,7 @@ export default function FinancePage() {
       {/* Trust strip */}
       <div className="border-b border-line bg-ink-2">
         <Container className="py-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
             Asset finance since 1999.{" "}
             <span className="text-bone">
               Panel of 50+ lenders. Fast approvals.
@@ -385,14 +386,14 @@ export default function FinancePage() {
                 </p>
                 <a
                   href={site.phoneHref}
-                  className="mt-4 inline-flex items-center gap-2 text-lg font-bold text-accent hover:underline"
+                  className="mt-4 inline-flex items-center gap-2 text-lg font-bold text-accent-text hover:underline"
                 >
                   <PhoneCall className="h-5 w-5" aria-hidden />
                   {site.phone}
                 </a>
                 <a
                   href={site.emailHref}
-                  className="mt-3 inline-flex items-center gap-2 break-all text-sm font-semibold text-bone hover:text-accent"
+                  className="mt-3 inline-flex items-center gap-2 break-all text-sm font-semibold text-bone hover:text-accent-text"
                 >
                   <Mail className="h-4 w-4 shrink-0" aria-hidden />
                   {site.email}

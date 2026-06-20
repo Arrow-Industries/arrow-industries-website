@@ -10,6 +10,11 @@
   --color-mute: #9a9a9a;
   --color-accent: #e10600;
   --color-accent-hover: #c10500;
+  /* Brighter red for accent *text* on dark surfaces. The brand red (#e10600)
+     only reaches 3.99:1 as text and fails WCAG AA; this passes (~6.4:1).
+     Use for labels/asterisks/error copy/links — keep --color-accent for
+     fills, borders and icons. */
+  --color-accent-text: #ff5a52;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", sans-serif;

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Container } from "@/components/Container";
 import { customers } from "@/data/customers";
 
@@ -19,7 +20,7 @@ export function TrustedBy() {
       />
       <Container className="relative">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent-text">
             Customers
           </p>
           <h2 className="mt-3 font-display text-lg font-extrabold leading-[1.15] text-bone sm:text-xl">
@@ -48,10 +49,11 @@ export function TrustedBy() {
                 className="shrink-0"
               >
                 {c.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={c.logo}
                     alt={c.name}
+                    width={160}
+                    height={56}
                     loading="lazy"
                     className="block h-12 w-32 object-contain sm:h-14 sm:w-40"
                   />

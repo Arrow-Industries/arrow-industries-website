@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TrailerPageTemplate } from "@/components/TrailerPageTemplate";
 import { getServiceBySlug } from "@/data/services";
@@ -13,11 +14,11 @@ const meta = {
     "Tri-axle and quad-axle dog trailers engineered to integrate with your tipper. Drawbar, hydraulics, brakes and electrical built as one matched setup — for civil, quarry and fleet work.",
 };
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: meta.title,
   description: meta.description,
-  alternates: { canonical: `/${slug}` },
-};
+  path: `/${slug}`,
+});
 
 const faqs = [
   {

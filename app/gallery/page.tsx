@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { Button } from "@/components/Button";
 import { InstagramStrip } from "@/components/InstagramStrip";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Gallery",
   description:
     "View recent Arrow Industries builds, repairs and workshop projects including custom tipper bodies, dog trailers and heavy vehicle fabrication.",
-  alternates: { canonical: "/gallery" },
-};
+  path: "/gallery",
+});
 
 const socials = [
   { label: "Instagram", href: site.social.instagram, icon: Instagram },

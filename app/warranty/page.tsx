@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import type { ReactNode } from "react";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Warranty",
   description:
     "Warranty information for Arrow Industries products and services.",
-  alternates: { canonical: "/warranty" },
-};
+  path: "/warranty",
+});
 
 export default function WarrantyPage() {
   return (
@@ -62,14 +63,14 @@ export default function WarrantyPage() {
                 For warranty enquiries, contact{" "}
                 <a
                   href={site.emailHref}
-                  className="text-accent hover:underline"
+                  className="text-accent-text hover:underline"
                 >
                   {site.email}
                 </a>{" "}
                 or call{" "}
                 <a
                   href={site.phoneHref}
-                  className="text-accent hover:underline"
+                  className="text-accent-text hover:underline"
                 >
                   {site.phone}
                 </a>
@@ -82,7 +83,7 @@ export default function WarrantyPage() {
                 See also our{" "}
                 <a
                   href="/terms-conditions"
-                  className="text-accent hover:underline"
+                  className="text-accent-text hover:underline"
                 >
                   Terms &amp; Conditions of Supply
                 </a>

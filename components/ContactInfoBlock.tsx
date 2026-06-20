@@ -8,7 +8,7 @@ export function ContactInfoBlock() {
         icon={Phone}
         label="Phone"
         primary={
-          <a href={site.phoneHref} className="hover:text-accent">
+          <a href={site.phoneHref} className="hover:text-accent-text">
             {site.phone}
           </a>
         }
@@ -19,7 +19,7 @@ export function ContactInfoBlock() {
         primary={
           <a
             href={site.emailHref}
-            className="break-words hover:text-accent"
+            className="break-words hover:text-accent-text"
           >
             {site.email}
           </a>
@@ -33,7 +33,7 @@ export function ContactInfoBlock() {
             href={site.address.mapsHref}
             target="_blank"
             rel="noreferrer"
-            className="hover:text-accent"
+            className="hover:text-accent-text"
           >
             {site.address.line1}
             <br />

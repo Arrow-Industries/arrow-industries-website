@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Image from "next/image";
 import {
   CalendarCheck,
@@ -25,13 +26,13 @@ const SLUG = "licensed-vehicle-testing";
 const lvtService = getServiceBySlug(SLUG);
 const lvtContent = getServiceContent(SLUG);
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title:
     "Heavy Vehicle & Trailer Roadworthy Inspections — Campbellfield",
   description:
     "VicRoads-licensed heavy vehicle and trailer inspections at our Campbellfield workshop. Prime movers, rigid trucks, tippers, dog trailers and semi trailers — book online.",
-  alternates: { canonical: `/${SLUG}` },
-};
+  path: `/${SLUG}`,
+});
 
 const bookingUrl = site.booking.roadworthy;
 
@@ -176,7 +177,7 @@ export default function RoadworthyPage() {
             {/* Left — booking copy + CTAs */}
             <div className="flex flex-col justify-between gap-10 p-8 sm:p-12 md:col-span-7">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
                   Book online
                 </p>
                 <h2 className="mt-4 font-display text-3xl font-extrabold leading-[1.1] text-bone sm:text-4xl">
@@ -186,7 +187,7 @@ export default function RoadworthyPage() {
                   Secure a time, confirm your vehicle details and have your
                   inspection completed at our Campbellfield workshop.
                 </p>
-                <p className="mt-5 inline-flex items-center gap-2 border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent">
+                <p className="mt-5 inline-flex items-center gap-2 border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent-text">
                   <CalendarCheck className="h-4 w-4 shrink-0" aria-hidden />
                   Inspections by appointment, Monday – Friday.
                 </p>
@@ -222,7 +223,7 @@ export default function RoadworthyPage() {
                         href={site.address.mapsHref}
                         target="_blank"
                         rel="noreferrer"
-                        className="hover:text-accent"
+                        className="hover:text-accent-text"
                       >
                         {site.address.line1}
                         <br />
@@ -264,7 +265,7 @@ export default function RoadworthyPage() {
 
             {/* Right — QR card */}
             <div className="flex flex-col items-center justify-center gap-5 border-t border-line-soft bg-ink-2 p-8 sm:p-12 md:col-span-5 md:border-l md:border-t-0">
-              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent-text">
                 Scan to book
               </p>
               <div className="bg-white p-4">
@@ -410,7 +411,7 @@ export default function RoadworthyPage() {
               </p>
               <p className="flex items-center gap-2 text-mute">
                 <Clock className="h-4 w-4 text-accent" aria-hidden />
-                Mon – Fri, 7:00 AM – 4:00 PM
+                Mon – Fri, 6:00 AM – 4:00 PM
               </p>
               <p className="flex items-start gap-2 text-mute">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
