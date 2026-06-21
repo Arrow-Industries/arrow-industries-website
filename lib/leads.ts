@@ -11,6 +11,7 @@
  */
 
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { notifyDashboardNewLead } from "@/lib/notify-dashboard";
 
 export interface LeadRecord {
   source: "quote" | "finance";
@@ -69,7 +70,17 @@ export async function saveLead(lead: LeadRecord): Promise<void> {
       attachments: lead.attachments ?? [],
       details: lead.details ?? {},
     });
-    if (error) console.error("[leads] Insert error:", error.message);
+    if (error) {
+      console.error("[leads] Insert error:", error.message);
+    } else {
+      // Best-effort push to the dashboard so staff get notified of new leads.
+      await notifyDashboardNewLead({
+        source: lead.source,
+        name: lead.name,
+        businessName: lead.businessName,
+        enquiryType: lead.enquiryType,
+      });
+    }
   } catch (err) {
     console.error("[leads] Insert threw:", err);
   }
