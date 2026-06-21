@@ -11,7 +11,7 @@
  */
 
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
-import { notifyDashboardNewLead } from "@/lib/notify-dashboard";
+import { notifyDashboardNewLead, notifyDashboardNewApplication } from "@/lib/notify-dashboard";
 
 export interface LeadRecord {
   source: "quote" | "finance";
@@ -110,7 +110,16 @@ export async function saveApplication(app: ApplicationRecord): Promise<void> {
       resume_names: app.resumeNames ?? [],
       details: app.details ?? {},
     });
-    if (error) console.error("[leads] Application insert error:", error.message);
+    if (error) {
+      console.error("[leads] Application insert error:", error.message);
+    } else {
+      await notifyDashboardNewApplication({
+        name: app.name,
+        role: app.role,
+        category: app.category,
+        score: app.score,
+      });
+    }
   } catch (err) {
     console.error("[leads] Application insert threw:", err);
   }
