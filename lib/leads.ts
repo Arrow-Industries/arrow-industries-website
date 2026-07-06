@@ -48,11 +48,12 @@ export interface ApplicationRecord {
   details?: Record<string, unknown>;
 }
 
-export async function saveLead(lead: LeadRecord): Promise<void> {
+/** Returns true if the lead was durably persisted to Supabase. */
+export async function saveLead(lead: LeadRecord): Promise<boolean> {
   const supabase = getSupabaseAdmin();
   if (!supabase) {
     console.warn("[leads] Supabase not configured — lead not persisted.");
-    return;
+    return false;
   }
   try {
     const { error } = await supabase.from("leads").insert({
@@ -72,25 +73,28 @@ export async function saveLead(lead: LeadRecord): Promise<void> {
     });
     if (error) {
       console.error("[leads] Insert error:", error.message);
-    } else {
-      // Best-effort push to the dashboard so staff get notified of new leads.
-      await notifyDashboardNewLead({
-        source: lead.source,
-        name: lead.name,
-        businessName: lead.businessName,
-        enquiryType: lead.enquiryType,
-      });
+      return false;
     }
+    // Best-effort push to the dashboard so staff get notified of new leads.
+    await notifyDashboardNewLead({
+      source: lead.source,
+      name: lead.name,
+      businessName: lead.businessName,
+      enquiryType: lead.enquiryType,
+    });
+    return true;
   } catch (err) {
     console.error("[leads] Insert threw:", err);
+    return false;
   }
 }
 
-export async function saveApplication(app: ApplicationRecord): Promise<void> {
+/** Returns true if the application was durably persisted to Supabase. */
+export async function saveApplication(app: ApplicationRecord): Promise<boolean> {
   const supabase = getSupabaseAdmin();
   if (!supabase) {
     console.warn("[leads] Supabase not configured — application not persisted.");
-    return;
+    return false;
   }
   try {
     const { error } = await supabase.from("applications").insert({
@@ -112,15 +116,17 @@ export async function saveApplication(app: ApplicationRecord): Promise<void> {
     });
     if (error) {
       console.error("[leads] Application insert error:", error.message);
-    } else {
-      await notifyDashboardNewApplication({
-        name: app.name,
-        role: app.role,
-        category: app.category,
-        score: app.score,
-      });
+      return false;
     }
+    await notifyDashboardNewApplication({
+      name: app.name,
+      role: app.role,
+      category: app.category,
+      score: app.score,
+    });
+    return true;
   } catch (err) {
     console.error("[leads] Application insert threw:", err);
+    return false;
   }
 }

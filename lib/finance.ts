@@ -291,9 +291,9 @@ export async function submitFinanceForm(
   // (best-effort; falls back to filenames if Storage isn't configured).
   const storedAttachments = await uploadLeadAttachments(attachments, "finance");
 
-  // Persist to Supabase (source of truth for the dashboard) — best effort,
-  // never blocks the submission.
-  await saveLead({
+  // Persist to Supabase — the durable record and source of truth for the
+  // dashboard. Whether THIS succeeds (not the email) decides the submission.
+  const saved = await saveLead({
     source: "finance",
     name: fullName,
     businessName,
@@ -317,35 +317,39 @@ export async function submitFinanceForm(
     },
   });
 
-  // If the M365 mailer isn't configured (e.g. local dev), log + return success
-  // so the form flow can still be tested. Production must have the Azure vars.
-  if (!isMailerConfigured()) {
+  // Email is a best-effort alert. The enquiry is already recorded above (and its
+  // attachments stored + dashboard notified), so a mail failure must NOT bounce
+  // a captured enquiry.
+  let emailed = false;
+  if (isMailerConfigured()) {
+    try {
+      const financeTo = await getEmailSetting("finance_email_to", TO);
+      const financeCc = await getEmailSetting("finance_email_cc", CC || "");
+      await sendMail({
+        to: financeTo,
+        cc: financeCc ? financeCc : undefined,
+        replyTo: email || undefined,
+        subject,
+        html,
+        attachments:
+          attachments.length > 0 ? bufferAttachments(attachments) : undefined,
+      });
+      emailed = true;
+    } catch (err) {
+      console.error("[finance] sendMail error (non-fatal):", err);
+    }
+  } else {
     console.warn(
       "[finance] M365 mailer not configured — email not sent. Payload:\n",
       text,
     );
-    return { ok: true };
   }
 
-  try {
-    const financeTo = await getEmailSetting("finance_email_to", TO);
-    const financeCc = await getEmailSetting("finance_email_cc", CC || "");
-    await sendMail({
-      to: financeTo,
-      cc: financeCc ? financeCc : undefined,
-      replyTo: email || undefined,
-      subject,
-      html,
-      attachments: attachments.length > 0 ? bufferAttachments(attachments) : undefined,
-    });
-    return { ok: true };
-  } catch (err) {
-    console.error("[finance] sendMail error:", err);
-    if (attachments.length > 0) {
-      return { ok: false, error: UPLOAD_ERROR };
-    }
+  // Succeed as long as the enquiry was durably captured or at least emailed.
+  if (!saved && !emailed) {
     return { ok: false, error: GENERIC_ERROR };
   }
+  return { ok: true };
 }
 
 /* ---------- Renderers ---------- */

@@ -3,6 +3,7 @@
 import { sendMail, bufferAttachments, isMailerConfigured } from "@/lib/mailer";
 import { createMondayCandidate } from "@/lib/monday";
 import { saveApplication } from "@/lib/leads";
+import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import { getEmailSetting } from "@/lib/email-config";
 import {
   isEmail,
@@ -323,9 +324,13 @@ export async function submitCareersForm(
   };
   const { score, category } = scoreCandidate(fields);
 
-  // Persist to Supabase (source of truth for the dashboard) — best effort,
-  // never blocks the submission.
-  await saveApplication({
+  // Store the resume in Supabase Storage so it's viewable in the dashboard and
+  // survives an email failure (best-effort; falls back to filenames).
+  const storedResumes = await uploadLeadAttachments(attachments, "careers");
+
+  // Persist to Supabase — the durable record and source of truth for the
+  // dashboard. Whether THIS succeeds (not the email) decides the submission.
+  const saved = await saveApplication({
     name: fullName,
     email,
     mobile,
@@ -339,7 +344,7 @@ export async function submitCareersForm(
     category,
     whyHire,
     message,
-    resumeNames: fields.attachmentNames,
+    resumeNames: storedResumes.length ? storedResumes : fields.attachmentNames,
     details: {
       licenceClass,
       forklift,
@@ -352,40 +357,40 @@ export async function submitCareersForm(
 
   // Build the email
   const subject = `New Arrow Job Application — ${role} (${category}, score ${score})`;
-  const text = renderText(fields, score, category);
   const html = renderHtml(fields, score, category);
 
-  // If the M365 mailer isn't configured (e.g. local dev), log + return success
-  // so the form flow can still be tested. Production must have the Azure vars.
-  if (!isMailerConfigured()) {
+  // Email is a best-effort alert. The application is already recorded above and
+  // staff are push-notified, so a mail failure must NOT bounce a captured
+  // application (matches how Supabase/Monday/push are all best-effort).
+  let emailed = false;
+  if (isMailerConfigured()) {
+    try {
+      await sendMail({
+        to: await getEmailSetting("careers_email_to", TO),
+        replyTo: email || undefined,
+        subject,
+        html,
+        attachments:
+          attachments.length > 0 ? bufferAttachments(attachments) : undefined,
+      });
+      emailed = true;
+    } catch (err) {
+      console.error("[careers] sendMail error (non-fatal):", err);
+    }
+  } else {
     console.warn(
       "[careers] M365 mailer not configured — email not sent. Payload:\n",
-      text,
+      renderText(fields, score, category),
     );
-    // Still attempt the best-effort Monday sync in dev if it's configured.
-    await syncMonday(fields, score, category);
-    return { ok: true };
   }
 
-  try {
-    await sendMail({
-      to: await getEmailSetting("careers_email_to", TO),
-      replyTo: email || undefined,
-      subject,
-      html,
-      attachments: attachments.length > 0 ? bufferAttachments(attachments) : undefined,
-    });
-  } catch (err) {
-    console.error("[careers] sendMail error:", err);
-    if (attachments.length > 0) {
-      return { ok: false, error: UPLOAD_ERROR };
-    }
-    return { ok: false, error: GENERIC_ERROR };
-  }
-
-  // Email succeeded — fire the best-effort Monday sync (never blocks/fails).
+  // Best-effort Monday mirror (never blocks/fails).
   await syncMonday(fields, score, category);
 
+  // Succeed as long as the application was durably captured or at least emailed.
+  if (!saved && !emailed) {
+    return { ok: false, error: GENERIC_ERROR };
+  }
   return { ok: true };
 }
 

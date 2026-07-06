@@ -163,9 +163,9 @@ export async function submitQuoteForm(
   // (best-effort; falls back to filenames if Storage isn't configured).
   const storedAttachments = await uploadLeadAttachments(attachments, "quote");
 
-  // Persist to Supabase (source of truth for the dashboard) — best effort,
-  // never blocks the submission.
-  await saveLead({
+  // Persist to Supabase — the durable record and source of truth for the
+  // dashboard. Whether THIS succeeds (not the email) decides the submission.
+  const saved = await saveLead({
     source: "quote",
     name,
     businessName: business,
@@ -185,33 +185,36 @@ export async function submitQuoteForm(
     },
   });
 
-  // If the M365 mailer isn't configured (e.g. local dev), log + return success
-  // so the form flow can still be tested. Production must have the Azure vars.
-  if (!isMailerConfigured()) {
+  // Email is a best-effort alert. The lead is already recorded above (and its
+  // attachments stored + dashboard notified), so a mail failure must NOT bounce
+  // a captured enquiry.
+  let emailed = false;
+  if (isMailerConfigured()) {
+    try {
+      await sendMail({
+        to: await getEmailSetting("quote_email_to", TO),
+        replyTo: email || undefined,
+        subject,
+        html,
+        attachments:
+          attachments.length > 0 ? bufferAttachments(attachments) : undefined,
+      });
+      emailed = true;
+    } catch (err) {
+      console.error("[quote] sendMail error (non-fatal):", err);
+    }
+  } else {
     console.warn(
       "[quote] M365 mailer not configured — email not sent. Payload:\n",
       text,
     );
-    return { ok: true };
   }
 
-  try {
-    await sendMail({
-      to: await getEmailSetting("quote_email_to", TO),
-      replyTo: email || undefined,
-      subject,
-      html,
-      attachments: attachments.length > 0 ? bufferAttachments(attachments) : undefined,
-    });
-    return { ok: true };
-  } catch (err) {
-    console.error("[quote] sendMail error:", err);
-    // Distinguish attachment-related failures from generic delivery errors.
-    if (attachments.length > 0) {
-      return { ok: false, error: UPLOAD_ERROR };
-    }
+  // Succeed as long as the enquiry was durably captured or at least emailed.
+  if (!saved && !emailed) {
     return { ok: false, error: GENERIC_ERROR };
   }
+  return { ok: true };
 }
 
 /* ---------- Renderers ---------- */
