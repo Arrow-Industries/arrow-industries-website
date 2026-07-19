@@ -33,6 +33,10 @@ export const metadata: Metadata = pageMetadata({
   path: "/careers",
 });
 
+// Handles the careers form's server action (resume upload streamed to Graph).
+// See /request-a-quote for the rationale.
+export const maxDuration = 60;
+
 const whyArrow = [
   {
     icon: Hammer,

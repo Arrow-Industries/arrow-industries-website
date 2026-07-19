@@ -14,6 +14,12 @@ export const metadata: Metadata = pageMetadata({
   path: "/request-a-quote",
 });
 
+// This route handles the quote form's server action, which can carry up to
+// ~25MB of attachments and streams them to Microsoft Graph in chunks. Vercel's
+// default function duration is too tight for that on a slow connection; Pro
+// (with Fluid compute) allows far longer, so give it real headroom.
+export const maxDuration = 60;
+
 const reassurance = [
   {
     icon: ListChecks,

@@ -31,6 +31,10 @@ export const metadata: Metadata = pageMetadata({
   path: "/finance",
 });
 
+// Handles the finance form's server action (attachments streamed to Graph).
+// See /request-a-quote for the rationale.
+export const maxDuration = 60;
+
 const benefits = [
   {
     icon: Banknote,
