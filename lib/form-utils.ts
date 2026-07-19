@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { Redis } from "@upstash/redis";
 
 /**
  * Shared helpers for the website's server-action form handlers
@@ -35,28 +36,80 @@ export function escapeHtml(s: string) {
     .replace(/'/g, "&#39;");
 }
 
-/* ---------- Naive in-memory rate limit ----------
-   Per-IP, per server instance. Resets on cold-start and isn't shared across
-   instances — the honeypot + validation are the real defence; this just blunts
-   trivial spam. Each form gets its own independent bucket via the factory. */
+/* ---------- Per-IP rate limit ----------
+   Backed by Vercel KV / Upstash Redis so the limit is shared across every
+   serverless instance and survives cold starts. Falls back to a per-instance
+   in-memory window when KV isn't configured (local dev), which is weak but
+   better than nothing — the honeypot + server validation remain the real
+   defence. Each form passes its own bucket so limits don't interfere. */
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_WINDOW_SECONDS = RATE_WINDOW_MS / 1000;
 const DEFAULT_RATE_MAX = 5;
 
-export function createRateLimiter(max: number = DEFAULT_RATE_MAX) {
+/** Memoised KV client, or null when the env isn't configured. */
+let redisClient: Redis | null | undefined;
+
+function getRedis(): Redis | null {
+  if (redisClient !== undefined) return redisClient;
+  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
+  const token =
+    process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
+  redisClient = url && token ? new Redis({ url, token }) : null;
+  if (!redisClient) {
+    console.warn(
+      "[rate-limit] KV not configured — using per-instance in-memory limiting.",
+    );
+  }
+  return redisClient;
+}
+
+async function clientIp(): Promise<string> {
+  try {
+    const h = await headers();
+    return (
+      h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      h.get("x-real-ip") ||
+      "anon"
+    );
+  } catch {
+    // headers() can fail outside a request context.
+    return "anon";
+  }
+}
+
+export function createRateLimiter(
+  bucket: string,
+  max: number = DEFAULT_RATE_MAX,
+) {
+  // Only used when KV isn't configured.
   const hits = new Map<string, number[]>();
+
   return async function check(): Promise<
     { ok: true } | { ok: false; retryIn: number }
   > {
-    let ip = "anon";
-    try {
-      const h = await headers();
-      ip =
-        h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-        h.get("x-real-ip") ||
-        "anon";
-    } catch {
-      // headers() can fail outside a request context — fall through
+    const ip = await clientIp();
+    const redis = getRedis();
+
+    if (redis) {
+      // Fixed window: INCR the counter, set the TTL on first hit.
+      const key = `ratelimit:${bucket}:${ip}`;
+      try {
+        const count = await redis.incr(key);
+        if (count === 1) await redis.expire(key, RATE_WINDOW_SECONDS);
+        if (count > max) {
+          const ttl = await redis.ttl(key);
+          return {
+            ok: false,
+            retryIn: (ttl > 0 ? ttl : RATE_WINDOW_SECONDS) * 1000,
+          };
+        }
+        return { ok: true };
+      } catch (err) {
+        // Fail OPEN — a KV outage must never block a legitimate enquiry.
+        console.error("[rate-limit] KV error (allowing request):", err);
+        return { ok: true };
+      }
     }
 
     const now = Date.now();

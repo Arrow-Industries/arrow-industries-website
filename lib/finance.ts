@@ -92,8 +92,8 @@ const ALLOWED_MIME =
   /^(image\/(jpeg|png|jpg)$|application\/pdf$|application\/msword$|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document$)/i;
 const ALLOWED_EXT = /\.(jpe?g|png|pdf|docx?)$/i;
 
-// 5 submissions per 10 minutes per IP (per server instance).
-const checkRateLimit = createRateLimiter();
+// 5 submissions per 10 minutes per IP, shared across instances via Vercel KV.
+const checkRateLimit = createRateLimiter("finance");
 
 /* ---------- Server action ---------- */
 

@@ -43,8 +43,8 @@ const UPLOAD_ERROR =
 const ALLOWED_MIME = /^(image\/|application\/pdf$)/i;
 const ALLOWED_EXT = /\.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?|pdf)$/i;
 
-// 5 submissions per 10 minutes per IP (per server instance).
-const checkRateLimit = createRateLimiter();
+// 5 submissions per 10 minutes per IP, shared across instances via Vercel KV.
+const checkRateLimit = createRateLimiter("quote");
 
 /* ---------- Server action ---------- */
 
