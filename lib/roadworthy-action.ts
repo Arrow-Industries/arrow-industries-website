@@ -108,8 +108,8 @@ export async function submitRoadworthyBooking(
   if (!vehicleType)
     return { ok: false, error: "Please type the vehicle type.", field: "vehicleTypeOther" };
   const axles = Number(axlesRaw);
-  if (!axlesRaw || !Number.isInteger(axles) || axles < 1 || axles > 12)
-    return { ok: false, error: "Please select the number of axles.", field: "axles" };
+  if (!axlesRaw || !Number.isInteger(axles) || axles < 2 || axles > 6)
+    return { ok: false, error: "Please select the number of axles (2–6).", field: "axles" };
   if (!make) return { ok: false, error: "Please provide the vehicle make.", field: "vehicleMake" };
   if (!model) return { ok: false, error: "Please provide the vehicle model.", field: "vehicleModel" };
   const year = Number(yearRaw);

@@ -22,7 +22,7 @@ export interface RwcBookingOptions {
   /** Vehicle-type picker, grouped Trucks / Trailers (dashboard-editable). */
   truckTypes: RwcVehicleType[];
   trailerTypes: RwcVehicleType[];
-  /** Inspection price by axle count ("1"…"8") — THE price driver. */
+  /** Inspection price by axle count ("2"…"6") — THE price driver. */
   axlePrices: Record<string, number>;
   /** Show prices to customers on the booking form. */
   showPrices: boolean;
@@ -73,7 +73,7 @@ const FALLBACK: RwcBookingOptions = {
     { label: "Curtain Sider Trailer", desc: "Curtainsiders" },
     { label: "Road Train Trailer", desc: "A/B/C trailers (where applicable)" },
   ],
-  axlePrices: { "1": 250, "2": 300, "3": 350, "4": 400, "5": 450, "6": 500, "7": 550, "8": 600 },
+  axlePrices: { "2": 300, "3": 350, "4": 400, "5": 450, "6": 500 },
   showPrices: false,
   durationMins: 90,
   leadDays: 1,
