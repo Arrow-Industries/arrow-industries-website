@@ -57,6 +57,30 @@ async function getToken(): Promise<string> {
   return cached.token;
 }
 
+/**
+ * Diagnostic: confirm the Graph app-only credentials can actually obtain a
+ * token. Sends nothing. This is the step that fails when the client secret has
+ * expired, the tenant/client ids are wrong, or admin consent is missing — i.e.
+ * the usual reason enquiry emails stop arriving.
+ */
+export async function verifyMailer(): Promise<
+  { ok: true } | { ok: false; error: string }
+> {
+  if (!isMailerConfigured()) {
+    return {
+      ok: false,
+      error:
+        "Missing env: AZURE_TENANT_ID / AZURE_CLIENT_ID / AZURE_CLIENT_SECRET / MAIL_FROM",
+    };
+  }
+  try {
+    await getToken();
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: String(err) };
+  }
+}
+
 export interface MailAttachment {
   filename: string;
   content: Buffer;
