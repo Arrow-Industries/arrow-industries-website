@@ -18,28 +18,32 @@ const inputBase =
   "w-full rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone placeholder:text-mute focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
 const labelBase = "text-sm font-semibold text-bone";
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
+// Vercel rejects request bodies over ~4.5MB, so every photo is compressed in
+// the browser and the combined payload stays safely under that.
+const SHRINK_ABOVE = 500 * 1024; // compress anything bigger than 500KB
+const MAX_FILE_BYTES = 3 * 1024 * 1024; // per photo, post-compression
+const MAX_TOTAL_BYTES = 3_500_000; // combined payload budget
 
 function formatBytes(bytes: number) {
   if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   return `${Math.max(1, Math.round(bytes / 1024))} KB`;
 }
 
-/** Downscale an oversized photo in the browser (max 2500px, JPEG 85%) so big
- *  camera shots fit the 10MB cap instead of bouncing. Falls back to the
- *  original file if anything goes wrong. */
+/** Downscale a photo in the browser (max 1600px, JPEG 80%) so phone camera
+ *  shots upload reliably. Falls back to the original file if anything goes
+ *  wrong (e.g. a format the browser can't decode). */
 async function shrinkPhoto(file: File): Promise<File> {
   try {
     const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, 2500 / Math.max(bitmap.width, bitmap.height));
+    const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement("canvas");
-    canvas.width = Math.round(bitmap.width * scale);
-    canvas.height = Math.round(bitmap.height * scale);
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
     const ctx = canvas.getContext("2d");
     if (!ctx) return file;
     ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
     bitmap.close();
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.8));
     if (!blob || blob.size >= file.size) return file;
     return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
   } catch {
@@ -121,15 +125,23 @@ export function RoadworthyBookingForm({
     setShrinking(true);
     const accepted: File[] = [];
     const rejected: string[] = [];
+    let total = files.reduce((n, f) => n + f.size, 0);
     for (const f of incoming) {
-      // Oversized camera shots get downscaled in the browser first.
-      const ready = f.size > MAX_FILE_BYTES ? await shrinkPhoto(f) : f;
-      if (ready.size > MAX_FILE_BYTES) rejected.push(f.name);
-      else accepted.push(ready);
+      // Compress everything beyond thumbnail size so uploads stay small
+      // enough for mobile connections and the server's request cap.
+      const ready = f.size > SHRINK_ABOVE ? await shrinkPhoto(f) : f;
+      if (ready.size > MAX_FILE_BYTES || total + ready.size > MAX_TOTAL_BYTES) {
+        rejected.push(f.name);
+        continue;
+      }
+      total += ready.size;
+      accepted.push(ready);
     }
     setShrinking(false);
     if (rejected.length) {
-      setFileError(`${rejected.join(", ")} couldn't be shrunk under 10MB — please try a smaller photo.`);
+      setFileError(
+        `${rejected.join(", ")} couldn't be added — photos are capped at about 3.5MB combined so they upload reliably. Try fewer photos.`,
+      );
     }
     if (accepted.length) {
       const next = [...files, ...accepted];
@@ -149,6 +161,11 @@ export function RoadworthyBookingForm({
     if (state && !state.ok) {
       const target = state.field ? document.getElementById(state.field) : errorRef.current;
       target?.focus();
+    }
+    // Success replaces the form — bring the confirmation into view so mobile
+    // users aren't left staring at where the bottom of the form used to be.
+    if (state?.ok) {
+      document.getElementById("book")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [state]);
 
@@ -364,7 +381,7 @@ export function RoadworthyBookingForm({
       <Field
         label="Photos of the vehicle"
         name="photos"
-        hint="Optional — a few photos of the vehicle (and anything you're unsure about) help us prepare. Max 10MB per photo."
+        hint="Optional — a few photos of the vehicle (and anything you're unsure about) help us prepare. Big photos are shrunk automatically."
       >
         <div className="flex flex-col gap-3">
           <button

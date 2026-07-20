@@ -152,6 +152,10 @@ export async function submitRoadworthyBooking(
   });
   if (!photoResult.ok) return { ok: false, error: photoResult.error, field: "photos" };
   const photos = photoResult.attachments;
+  // Vercel rejects bodies over ~4.5MB before we ever run; anything that got
+  // this far but is still suspiciously large gets a friendly error instead.
+  if (photos.reduce((n, p) => n + p.content.length, 0) > 4_000_000)
+    return { ok: false, error: "Those photos are too large combined — please try fewer or smaller photos.", field: "photos" };
 
   const limited = await rateLimit();
   if (!limited.ok)
