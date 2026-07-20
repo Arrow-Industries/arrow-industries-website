@@ -56,6 +56,7 @@ export async function submitRoadworthyBooking(
   const yearRaw = String(formData.get("vehicleYear") ?? "").trim();
   const vin = String(formData.get("vin") ?? "").trim().toUpperCase();
   const rego = String(formData.get("rego") ?? "").trim();
+  const vehicleType = String(formData.get("vehicleType") ?? "").trim();
   const inspectionKey = String(formData.get("inspectionType") ?? "").trim();
   const preferredDate = String(formData.get("preferredDate") ?? "").trim();
   const preferredTime = String(formData.get("preferredTime") ?? "").trim();
@@ -75,6 +76,8 @@ export async function submitRoadworthyBooking(
     return { ok: false, error: "Please provide a valid email address.", field: "email" };
   if (!licence)
     return { ok: false, error: "Please provide your driver licence number.", field: "licenceNumber" };
+  if (!vehicleType)
+    return { ok: false, error: "Please select the vehicle type.", field: "vehicleType" };
   if (!make) return { ok: false, error: "Please provide the vehicle make.", field: "vehicleMake" };
   if (!model) return { ok: false, error: "Please provide the vehicle model.", field: "vehicleModel" };
   const year = Number(yearRaw);
@@ -129,7 +132,7 @@ export async function submitRoadworthyBooking(
       phone,
       rego: rego || null,
       vehicle: vehicleText,
-      vehicle_type: item.label.replace(/\s*RWC$/i, ""),
+      vehicle_type: vehicleType || item.label.replace(/\s*RWC$/i, ""),
       inspection_key: item.key,
       inspection_label: item.label,
       price: item.price,
@@ -170,6 +173,7 @@ export async function submitRoadworthyBooking(
       ["Email", email],
       ["Phone", phone],
       ["Licence no.", licence],
+      ["Vehicle type", vehicleType],
       ["Vehicle", vehicleText],
       ["VIN", vin],
       ["Rego", dash(rego.toUpperCase())],

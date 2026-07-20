@@ -6,11 +6,11 @@
  * (and prices, when enabled) come from the dashboard's price list.
  */
 
-import { useActionState, useEffect, useRef, isValidElement, cloneElement } from "react";
+import { useActionState, useEffect, useRef, useState, isValidElement, cloneElement } from "react";
 import { CalendarCheck, CheckCircle2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/Button";
 import { submitRoadworthyBooking } from "@/lib/roadworthy-action";
-import type { RwcOption } from "@/lib/roadworthy";
+import type { RwcOption, RwcVehicleType } from "@/lib/roadworthy";
 import { site } from "@/data/site";
 
 const inputBase =
@@ -47,17 +47,23 @@ function Field({
 
 export function RoadworthyBookingForm({
   options,
+  truckTypes,
+  trailerTypes,
   minDate,
   openDaysLabel,
 }: {
   options: RwcOption[];
+  truckTypes: RwcVehicleType[];
+  trailerTypes: RwcVehicleType[];
   /** Earliest selectable preferred date (yyyy-mm-dd). */
   minDate: string;
   /** e.g. "Monday to Friday" — shown as the date hint. */
   openDaysLabel: string;
 }) {
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
+  const [vehicleType, setVehicleType] = useState("");
   const errorRef = useRef<HTMLParagraphElement>(null);
+  const selectedType = [...truckTypes, ...trailerTypes].find((t) => t.label === vehicleType);
 
   useEffect(() => {
     if (state && !state.ok) {
@@ -120,6 +126,34 @@ export function RoadworthyBookingForm({
           <input id="licenceNumber" name="licenceNumber" type="text" className={inputBase} />
         </Field>
       </div>
+
+      <Field label="Vehicle type" name="vehicleType" required hint={selectedType?.desc || "Pick the closest match — it helps us allow the right time."}>
+        <div className="relative">
+          <select
+            id="vehicleType"
+            name="vehicleType"
+            required
+            value={vehicleType}
+            onChange={(e) => setVehicleType(e.target.value)}
+            className={inputBase + " appearance-none pr-10"}
+          >
+            <option value="" disabled>
+              Select vehicle type…
+            </option>
+            <optgroup label="Trucks & heavy vehicles">
+              {truckTypes.map((t) => (
+                <option key={t.label} value={t.label}>{t.label}</option>
+              ))}
+            </optgroup>
+            <optgroup label="Trailers">
+              {trailerTypes.map((t) => (
+                <option key={t.label} value={t.label}>{t.label}</option>
+              ))}
+            </optgroup>
+          </select>
+          <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden />
+        </div>
+      </Field>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Vehicle make" name="vehicleMake" required>
