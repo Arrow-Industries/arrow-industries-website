@@ -94,6 +94,8 @@ export function bufferAttachments(
 }
 
 export interface SendMailOptions {
+  /** Mailbox to send AS (defaults to MAIL_FROM). Must exist in M365. */
+  from?: string;
   to: string | string[];
   cc?: string | string[];
   subject: string;
@@ -153,7 +155,7 @@ async function sendInline(
       contentBytes: a.content.toString("base64"),
     }));
   }
-  const res = await fetch(`${GRAPH}/users/${encodeURIComponent(FROM!)}/sendMail`, {
+  const res = await fetch(`${GRAPH}/users/${encodeURIComponent(opts.from || FROM!)}/sendMail`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({ message, saveToSentItems: true }),
@@ -169,7 +171,7 @@ async function sendViaDraft(
   attachments: MailAttachment[],
 ): Promise<void> {
   const auth = { Authorization: `Bearer ${token}` };
-  const userBase = `${GRAPH}/users/${encodeURIComponent(FROM!)}`;
+  const userBase = `${GRAPH}/users/${encodeURIComponent(opts.from || FROM!)}`;
 
   // 1. Create the draft (no attachments yet).
   const draftRes = await fetch(`${userBase}/messages`, {

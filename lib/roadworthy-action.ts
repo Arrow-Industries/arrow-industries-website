@@ -243,6 +243,16 @@ export async function submitRoadworthyBooking(
   let emailed = false;
   if (isMailerConfigured()) {
     const to = await getEmailSetting("roadworthy_email_to", "LVT@arrowindustries.com.au");
+    const fromMailbox = await getEmailSetting("roadworthy_email_from", "LVT@arrowindustries.com.au");
+    // Send as the roadworthy mailbox; retry as the default if it can't send.
+    const sendAs = async (opts: Parameters<typeof sendMail>[0]) => {
+      try {
+        await sendMail({ ...opts, from: fromMailbox });
+      } catch (err) {
+        console.error(`[roadworthy] send as ${fromMailbox} failed — retrying as default:`, err);
+        await sendMail(opts);
+      }
+    };
     const rows = [
       ["Name", name],
       ["Company", dash(company)],
@@ -264,7 +274,7 @@ export async function submitRoadworthyBooking(
       .map(([k, v]) => detailRow(k, escapeHtml(v)))
       .join("");
     try {
-      await sendMail({
+      await sendAs({
         to,
         subject: `Roadworthy booking request — ${name}${rego ? ` (${rego.toUpperCase()})` : ""}`,
         html: shell("Roadworthy booking request", `
@@ -282,7 +292,7 @@ export async function submitRoadworthyBooking(
     // 3) Customer acknowledgement.
     if (email) {
       try {
-        await sendMail({
+        await sendAs({
           to: email,
           subject: "Roadworthy booking request received — Arrow Industries",
           html: shell("Booking request received", `
