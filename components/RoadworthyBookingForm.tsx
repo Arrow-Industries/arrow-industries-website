@@ -10,14 +10,13 @@ import { useActionState, useEffect, useRef, useState, isValidElement, cloneEleme
 import { CalendarCheck, CheckCircle2, ChevronDown, ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/Button";
 import { submitRoadworthyBooking } from "@/lib/roadworthy-action";
-import type { RwcOption, RwcVehicleType } from "@/lib/roadworthy";
+import { getRwcSlots, type RwcSlot } from "@/lib/roadworthy-slots";
+import type { RwcVehicleType } from "@/lib/roadworthy";
 import { site } from "@/data/site";
 
 const inputBase =
   "w-full rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone placeholder:text-mute focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
 const labelBase = "text-sm font-semibold text-bone";
-
-const TIME_SLOTS = ["Morning (6am – 10am)", "Midday (10am – 1pm)", "Afternoon (1pm – 4pm)", "Any time"];
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
 
@@ -53,13 +52,11 @@ function Field({
 }
 
 export function RoadworthyBookingForm({
-  options,
   truckTypes,
   trailerTypes,
   minDate,
   openDaysLabel,
 }: {
-  options: RwcOption[];
   truckTypes: RwcVehicleType[];
   trailerTypes: RwcVehicleType[];
   /** Earliest selectable preferred date (yyyy-mm-dd). */
@@ -69,6 +66,9 @@ export function RoadworthyBookingForm({
 }) {
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
   const [vehicleType, setVehicleType] = useState("");
+  const [prefDate, setPrefDate] = useState("");
+  const [slots, setSlots] = useState<RwcSlot[] | null>(null);
+  const [slotsLoading, setSlotsLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -111,6 +111,29 @@ export function RoadworthyBookingForm({
       target?.focus();
     }
   }, [state]);
+
+  // Refresh the free time slots whenever the preferred date changes.
+  useEffect(() => {
+    if (!prefDate) {
+      setSlots(null);
+      return;
+    }
+    let live = true;
+    setSlotsLoading(true);
+    getRwcSlots(prefDate)
+      .then((s) => {
+        if (live) setSlots(s);
+      })
+      .catch(() => {
+        if (live) setSlots([]);
+      })
+      .finally(() => {
+        if (live) setSlotsLoading(false);
+      });
+    return () => {
+      live = false;
+    };
+  }, [prefDate]);
 
   if (state?.ok) {
     return (
@@ -224,6 +247,20 @@ export function RoadworthyBookingForm({
         </Field>
       )}
 
+      <Field label="Number of axles" name="axles" required>
+        <div className="relative sm:max-w-[calc(50%-0.625rem)]">
+          <select id="axles" name="axles" required defaultValue="" className={inputBase + " appearance-none pr-10"}>
+            <option value="" disabled>
+              Select…
+            </option>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+          <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden />
+        </div>
+      </Field>
+
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Vehicle make" name="vehicleMake" required>
           <input id="vehicleMake" name="vehicleMake" type="text" placeholder="e.g. Kenworth" className={inputBase} />
@@ -242,32 +279,37 @@ export function RoadworthyBookingForm({
         </Field>
       </div>
 
-      <Field label="Inspection type" name="inspectionType" required>
-        <div className="relative">
-          <select id="inspectionType" name="inspectionType" required defaultValue="" className={inputBase + " appearance-none pr-10"}>
-            <option value="" disabled>
-              Select your vehicle…
-            </option>
-            {options.map((o) => (
-              <option key={o.key} value={o.key}>
-                {o.label}
-                {o.price != null ? ` — $${o.price}` : ""}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden />
-        </div>
-      </Field>
-
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Preferred date" name="preferredDate" required hint={`Inspections run ${openDaysLabel}, by appointment.`}>
-          <input id="preferredDate" name="preferredDate" type="date" required min={minDate} className={inputBase + " [color-scheme:dark]"} />
+          <input
+            id="preferredDate"
+            name="preferredDate"
+            type="date"
+            required
+            min={minDate}
+            value={prefDate}
+            onChange={(e) => setPrefDate(e.target.value)}
+            className={inputBase + " [color-scheme:dark]"}
+          />
         </Field>
-        <Field label="Preferred time" name="preferredTime">
+        <Field
+          label="Preferred time"
+          name="preferredTime"
+          hint={
+            !prefDate
+              ? "Pick a date to see the available times."
+              : slotsLoading
+                ? "Checking the schedule…"
+                : slots && slots.length === 0
+                  ? "That day is fully booked — please pick another date, or choose Any time and we'll try to fit you in."
+                  : "Live availability from our workshop schedule."
+          }
+        >
           <div className="relative">
-            <select id="preferredTime" name="preferredTime" defaultValue={TIME_SLOTS[3]} className={inputBase + " appearance-none pr-10"}>
-              {TIME_SLOTS.map((t) => (
-                <option key={t} value={t}>{t}</option>
+            <select id="preferredTime" name="preferredTime" defaultValue="any" disabled={!prefDate || slotsLoading} className={inputBase + " appearance-none pr-10 disabled:opacity-60"}>
+              <option value="any">Any time</option>
+              {(slots ?? []).map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
               ))}
             </select>
             <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden />

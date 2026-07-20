@@ -84,7 +84,7 @@ export async function submitRoadworthyBooking(
   const vehicleTypeOther = String(formData.get("vehicleTypeOther") ?? "").trim();
   // "Other…" options carry a __other_* value; the real type is typed in.
   const vehicleType = vehicleTypeRaw.startsWith("__other") ? vehicleTypeOther : vehicleTypeRaw;
-  const inspectionKey = String(formData.get("inspectionType") ?? "").trim();
+  const axlesRaw = String(formData.get("axles") ?? "").trim();
   const preferredDate = String(formData.get("preferredDate") ?? "").trim();
   const preferredTime = String(formData.get("preferredTime") ?? "").trim();
   const message = String(formData.get("message") ?? "").trim();
@@ -107,6 +107,9 @@ export async function submitRoadworthyBooking(
     return { ok: false, error: "Please select the vehicle type.", field: "vehicleType" };
   if (!vehicleType)
     return { ok: false, error: "Please type the vehicle type.", field: "vehicleTypeOther" };
+  const axles = Number(axlesRaw);
+  if (!axlesRaw || !Number.isInteger(axles) || axles < 1 || axles > 12)
+    return { ok: false, error: "Please select the number of axles.", field: "axles" };
   if (!make) return { ok: false, error: "Please provide the vehicle make.", field: "vehicleMake" };
   if (!model) return { ok: false, error: "Please provide the vehicle model.", field: "vehicleModel" };
   const year = Number(yearRaw);
@@ -116,9 +119,7 @@ export async function submitRoadworthyBooking(
   if (vin.replace(/\s/g, "").length < 5)
     return { ok: false, error: "Please provide the VIN (it's on the compliance plate).", field: "vin" };
 
-  const { options, leadDays, days } = await getRwcBookingOptions();
-  const item = options.find((o) => o.key === inspectionKey);
-  if (!item) return { ok: false, error: "Please select an inspection type.", field: "inspectionType" };
+  const { leadDays, days } = await getRwcBookingOptions();
 
   if (!preferredDate || !/^\d{4}-\d{2}-\d{2}$/.test(preferredDate))
     return { ok: false, error: "Please pick a preferred date.", field: "preferredDate" };
@@ -158,6 +159,14 @@ export async function submitRoadworthyBooking(
 
   const name = `${firstName} ${lastName}`;
   const vehicleText = [year, make, model].filter(Boolean).join(" ");
+  // "any" or an "HH:MM" slot from the live schedule picker.
+  const timeStored = !preferredTime || preferredTime === "any" ? "Any time" : preferredTime;
+  const timeLabel = /^\d{2}:\d{2}$/.test(timeStored)
+    ? (() => {
+        const [h, m] = timeStored.split(":").map(Number);
+        return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
+      })()
+    : timeStored;
 
   // Store photos so the dashboard can show them (best-effort).
   const storedPaths = await uploadLeadAttachments(photos, "roadworthy");
@@ -177,13 +186,10 @@ export async function submitRoadworthyBooking(
       phone,
       rego: rego || null,
       vehicle: vehicleText,
-      vehicle_type: vehicleType || item.label.replace(/\s*RWC$/i, ""),
-      inspection_key: item.key,
-      inspection_label: item.label,
-      price: item.price,
-      duration_mins: item.durationMins,
+      vehicle_type: vehicleType,
+      duration_mins: 60,
       preferred_date: preferredDate,
-      preferred_time: preferredTime || null,
+      preferred_time: timeStored,
       notes: message || null,
     };
     const detailRowDb = {
@@ -196,8 +202,10 @@ export async function submitRoadworthyBooking(
       vehicle_year: year,
       vin,
     };
+    const withPhotos = storedPaths.length ? { attachments: storedPaths } : {};
     const attempts: Record<string, unknown>[] = [
-      ...(storedPaths.length ? [{ ...baseRow, ...detailRowDb, attachments: storedPaths }] : []),
+      { ...baseRow, ...detailRowDb, axles, ...withPhotos },
+      ...(storedPaths.length ? [{ ...baseRow, ...detailRowDb, ...withPhotos }] : []),
       { ...baseRow, ...detailRowDb },
       baseRow,
     ];
@@ -212,7 +220,7 @@ export async function submitRoadworthyBooking(
         break;
       }
     }
-    if (saved) await notifyDashboardNewRwcBooking({ name, inspection: item.label, preferredDate });
+    if (saved) await notifyDashboardNewRwcBooking({ name, inspection: vehicleType, preferredDate });
   }
 
   // 2) Staff alert email (photos attached).
@@ -227,12 +235,12 @@ export async function submitRoadworthyBooking(
       ["Phone", phone],
       ["Licence no.", licence],
       ["Vehicle type", vehicleType],
+      ["Axles", String(axles)],
       ["Vehicle", vehicleText],
       ["VIN", vin],
       ["Rego", dash(rego.toUpperCase())],
-      ["Inspection", item.label],
       ["Preferred date", preferredDate],
-      ["Preferred time", dash(preferredTime)],
+      ["Preferred time", timeLabel],
       ["Photos", photos.length ? `${photos.length} attached` : "—"],
       ["Notes", dash(message)],
     ]
@@ -265,8 +273,8 @@ export async function submitRoadworthyBooking(
             <p>Thanks — we've received your roadworthy inspection request:</p>
             <table style="border-collapse:collapse;font-size:14px;border-top:2px solid #ddd;border-bottom:2px solid #ddd;margin:8px 0">
               ${detailRow("Vehicle", `<strong>${escapeHtml(vehicleText)}</strong>${rego ? ` (${escapeHtml(rego.toUpperCase())})` : ""}`)}
-              ${detailRow("Inspection", escapeHtml(item.label))}
-              ${detailRow("Requested", `<strong>${escapeHtml(preferredDate)}</strong>${preferredTime ? ` · ${escapeHtml(preferredTime)}` : ""}`)}
+              ${detailRow("Vehicle type", `${escapeHtml(vehicleType)} · ${axles} axle${axles === 1 ? "" : "s"}`)}
+              ${detailRow("Requested", `<strong>${escapeHtml(preferredDate)}</strong> · ${escapeHtml(timeLabel)}`)}
             </table>
             <p>This isn't confirmed yet: our team will check the schedule and email you a confirmed time, usually within the same business day. Once confirmed, please plan to <strong>drop the vehicle off 15 minutes before your booking time</strong>.</p>
             <p>Need it urgently? Call us on <a href="${site.phoneHref}">${site.phone}</a>.</p>
