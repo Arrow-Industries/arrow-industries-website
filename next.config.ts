@@ -1,10 +1,17 @@
 import type { NextConfig } from "next";
 
-// Long-lived caching for static assets under /public. These paths are stable
-// (not content-hashed), so we use a long max-age plus stale-while-revalidate
-// rather than `immutable` — a replaced file still refreshes within a day.
+// Caching for static assets under /public.
+//
+// These filenames are NOT content-hashed, so a long browser `max-age` is
+// actively dangerous: replacing a file (e.g. the booking QR) leaves visitors
+// pinned to the old bytes until it expires, and `stale-while-revalidate` does
+// NOT help — it only applies once max-age has already lapsed.
+//
+// So: keep the browser copy short-lived (a cheap 304 revalidation after 5
+// minutes) while letting the CDN serve instantly and refresh in the background
+// for up to 30 days. Near-identical performance, without the staleness trap.
 const STATIC_ASSET_CACHE =
-  "public, max-age=2592000, stale-while-revalidate=86400";
+  "public, max-age=300, stale-while-revalidate=2592000";
 
 const SECURITY_HEADERS = [
   // The site is HTTPS-only on Vercel; lock it in (2 years, subdomains).

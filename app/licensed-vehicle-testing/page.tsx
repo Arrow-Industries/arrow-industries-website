@@ -318,7 +318,7 @@ export default async function RoadworthyPage() {
               </p>
               <div className="bg-white p-4">
                 <Image
-                  src="/images/lvt/booking-qr.png"
+                  src="/images/lvt/booking-qr-v2.png"
                   alt="QR code — book a roadworthy inspection at Arrow Industries"
                   width={240}
                   height={240}
