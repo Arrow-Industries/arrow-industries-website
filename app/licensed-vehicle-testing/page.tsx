@@ -144,7 +144,7 @@ const faqs = [
 ];
 
 export default async function RoadworthyPage() {
-  const { truckTypes, trailerTypes, leadDays, days } = await getRwcBookingOptions();
+  const { truckTypes, trailerTypes, axlePrices, showPrices, durationMins, leadDays, days } = await getRwcBookingOptions();
   const minDateObj = new Date();
   minDateObj.setDate(minDateObj.getDate() + leadDays);
   const minDate = minDateObj.toISOString().slice(0, 10);
@@ -212,7 +212,7 @@ export default async function RoadworthyPage() {
             </div>
             <div className="lg:col-span-7">
               <div className="relative border border-line-soft bg-ink-2 p-6 sm:p-8">
-                <RoadworthyBookingForm truckTypes={truckTypes} trailerTypes={trailerTypes} minDate={minDate} openDaysLabel={openDaysLabel} />
+                <RoadworthyBookingForm truckTypes={truckTypes} trailerTypes={trailerTypes} axlePrices={showPrices ? axlePrices : null} durationMins={durationMins} minDate={minDate} openDaysLabel={openDaysLabel} />
               </div>
             </div>
           </div>

@@ -119,7 +119,7 @@ export async function submitRoadworthyBooking(
   if (vin.replace(/\s/g, "").length < 5)
     return { ok: false, error: "Please provide the VIN (it's on the compliance plate).", field: "vin" };
 
-  const { leadDays, days, closures } = await getRwcBookingOptions();
+  const { leadDays, days, closures, axlePrices, durationMins } = await getRwcBookingOptions();
 
   if (!preferredDate || !/^\d{4}-\d{2}-\d{2}$/.test(preferredDate))
     return { ok: false, error: "Please pick a preferred date.", field: "preferredDate" };
@@ -198,7 +198,8 @@ export async function submitRoadworthyBooking(
       rego: rego || null,
       vehicle: vehicleText,
       vehicle_type: vehicleType,
-      duration_mins: 60,
+      price: axlePrices[String(axles)] ?? null,
+      duration_mins: durationMins,
       preferred_date: preferredDate,
       preferred_time: timeStored,
       notes: message || null,

@@ -80,11 +80,16 @@ function Field({
 export function RoadworthyBookingForm({
   truckTypes,
   trailerTypes,
+  axlePrices,
+  durationMins,
   minDate,
   openDaysLabel,
 }: {
   truckTypes: RwcVehicleType[];
   trailerTypes: RwcVehicleType[];
+  /** Price per axle count — null hides prices from customers. */
+  axlePrices: Record<string, number> | null;
+  durationMins: number;
   /** Earliest selectable preferred date (yyyy-mm-dd). */
   minDate: string;
   /** e.g. "Monday to Friday" — shown as the date hint. */
@@ -92,6 +97,7 @@ export function RoadworthyBookingForm({
 }) {
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
   const [vehicleType, setVehicleType] = useState("");
+  const [axles, setAxles] = useState("");
   const [prefDate, setPrefDate] = useState("");
   const [slots, setSlots] = useState<RwcSlotResult | null>(null);
   const [slotsLoading, setSlotsLoading] = useState(false);
@@ -275,13 +281,13 @@ export function RoadworthyBookingForm({
             </option>
             <optgroup label="Trucks & heavy vehicles">
               {truckTypes.map((t) => (
-                <option key={t.label} value={t.label}>{t.label}{t.price != null ? ` — $${t.price}` : ""}</option>
+                <option key={t.label} value={t.label}>{t.label}</option>
               ))}
               <option value="__other_truck">Other truck / heavy vehicle…</option>
             </optgroup>
             <optgroup label="Trailers">
               {trailerTypes.map((t) => (
-                <option key={t.label} value={t.label}>{t.label}{t.price != null ? ` — $${t.price}` : ""}</option>
+                <option key={t.label} value={t.label}>{t.label}</option>
               ))}
               <option value="__other_trailer">Other trailer…</option>
             </optgroup>
@@ -304,14 +310,33 @@ export function RoadworthyBookingForm({
         </Field>
       )}
 
-      <Field label="Number of axles" name="axles" required>
+      <Field
+        label="Number of axles"
+        name="axles"
+        required
+        hint={
+          axlePrices && axles
+            ? `Inspection price: $${axlePrices[axles] ?? "—"} inc. GST · allow ${durationMins} minutes.`
+            : `Sets your inspection price — allow ${durationMins} minutes.`
+        }
+      >
         <div className="relative sm:max-w-[calc(50%-0.625rem)]">
-          <select id="axles" name="axles" required defaultValue="" className={inputBase + " appearance-none pr-10"}>
+          <select
+            id="axles"
+            name="axles"
+            required
+            value={axles}
+            onChange={(e) => setAxles(e.target.value)}
+            className={inputBase + " appearance-none pr-10"}
+          >
             <option value="" disabled>
               Select…
             </option>
             {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-              <option key={n} value={n}>{n}</option>
+              <option key={n} value={n}>
+                {n}
+                {axlePrices?.[String(n)] != null ? ` — $${axlePrices[String(n)]}` : ""}
+              </option>
             ))}
           </select>
           <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden />

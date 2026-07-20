@@ -49,6 +49,7 @@ export async function getRwcSlots(date: string): Promise<RwcSlotResult> {
 
   let dayStart = "06:00";
   let dayEnd = "16:00";
+  let slotMins = 90;
   let configApplied = false;
   if (sb) {
     try {
@@ -61,6 +62,8 @@ export async function getRwcSlots(date: string): Promise<RwcSlotResult> {
           (c: { from?: string; to?: string }) => YMD.test(c?.from ?? "") && YMD.test(c?.to ?? "") && c.from! <= date && date <= c.to!,
         );
         if (closure) return { closed: true, closedReason: String(closure.reason ?? "") || undefined, slots: [] };
+
+        if (Number(cfg?.durationMins) >= 15) slotMins = Math.round(Number(cfg.durationMins));
 
         if (cfg?.hours && typeof cfg.hours === "object") {
           const h = cfg.hours[String(isoDay)];
@@ -108,8 +111,8 @@ export async function getRwcSlots(date: string): Promise<RwcSlotResult> {
   }
 
   const slots: RwcSlot[] = [];
-  for (let m = startMin; m + 60 <= endMin; m += 60) {
-    if (busy.some((b) => b.start < m + 60 && b.end > m)) continue;
+  for (let m = startMin; m + slotMins <= endMin; m += slotMins) {
+    if (busy.some((b) => b.start < m + slotMins && b.end > m)) continue;
     const h = Math.floor(m / 60);
     const mm = m % 60;
     const h12 = ((h + 11) % 12) + 1;

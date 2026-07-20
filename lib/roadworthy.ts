@@ -10,8 +10,6 @@ import { getSupabaseAdmin } from "@/lib/supabase/admin";
 export interface RwcVehicleType {
   label: string;
   desc: string;
-  /** Null when the dashboard hasn't enabled public prices. */
-  price: number | null;
 }
 
 export interface RwcClosureRange {
@@ -24,6 +22,12 @@ export interface RwcBookingOptions {
   /** Vehicle-type picker, grouped Trucks / Trailers (dashboard-editable). */
   truckTypes: RwcVehicleType[];
   trailerTypes: RwcVehicleType[];
+  /** Inspection price by axle count ("1"…"8") — THE price driver. */
+  axlePrices: Record<string, number>;
+  /** Show prices to customers on the booking form. */
+  showPrices: boolean;
+  /** Flat inspection duration in minutes. */
+  durationMins: number;
   /** Minimum days ahead a booking can be requested. */
   leadDays: number;
   /** ISO weekdays taking bookings (1 = Mon … 7 = Sun). */
@@ -34,41 +38,44 @@ export interface RwcBookingOptions {
 
 const FALLBACK: RwcBookingOptions = {
   truckTypes: [
-    { label: "Prime Mover", desc: "4x2, 6x4, 8x4 prime movers", price: null },
-    { label: "Rigid Truck", desc: "Tray, curtainsider, pantech, tautliner", price: null },
-    { label: "Tipper", desc: "Single axle, bogie drive, truck & dog combinations", price: null },
-    { label: "Concrete Agitator", desc: "Mixer trucks", price: null },
-    { label: "Crane Truck", desc: "Vehicle-mounted cranes", price: null },
-    { label: "Service Truck", desc: "Mine/service bodies", price: null },
-    { label: "Hooklift Truck", desc: "Hooklift bodies", price: null },
-    { label: "Skip Loader", desc: "Skip bin loaders", price: null },
-    { label: "Water Cart", desc: "Water tankers", price: null },
-    { label: "Vacuum Truck", desc: "Vacuum excavation units", price: null },
-    { label: "Fuel Tanker", desc: "Dangerous goods tankers (vehicle inspection only)", price: null },
-    { label: "Refrigerated Truck", desc: "Refrigerated bodies", price: null },
-    { label: "Livestock Truck", desc: "Stock crates", price: null },
-    { label: "Bus", desc: "Light and heavy buses", price: null },
-    { label: "Coach", desc: "Long-distance coaches", price: null },
-    { label: "Motorhome", desc: "Heavy motorhomes over 4.5T", price: null },
+    { label: "Prime Mover", desc: "4x2, 6x4, 8x4 prime movers" },
+    { label: "Rigid Truck", desc: "Tray, curtainsider, pantech, tautliner" },
+    { label: "Tipper", desc: "Single axle, bogie drive, truck & dog combinations" },
+    { label: "Concrete Agitator", desc: "Mixer trucks" },
+    { label: "Crane Truck", desc: "Vehicle-mounted cranes" },
+    { label: "Service Truck", desc: "Mine/service bodies" },
+    { label: "Hooklift Truck", desc: "Hooklift bodies" },
+    { label: "Skip Loader", desc: "Skip bin loaders" },
+    { label: "Water Cart", desc: "Water tankers" },
+    { label: "Vacuum Truck", desc: "Vacuum excavation units" },
+    { label: "Fuel Tanker", desc: "Dangerous goods tankers (vehicle inspection only)" },
+    { label: "Refrigerated Truck", desc: "Refrigerated bodies" },
+    { label: "Livestock Truck", desc: "Stock crates" },
+    { label: "Bus", desc: "Light and heavy buses" },
+    { label: "Coach", desc: "Long-distance coaches" },
+    { label: "Motorhome", desc: "Heavy motorhomes over 4.5T" },
   ],
   trailerTypes: [
-    { label: "Semi Trailer", desc: "Standard semis", price: null },
-    { label: "B-Double Lead Trailer", desc: "Front trailer", price: null },
-    { label: "B-Double Rear Trailer", desc: "Rear trailer", price: null },
-    { label: "Dog Trailer", desc: "Full dog trailers", price: null },
-    { label: "Pig Trailer", desc: "Single axle group forward of centre", price: null },
-    { label: "Dolly", desc: "Converter dollies", price: null },
-    { label: "Low Loader", desc: "Low loaders and wideners", price: null },
-    { label: "Drop Deck Trailer", desc: "Step deck trailers", price: null },
-    { label: "Flat Top Trailer", desc: "Flatbed trailers", price: null },
-    { label: "Tipper Trailer", desc: "End and side tippers", price: null },
-    { label: "Tanker Trailer", desc: "Fuel, water, milk, etc.", price: null },
-    { label: "Refrigerated Trailer", desc: "Reefer trailers", price: null },
-    { label: "Livestock Trailer", desc: "Stock trailers", price: null },
-    { label: "Skeletal Trailer", desc: "Container skeletal trailers", price: null },
-    { label: "Curtain Sider Trailer", desc: "Curtainsiders", price: null },
-    { label: "Road Train Trailer", desc: "A/B/C trailers (where applicable)", price: null },
+    { label: "Semi Trailer", desc: "Standard semis" },
+    { label: "B-Double Lead Trailer", desc: "Front trailer" },
+    { label: "B-Double Rear Trailer", desc: "Rear trailer" },
+    { label: "Dog Trailer", desc: "Full dog trailers" },
+    { label: "Pig Trailer", desc: "Single axle group forward of centre" },
+    { label: "Dolly", desc: "Converter dollies" },
+    { label: "Low Loader", desc: "Low loaders and wideners" },
+    { label: "Drop Deck Trailer", desc: "Step deck trailers" },
+    { label: "Flat Top Trailer", desc: "Flatbed trailers" },
+    { label: "Tipper Trailer", desc: "End and side tippers" },
+    { label: "Tanker Trailer", desc: "Fuel, water, milk, etc." },
+    { label: "Refrigerated Trailer", desc: "Reefer trailers" },
+    { label: "Livestock Trailer", desc: "Stock trailers" },
+    { label: "Skeletal Trailer", desc: "Container skeletal trailers" },
+    { label: "Curtain Sider Trailer", desc: "Curtainsiders" },
+    { label: "Road Train Trailer", desc: "A/B/C trailers (where applicable)" },
   ],
+  axlePrices: { "1": 250, "2": 300, "3": 350, "4": 400, "5": 450, "6": 500, "7": 550, "8": 600 },
+  showPrices: false,
+  durationMins: 90,
   leadDays: 1,
   days: [1, 2, 3, 4, 5],
   closures: [],
@@ -89,13 +96,17 @@ export async function getRwcBookingOptions(): Promise<RwcBookingOptions> {
       if (!Array.isArray(list)) return fallback;
       const cleaned = list
         .filter((t: { label?: unknown }) => typeof t?.label === "string" && t.label)
-        .map((t: { label: string; desc?: string; price?: number }) => ({
-          label: t.label,
-          desc: String(t.desc ?? ""),
-          price: showPrices && Number(t.price) > 0 ? Number(t.price) : null,
-        }));
+        .map((t: { label: string; desc?: string }) => ({ label: t.label, desc: String(t.desc ?? "") }));
       return cleaned.length ? cleaned : fallback;
     };
+
+    const axlePrices: Record<string, number> = { ...FALLBACK.axlePrices };
+    if (cfg?.axlePrices && typeof cfg.axlePrices === "object") {
+      for (const k of Object.keys(FALLBACK.axlePrices)) {
+        const v = Number(cfg.axlePrices[k]);
+        if (Number.isFinite(v) && v >= 0) axlePrices[k] = v;
+      }
+    }
 
     // Per-day hours (new shape) or legacy days[] — either way, the open days.
     let days: number[];
@@ -116,6 +127,9 @@ export async function getRwcBookingOptions(): Promise<RwcBookingOptions> {
     return {
       truckTypes: cleanTypes(cfg?.truckTypes, FALLBACK.truckTypes),
       trailerTypes: cleanTypes(cfg?.trailerTypes, FALLBACK.trailerTypes),
+      axlePrices,
+      showPrices,
+      durationMins: Number(cfg?.durationMins) >= 15 ? Math.round(Number(cfg.durationMins)) : FALLBACK.durationMins,
       leadDays: Number.isFinite(Number(cfg?.leadDays)) ? Math.max(0, Number(cfg.leadDays)) : FALLBACK.leadDays,
       days,
       closures,
