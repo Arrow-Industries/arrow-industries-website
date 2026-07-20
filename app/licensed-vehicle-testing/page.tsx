@@ -129,7 +129,7 @@ const faqs = [
   {
     question: "What does an inspection cost?",
     answer:
-      "Cost depends on vehicle type. Rigid trucks, prime movers, dog trailers and semi trailers are priced separately. Call us for a current price list — there are no hidden charges.",
+      "Pricing is based on the vehicle's number of axles. You'll see your price as you complete the online booking form, or call us for a quote — there are no hidden charges.",
   },
   {
     question: "What if my vehicle fails?",

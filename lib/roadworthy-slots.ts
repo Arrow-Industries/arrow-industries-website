@@ -110,8 +110,13 @@ export async function getRwcSlots(date: string): Promise<RwcSlotResult> {
     }
   }
 
+  // Same-day bookings can't pick slots that have already started (30 min buffer).
+  const nowMel = melParts(new Date().toISOString());
+  const minStart = nowMel.date === date ? nowMel.minutes + 30 : -1;
+
   const slots: RwcSlot[] = [];
   for (let m = startMin; m + slotMins <= endMin; m += slotMins) {
+    if (m < minStart) continue;
     if (busy.some((b) => b.start < m + slotMins && b.end > m)) continue;
     const h = Math.floor(m / 60);
     const mm = m % 60;

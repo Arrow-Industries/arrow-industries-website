@@ -167,6 +167,16 @@ export async function submitRoadworthyBooking(
   if (photos.reduce((n, p) => n + p.content.length, 0) > 4_000_000)
     return { ok: false, error: "Those photos are too large combined — please try fewer or smaller photos.", field: "photos" };
 
+  // Same-day requests can't ask for a time already passed (Melbourne time).
+  if (/^\d{2}:\d{2}$/.test(preferredTime)) {
+    const nowMel = new Intl.DateTimeFormat("en-CA", { timeZone: "Australia/Melbourne", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    if (nowMel === preferredDate) {
+      const nowTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Melbourne", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
+      if (preferredTime <= nowTime)
+        return { ok: false, error: "That time has already passed today — pick a later slot or another day.", field: "preferredTime" };
+    }
+  }
+
   const limited = await rateLimit();
   if (!limited.ok)
     return { ok: false, error: "Too many requests — please wait a moment and try again, or call us." };
