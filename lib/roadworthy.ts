@@ -32,6 +32,8 @@ export interface RwcBookingOptions {
   leadDays: number;
   /** ISO weekdays taking bookings (1 = Mon … 7 = Sun). */
   days: number[];
+  /** Per-weekday hours ("HH:MM"), null = closed — mirrors the dashboard. */
+  hoursByDay: Record<string, { start: string; end: string } | null>;
   /** Blocked dates — public holidays, shutdown weeks. */
   closures: RwcClosureRange[];
 }
@@ -78,6 +80,15 @@ const FALLBACK: RwcBookingOptions = {
   durationMins: 90,
   leadDays: 1,
   days: [1, 2, 3, 4, 5],
+  hoursByDay: {
+    "1": { start: "06:00", end: "16:00" },
+    "2": { start: "06:00", end: "16:00" },
+    "3": { start: "06:00", end: "16:00" },
+    "4": { start: "06:00", end: "16:00" },
+    "5": { start: "06:00", end: "16:00" },
+    "6": null,
+    "7": null,
+  },
   closures: [],
 };
 
@@ -109,14 +120,22 @@ export async function getRwcBookingOptions(): Promise<RwcBookingOptions> {
     }
 
     // Per-day hours (new shape) or legacy days[] — either way, the open days.
+    const HHMM = /^\d{2}:\d{2}$/;
     let days: number[];
+    let hoursByDay: Record<string, { start: string; end: string } | null>;
     if (cfg?.hours && typeof cfg.hours === "object") {
-      days = [1, 2, 3, 4, 5, 6, 7].filter((d) => {
+      hoursByDay = {};
+      for (const d of [1, 2, 3, 4, 5, 6, 7]) {
         const h = cfg.hours[String(d)];
-        return h && typeof h.start === "string" && typeof h.end === "string";
-      });
+        hoursByDay[String(d)] = h && HHMM.test(h.start ?? "") && HHMM.test(h.end ?? "") ? { start: h.start, end: h.end } : null;
+      }
+      days = [1, 2, 3, 4, 5, 6, 7].filter((d) => !!hoursByDay[String(d)]);
     } else {
       days = Array.isArray(cfg?.days) && cfg.days.length ? cfg.days.map(Number).filter((d: number) => d >= 1 && d <= 7) : FALLBACK.days;
+      const start = HHMM.test(cfg?.dayStart ?? "") ? cfg.dayStart : "06:00";
+      const end = HHMM.test(cfg?.dayEnd ?? "") ? cfg.dayEnd : "16:00";
+      hoursByDay = {};
+      for (const d of [1, 2, 3, 4, 5, 6, 7]) hoursByDay[String(d)] = days.includes(d) ? { start, end } : null;
     }
     if (!days.length) days = FALLBACK.days;
 
@@ -132,6 +151,7 @@ export async function getRwcBookingOptions(): Promise<RwcBookingOptions> {
       durationMins: Number(cfg?.durationMins) >= 15 ? Math.round(Number(cfg.durationMins)) : FALLBACK.durationMins,
       leadDays: Number.isFinite(Number(cfg?.leadDays)) ? Math.max(0, Number(cfg.leadDays)) : FALLBACK.leadDays,
       days,
+      hoursByDay,
       closures,
     };
   } catch {

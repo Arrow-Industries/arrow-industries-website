@@ -144,7 +144,17 @@ const faqs = [
 ];
 
 export default async function RoadworthyPage() {
-  const { truckTypes, trailerTypes, axlePrices, showPrices, durationMins, leadDays, days } = await getRwcBookingOptions();
+  const { truckTypes, trailerTypes, axlePrices, showPrices, durationMins, leadDays, days, hoursByDay } = await getRwcBookingOptions();
+  const fmt12 = (hhmm: string) => {
+    const [h, m] = hhmm.split(":").map(Number);
+    const h12 = ((h + 11) % 12) + 1;
+    return `${h12}:${String(m).padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`;
+  };
+  const weekdayNames = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const hoursRows = [1, 2, 3, 4, 5, 6, 7].map((d) => {
+    const h = hoursByDay[String(d)];
+    return { label: weekdayNames[d], time: h ? `${fmt12(h.start)} – ${fmt12(h.end)}` : "Closed" };
+  });
   const minDateObj = new Date();
   minDateObj.setDate(minDateObj.getDate() + leadDays);
   const minDate = minDateObj.toISOString().slice(0, 10);
@@ -287,13 +297,7 @@ export default async function RoadworthyPage() {
                       Inspection hours
                     </p>
                     <dl className="mt-1.5 grid gap-3 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-1.5">
-                      {[
-                        { label: "Monday", time: "6:00 AM – 4:00 PM" },
-                        { label: "Tuesday", time: "6:00 AM – 4:00 PM" },
-                        { label: "Wednesday", time: "6:00 AM – 4:00 PM" },
-                        { label: "Thursday", time: "6:00 AM – 4:00 PM" },
-                        { label: "Friday", time: "6:00 AM – 4:00 PM" },
-                      ].map((h) => (
+                      {hoursRows.map((h) => (
                         <div key={h.label} className="sm:contents">
                           <dt className="font-medium text-bone">{h.label}</dt>
                           <dd className="text-mute sm:text-right sm:tabular-nums">
@@ -323,7 +327,7 @@ export default async function RoadworthyPage() {
                 />
               </div>
               <p className="max-w-xs text-center text-xs leading-relaxed text-mute">
-                Scan with your phone camera to open the booking page directly.
+                Scan with your phone camera to open the booking form directly.
               </p>
             </div>
           </div>
