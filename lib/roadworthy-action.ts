@@ -20,6 +20,7 @@ import { isEmail, isPhone, escapeHtml, dash, createRateLimiter, readAttachments 
 import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import { notifyDashboardNewRwcBooking } from "@/lib/notify-dashboard";
 import { getRwcBookingOptions } from "@/lib/roadworthy";
+import { getRwcSlots } from "@/lib/roadworthy-slots";
 import { site } from "@/data/site";
 
 type SubmitResult =
@@ -174,6 +175,22 @@ export async function submitRoadworthyBooking(
       const nowTime = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Melbourne", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date());
       if (preferredTime <= nowTime)
         return { ok: false, error: "That time has already passed today — pick a later slot or another day.", field: "preferredTime" };
+    }
+  }
+
+  // The picker only offers free slots, but re-check at submit time — someone
+  // else may have been confirmed into the slot since the page loaded.
+  if (/^\d{2}:\d{2}$/.test(preferredTime)) {
+    try {
+      const live = await getRwcSlots(preferredDate);
+      if (!live.closed && live.slots.length && !live.slots.some((s) => s.value === preferredTime))
+        return {
+          ok: false,
+          error: "That time was just taken — please pick another slot.",
+          field: "preferredTime",
+        };
+    } catch {
+      /* best-effort — staff resolve clashes at approval */
     }
   }
 
