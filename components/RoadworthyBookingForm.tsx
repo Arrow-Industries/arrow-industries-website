@@ -25,6 +25,28 @@ function formatBytes(bytes: number) {
   return `${Math.max(1, Math.round(bytes / 1024))} KB`;
 }
 
+/** Downscale an oversized photo in the browser (max 2500px, JPEG 85%) so big
+ *  camera shots fit the 10MB cap instead of bouncing. Falls back to the
+ *  original file if anything goes wrong. */
+async function shrinkPhoto(file: File): Promise<File> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 2500 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+  } catch {
+    return file;
+  }
+}
+
 function Field({
   label, name, required, hint, children,
 }: {
@@ -71,6 +93,8 @@ export function RoadworthyBookingForm({
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [shrinking, setShrinking] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
   const selectedType = [...truckTypes, ...trailerTypes].find((t) => t.label === vehicleType);
@@ -84,18 +108,34 @@ export function RoadworthyBookingForm({
     fileInputRef.current.files = dt.files;
   }
 
-  function handleFileChange(list: FileList | null) {
+  async function addFiles(list: FileList | File[] | null) {
     if (!list || list.length === 0) return;
-    const incoming = Array.from(list);
-    const oversize = incoming.find((f) => f.size > MAX_FILE_BYTES);
-    if (oversize) {
-      setFileError(`${oversize.name} is over 10MB. Please attach a smaller photo.`);
+    const incoming = Array.from(list).filter(
+      (f) => f.type.startsWith("image/") || /\.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?)$/i.test(f.name),
+    );
+    if (incoming.length === 0) {
+      setFileError("Please add photos only (JPG, PNG, HEIC…).");
       return;
     }
     setFileError(null);
-    const next = [...files, ...incoming];
-    setFiles(next);
-    syncFileInput(next);
+    setShrinking(true);
+    const accepted: File[] = [];
+    const rejected: string[] = [];
+    for (const f of incoming) {
+      // Oversized camera shots get downscaled in the browser first.
+      const ready = f.size > MAX_FILE_BYTES ? await shrinkPhoto(f) : f;
+      if (ready.size > MAX_FILE_BYTES) rejected.push(f.name);
+      else accepted.push(ready);
+    }
+    setShrinking(false);
+    if (rejected.length) {
+      setFileError(`${rejected.join(", ")} couldn't be shrunk under 10MB — please try a smaller photo.`);
+    }
+    if (accepted.length) {
+      const next = [...files, ...accepted];
+      setFiles(next);
+      syncFileInput(next);
+    }
   }
 
   function removeFile(index: number) {
@@ -330,12 +370,31 @@ export function RoadworthyBookingForm({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="inline-flex w-fit items-center gap-2 rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone transition-colors hover:border-bone"
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              void addFiles(e.dataTransfer.files);
+            }}
+            className={`flex w-full flex-col items-center gap-2 rounded-sm border border-dashed px-4 py-6 text-sm transition-colors ${
+              dragging
+                ? "border-accent bg-accent/10 text-bone"
+                : "border-line bg-ink-2 text-bone hover:border-bone"
+            }`}
           >
-            <ImagePlus className="h-4 w-4 text-accent" aria-hidden />
-            {files.length > 0
-              ? `${files.length} photo${files.length === 1 ? "" : "s"} selected — add more`
-              : "Add photos"}
+            <ImagePlus className="h-5 w-5 text-accent" aria-hidden />
+            <span className="font-medium">
+              {shrinking
+                ? "Preparing photos…"
+                : files.length > 0
+                  ? `${files.length} photo${files.length === 1 ? "" : "s"} added — add more`
+                  : "Add photos"}
+            </span>
+            <span className="text-xs text-mute">Click to choose, or drag &amp; drop — multiple photos welcome.</span>
           </button>
           <input
             ref={fileInputRef}
@@ -345,7 +404,7 @@ export function RoadworthyBookingForm({
             multiple
             accept="image/*"
             className="sr-only"
-            onChange={(e) => handleFileChange(e.target.files)}
+            onChange={(e) => addFiles(e.target.files)}
           />
 
           {files.length > 0 && (
