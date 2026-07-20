@@ -119,7 +119,7 @@ export async function submitRoadworthyBooking(
   if (vin.replace(/\s/g, "").length < 5)
     return { ok: false, error: "Please provide the VIN (it's on the compliance plate).", field: "vin" };
 
-  const { leadDays, days } = await getRwcBookingOptions();
+  const { leadDays, days, closures } = await getRwcBookingOptions();
 
   if (!preferredDate || !/^\d{4}-\d{2}-\d{2}$/.test(preferredDate))
     return { ok: false, error: "Please pick a preferred date.", field: "preferredDate" };
@@ -140,6 +140,13 @@ export async function submitRoadworthyBooking(
     const open = days.map((d) => DAY_NAMES[d]).filter(Boolean).join(", ");
     return { ok: false, error: `Inspections run ${open} — please pick one of those days.`, field: "preferredDate" };
   }
+  const closure = closures.find((c) => c.from <= preferredDate && preferredDate <= c.to);
+  if (closure)
+    return {
+      ok: false,
+      error: `We're closed that day${closure.reason ? ` (${closure.reason})` : ""} — please pick another date.`,
+      field: "preferredDate",
+    };
 
   // Optional photos — images only, 10MB each.
   const photoResult = await readAttachments(formData.getAll("photos"), {

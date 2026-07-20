@@ -10,7 +10,7 @@ import { useActionState, useEffect, useRef, useState, isValidElement, cloneEleme
 import { CalendarCheck, CheckCircle2, ChevronDown, ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/Button";
 import { submitRoadworthyBooking } from "@/lib/roadworthy-action";
-import { getRwcSlots, type RwcSlot } from "@/lib/roadworthy-slots";
+import { getRwcSlots, type RwcSlotResult } from "@/lib/roadworthy-slots";
 import type { RwcVehicleType } from "@/lib/roadworthy";
 import { site } from "@/data/site";
 
@@ -93,7 +93,7 @@ export function RoadworthyBookingForm({
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
   const [vehicleType, setVehicleType] = useState("");
   const [prefDate, setPrefDate] = useState("");
-  const [slots, setSlots] = useState<RwcSlot[] | null>(null);
+  const [slots, setSlots] = useState<RwcSlotResult | null>(null);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -182,7 +182,7 @@ export function RoadworthyBookingForm({
         if (live) setSlots(s);
       })
       .catch(() => {
-        if (live) setSlots([]);
+        if (live) setSlots({ closed: false, slots: [] });
       })
       .finally(() => {
         if (live) setSlotsLoading(false);
@@ -275,13 +275,13 @@ export function RoadworthyBookingForm({
             </option>
             <optgroup label="Trucks & heavy vehicles">
               {truckTypes.map((t) => (
-                <option key={t.label} value={t.label}>{t.label}</option>
+                <option key={t.label} value={t.label}>{t.label}{t.price != null ? ` — $${t.price}` : ""}</option>
               ))}
               <option value="__other_truck">Other truck / heavy vehicle…</option>
             </optgroup>
             <optgroup label="Trailers">
               {trailerTypes.map((t) => (
-                <option key={t.label} value={t.label}>{t.label}</option>
+                <option key={t.label} value={t.label}>{t.label}{t.price != null ? ` — $${t.price}` : ""}</option>
               ))}
               <option value="__other_trailer">Other trailer…</option>
             </optgroup>
@@ -357,15 +357,17 @@ export function RoadworthyBookingForm({
               ? "Pick a date to see the available times."
               : slotsLoading
                 ? "Checking the schedule…"
-                : slots && slots.length === 0
-                  ? "That day is fully booked — please pick another date, or choose Any time and we'll try to fit you in."
-                  : "Live availability from our workshop schedule."
+                : slots?.closed
+                  ? `We're closed that day${slots.closedReason ? ` (${slots.closedReason})` : ""} — please pick another date.`
+                  : slots && slots.slots.length === 0
+                    ? "That day is fully booked — please pick another date, or choose Any time and we'll try to fit you in."
+                    : "Live availability from our workshop schedule."
           }
         >
           <div className="relative">
-            <select id="preferredTime" name="preferredTime" defaultValue="any" disabled={!prefDate || slotsLoading} className={inputBase + " appearance-none pr-10 disabled:opacity-60"}>
+            <select id="preferredTime" name="preferredTime" defaultValue="any" disabled={!prefDate || slotsLoading || slots?.closed} className={inputBase + " appearance-none pr-10 disabled:opacity-60"}>
               <option value="any">Any time</option>
-              {(slots ?? []).map((s) => (
+              {(slots?.slots ?? []).map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
               ))}
             </select>

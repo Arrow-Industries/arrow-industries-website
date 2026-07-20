@@ -2,10 +2,11 @@
 
 /**
  * Live slot availability for the roadworthy booking form — for a chosen date,
- * returns the workshop's hourly slots (from the shared rwc-config hours) that
- * aren't already taken by confirmed bookings on the schedule. Best-effort: if
- * Supabase isn't reachable, every slot within hours is offered and staff sort
- * out clashes at approval time.
+ * returns the workshop's hourly slots (from that weekday's configured hours)
+ * that aren't already taken by confirmed bookings. Closed days (weekly hours
+ * or a closure like a public holiday) return closed: true. Best-effort: if
+ * Supabase isn't reachable, default hours are offered and staff sort out
+ * clashes at approval time.
  */
 
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
@@ -17,7 +18,16 @@ export interface RwcSlot {
   label: string;
 }
 
+export interface RwcSlotResult {
+  closed: boolean;
+  /** Why the day is closed, when a closure gives a reason. */
+  closedReason?: string;
+  slots: RwcSlot[];
+}
+
 const MEL = "Australia/Melbourne";
+const YMD = /^\d{4}-\d{2}-\d{2}$/;
+const HHMM = /^\d{2}:\d{2}$/;
 
 const toMin = (hhmm: string) => {
   const [h, m] = hhmm.split(":").map(Number);
@@ -32,24 +42,45 @@ function melParts(iso: string): { date: string; minutes: number } {
   return { date, minutes: toMin(time) };
 }
 
-export async function getRwcSlots(date: string): Promise<RwcSlot[]> {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return [];
+export async function getRwcSlots(date: string): Promise<RwcSlotResult> {
+  if (!YMD.test(date)) return { closed: false, slots: [] };
   const sb = getSupabaseAdmin();
+  const isoDay = ((new Date(date + "T12:00:00").getDay() + 6) % 7) + 1;
 
   let dayStart = "06:00";
   let dayEnd = "16:00";
+  let configApplied = false;
   if (sb) {
     try {
       const { data } = await sb.storage.from("app-config").download("rwc-config.json");
       if (data) {
+        configApplied = true;
         const cfg = JSON.parse(await data.text());
-        if (typeof cfg?.dayStart === "string" && /^\d{2}:\d{2}$/.test(cfg.dayStart)) dayStart = cfg.dayStart;
-        if (typeof cfg?.dayEnd === "string" && /^\d{2}:\d{2}$/.test(cfg.dayEnd)) dayEnd = cfg.dayEnd;
+        // Closures (public holidays, shutdown weeks) win outright.
+        const closure = (Array.isArray(cfg?.closures) ? cfg.closures : []).find(
+          (c: { from?: string; to?: string }) => YMD.test(c?.from ?? "") && YMD.test(c?.to ?? "") && c.from! <= date && date <= c.to!,
+        );
+        if (closure) return { closed: true, closedReason: String(closure.reason ?? "") || undefined, slots: [] };
+
+        if (cfg?.hours && typeof cfg.hours === "object") {
+          const h = cfg.hours[String(isoDay)];
+          if (!h || !HHMM.test(h.start ?? "") || !HHMM.test(h.end ?? "")) return { closed: true, slots: [] };
+          dayStart = h.start;
+          dayEnd = h.end;
+        } else {
+          // Legacy global fields.
+          const days: number[] = Array.isArray(cfg?.days) && cfg.days.length ? cfg.days.map(Number) : [1, 2, 3, 4, 5];
+          if (!days.includes(isoDay)) return { closed: true, slots: [] };
+          if (HHMM.test(cfg?.dayStart ?? "")) dayStart = cfg.dayStart;
+          if (HHMM.test(cfg?.dayEnd ?? "")) dayEnd = cfg.dayEnd;
+        }
       }
     } catch {
       /* defaults */
     }
   }
+  // No config reachable — default schedule is Mon–Fri.
+  if (!configApplied && ![1, 2, 3, 4, 5].includes(isoDay)) return { closed: true, slots: [] };
   const startMin = toMin(dayStart);
   const endMin = Math.max(startMin + 60, toMin(dayEnd));
 
@@ -87,5 +118,5 @@ export async function getRwcSlots(date: string): Promise<RwcSlot[]> {
       label: `${h12}:${String(mm).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`,
     });
   }
-  return slots;
+  return { closed: false, slots };
 }
