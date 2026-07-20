@@ -122,7 +122,7 @@ export async function submitRoadworthyBooking(
   if (vin.replace(/\s/g, "").length < 5)
     return { ok: false, error: "Please provide the VIN (it's on the compliance plate).", field: "vin" };
 
-  const { leadDays, days, closures, axlePrices, durationMins } = await getRwcBookingOptions();
+  const { leadDays, days, closures, axlePrices, durationMins, showPrices } = await getRwcBookingOptions();
 
   if (!preferredDate || !/^\d{4}-\d{2}-\d{2}$/.test(preferredDate))
     return { ok: false, error: "Please pick a preferred date.", field: "preferredDate" };
@@ -312,7 +312,9 @@ export async function submitRoadworthyBooking(
               ${detailRow("Vehicle", `<strong>${escapeHtml(vehicleText)}</strong>${rego ? ` (${escapeHtml(rego.toUpperCase())})` : ""}`)}
               ${detailRow("Vehicle type", `${escapeHtml(vehicleType)} · ${axles} axle${axles === 1 ? "" : "s"}`)}
               ${detailRow("Requested", `<strong>${escapeHtml(preferredDate)}</strong> · ${escapeHtml(timeLabel)}`)}
+              ${showPrices && axlePrices[String(axles)] != null ? detailRow("Indicative price", `<strong>$${axlePrices[String(axles)].toFixed(2)} + GST</strong>`) : ""}
             </table>
+            ${showPrices && axlePrices[String(axles)] != null ? `<p style="color:#666;font-size:13px;margin-top:2px">The indicative price is based on the vehicle details provided — the final price may change once your booking and vehicle details are confirmed.</p>` : ""}
             <p>This isn't confirmed yet: our team will check the schedule and email you a confirmed time, usually within the same business day. Once confirmed, please plan to <strong>drop the vehicle off 15 minutes before your booking time</strong>.</p>
             <p>Need it urgently? Call us on <a href="${site.phoneHref}">${site.phone}</a>.</p>
           `),
