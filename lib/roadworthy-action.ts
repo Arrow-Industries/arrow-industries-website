@@ -75,6 +75,7 @@ export async function submitRoadworthyBooking(
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const licence = String(formData.get("licenceNumber") ?? "").trim();
+  const address = String(formData.get("address") ?? "").trim();
   const make = String(formData.get("vehicleMake") ?? "").trim();
   const model = String(formData.get("vehicleModel") ?? "").trim();
   const yearRaw = String(formData.get("vehicleYear") ?? "").trim();
@@ -103,6 +104,8 @@ export async function submitRoadworthyBooking(
     return { ok: false, error: "Please provide a valid email address.", field: "email" };
   if (!licence)
     return { ok: false, error: "Please provide your driver licence number.", field: "licenceNumber" };
+  if (address.length < 8)
+    return { ok: false, error: "Please provide your residential address as shown on your licence.", field: "address" };
   if (!vehicleTypeRaw)
     return { ok: false, error: "Please select the vehicle type.", field: "vehicleType" };
   if (!vehicleType)
@@ -216,6 +219,7 @@ export async function submitRoadworthyBooking(
     };
     const withPhotos = storedPaths.length ? { attachments: storedPaths } : {};
     const attempts: Record<string, unknown>[] = [
+      { ...baseRow, ...detailRowDb, axles, address, ...withPhotos },
       { ...baseRow, ...detailRowDb, axles, ...withPhotos },
       ...(storedPaths.length ? [{ ...baseRow, ...detailRowDb, ...withPhotos }] : []),
       { ...baseRow, ...detailRowDb },
@@ -246,6 +250,7 @@ export async function submitRoadworthyBooking(
       ["Email", email],
       ["Phone", phone],
       ["Licence no.", licence],
+      ["Address", address],
       ["Vehicle type", vehicleType],
       ["Axles", String(axles)],
       ["Vehicle", vehicleText],

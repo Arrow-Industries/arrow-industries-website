@@ -98,6 +98,10 @@ export function RoadworthyBookingForm({
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
   const [vehicleType, setVehicleType] = useState("");
   const [axles, setAxles] = useState("");
+  const [address, setAddress] = useState("");
+  const [addrSuggestions, setAddrSuggestions] = useState<string[]>([]);
+  const [addrOpen, setAddrOpen] = useState(false);
+  const addrPicked = useRef(false);
   const [prefDate, setPrefDate] = useState("");
   const [slots, setSlots] = useState<RwcSlotResult | null>(null);
   const [slotsLoading, setSlotsLoading] = useState(false);
@@ -174,6 +178,26 @@ export function RoadworthyBookingForm({
       document.getElementById("book")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [state]);
+
+  // Address suggestions (Google Places via our proxy) — confirms the
+  // residential address as it's typed. Silently absent when not configured.
+  useEffect(() => {
+    if (addrPicked.current) { addrPicked.current = false; return; }
+    const q = address.trim();
+    if (q.length < 4) { setAddrSuggestions([]); setAddrOpen(false); return; }
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/places/autocomplete?q=${encodeURIComponent(q)}`).then((r) => r.json());
+        const list: string[] = (res?.suggestions ?? []).map((x: { text: string }) => x.text);
+        setAddrSuggestions(list);
+        setAddrOpen(list.length > 0);
+      } catch {
+        setAddrSuggestions([]);
+        setAddrOpen(false);
+      }
+    }, 300);
+    return () => clearTimeout(t);
+  }, [address]);
 
   // Refresh the free time slots whenever the preferred date changes.
   useEffect(() => {
@@ -254,6 +278,42 @@ export function RoadworthyBookingForm({
         </Field>
         <Field label="Driver licence number" name="licenceNumber" required hint="Needed for the inspection paperwork.">
           <input id="licenceNumber" name="licenceNumber" type="text" className={inputBase} />
+        </Field>
+        <Field label="Residential address" name="address" required hint="As shown on your driver licence.">
+          <div className="relative">
+            <input
+              id="address"
+              name="address"
+              type="text"
+              required
+              autoComplete="street-address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              onBlur={() => setTimeout(() => setAddrOpen(false), 150)}
+              placeholder="Start typing your address…"
+              className={inputBase}
+            />
+            {addrOpen && addrSuggestions.length > 0 && (
+              <ul className="absolute z-20 mt-1 w-full overflow-hidden rounded-sm border border-line bg-ink-2 shadow-xl">
+                {addrSuggestions.map((sug) => (
+                  <li key={sug}>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        addrPicked.current = true;
+                        setAddress(sug);
+                        setAddrOpen(false);
+                      }}
+                      className="block w-full px-4 py-2.5 text-left text-sm text-bone hover:bg-ink-3"
+                    >
+                      {sug}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </Field>
       </div>
 
