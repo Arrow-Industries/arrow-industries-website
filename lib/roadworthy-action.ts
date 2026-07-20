@@ -226,7 +226,7 @@ export async function submitRoadworthyBooking(
   // 2) Staff alert email (photos attached).
   let emailed = false;
   if (isMailerConfigured()) {
-    const to = await getEmailSetting("roadworthy_email_to", "sales@arrowindustries.com.au");
+    const to = await getEmailSetting("roadworthy_email_to", "LVT@arrowindustries.com.au");
     const rows = [
       ["Name", name],
       ["Company", dash(company)],
