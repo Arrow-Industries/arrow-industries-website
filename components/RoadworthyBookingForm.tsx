@@ -98,23 +98,44 @@ export function RoadworthyBookingForm({
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Name" name="fullName" required>
-          <input id="fullName" name="fullName" type="text" required autoComplete="name" className={inputBase} />
+        <Field label="First name" name="firstName" required>
+          <input id="firstName" name="firstName" type="text" required autoComplete="given-name" className={inputBase} />
         </Field>
-        <Field label="Business name" name="companyName">
+        <Field label="Last name" name="lastName" required>
+          <input id="lastName" name="lastName" type="text" required autoComplete="family-name" className={inputBase} />
+        </Field>
+        <Field label="Company name" name="companyName" hint="Optional — for company vehicles.">
           <input id="companyName" name="companyName" type="text" autoComplete="organization" className={inputBase} />
         </Field>
-        <Field label="Email" name="email" hint="Email or phone required — confirmations go here.">
-          <input id="email" name="email" type="email" autoComplete="email" className={inputBase} />
+        <Field label="ABN" name="abn" hint="Required when booking as a company — goes on the invoice.">
+          <input id="abn" name="abn" type="text" inputMode="numeric" placeholder="11 digits" className={inputBase} />
         </Field>
-        <Field label="Phone" name="phone">
-          <input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="e.g. 0468 067 280" className={inputBase} />
+        <Field label="Email" name="email" required hint="Your confirmation goes here.">
+          <input id="email" name="email" type="email" required autoComplete="email" className={inputBase} />
         </Field>
-        <Field label="Registration (rego)" name="rego" required>
+        <Field label="Phone" name="phone" required>
+          <input id="phone" name="phone" type="tel" required autoComplete="tel" placeholder="e.g. 0468 067 280" className={inputBase} />
+        </Field>
+        <Field label="Driver licence number" name="licenceNumber" required hint="Needed for the inspection paperwork.">
+          <input id="licenceNumber" name="licenceNumber" type="text" className={inputBase} />
+        </Field>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Vehicle make" name="vehicleMake" required>
+          <input id="vehicleMake" name="vehicleMake" type="text" placeholder="e.g. Kenworth" className={inputBase} />
+        </Field>
+        <Field label="Vehicle model" name="vehicleModel" required>
+          <input id="vehicleModel" name="vehicleModel" type="text" placeholder="e.g. T410" className={inputBase} />
+        </Field>
+        <Field label="Build year" name="vehicleYear" required>
+          <input id="vehicleYear" name="vehicleYear" type="number" inputMode="numeric" placeholder="e.g. 2019" className={inputBase} />
+        </Field>
+        <Field label="VIN" name="vin" required hint="On the compliance / build plate.">
+          <input id="vin" name="vin" type="text" placeholder="17 characters" className={inputBase + " uppercase"} />
+        </Field>
+        <Field label="Registration (rego)" name="rego" hint="Optional — leave blank if unregistered.">
           <input id="rego" name="rego" type="text" placeholder="e.g. ABC 123" className={inputBase + " uppercase"} />
-        </Field>
-        <Field label="Make / model" name="vehicle">
-          <input id="vehicle" name="vehicle" type="text" placeholder="e.g. Kenworth T410" className={inputBase} />
         </Field>
       </div>
 
