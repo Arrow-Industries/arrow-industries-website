@@ -171,7 +171,16 @@ export function RoadworthyBookingForm({
         </Field>
       </div>
 
-      <Field label="Vehicle type" name="vehicleType" required hint={selectedType?.desc || "Pick the closest match — it helps us allow the right time."}>
+      <Field
+        label="Vehicle type"
+        name="vehicleType"
+        required
+        hint={
+          vehicleType.startsWith("__other")
+            ? "Type the vehicle type below."
+            : selectedType?.desc || "Pick the closest match — it helps us allow the right time."
+        }
+      >
         <div className="relative">
           <select
             id="vehicleType"
@@ -188,16 +197,32 @@ export function RoadworthyBookingForm({
               {truckTypes.map((t) => (
                 <option key={t.label} value={t.label}>{t.label}</option>
               ))}
+              <option value="__other_truck">Other truck / heavy vehicle…</option>
             </optgroup>
             <optgroup label="Trailers">
               {trailerTypes.map((t) => (
                 <option key={t.label} value={t.label}>{t.label}</option>
               ))}
+              <option value="__other_trailer">Other trailer…</option>
             </optgroup>
           </select>
           <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden />
         </div>
       </Field>
+
+      {vehicleType.startsWith("__other") && (
+        <Field label="Tell us the vehicle type" name="vehicleTypeOther" required>
+          <input
+            id="vehicleTypeOther"
+            name="vehicleTypeOther"
+            type="text"
+            required
+            autoFocus
+            placeholder={vehicleType === "__other_trailer" ? "e.g. Extendable trailer" : "e.g. Tilt tray"}
+            className={inputBase}
+          />
+        </Field>
+      )}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Vehicle make" name="vehicleMake" required>

@@ -80,7 +80,10 @@ export async function submitRoadworthyBooking(
   const yearRaw = String(formData.get("vehicleYear") ?? "").trim();
   const vin = String(formData.get("vin") ?? "").trim().toUpperCase();
   const rego = String(formData.get("rego") ?? "").trim();
-  const vehicleType = String(formData.get("vehicleType") ?? "").trim();
+  const vehicleTypeRaw = String(formData.get("vehicleType") ?? "").trim();
+  const vehicleTypeOther = String(formData.get("vehicleTypeOther") ?? "").trim();
+  // "Other…" options carry a __other_* value; the real type is typed in.
+  const vehicleType = vehicleTypeRaw.startsWith("__other") ? vehicleTypeOther : vehicleTypeRaw;
   const inspectionKey = String(formData.get("inspectionType") ?? "").trim();
   const preferredDate = String(formData.get("preferredDate") ?? "").trim();
   const preferredTime = String(formData.get("preferredTime") ?? "").trim();
@@ -100,8 +103,10 @@ export async function submitRoadworthyBooking(
     return { ok: false, error: "Please provide a valid email address.", field: "email" };
   if (!licence)
     return { ok: false, error: "Please provide your driver licence number.", field: "licenceNumber" };
-  if (!vehicleType)
+  if (!vehicleTypeRaw)
     return { ok: false, error: "Please select the vehicle type.", field: "vehicleType" };
+  if (!vehicleType)
+    return { ok: false, error: "Please type the vehicle type.", field: "vehicleTypeOther" };
   if (!make) return { ok: false, error: "Please provide the vehicle make.", field: "vehicleMake" };
   if (!model) return { ok: false, error: "Please provide the vehicle model.", field: "vehicleModel" };
   const year = Number(yearRaw);
