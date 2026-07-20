@@ -556,7 +556,10 @@ export function RoadworthyBookingForm({
 
       {complete && axlePrices && axles && axlePrices[axles] != null && (
         <div className="border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
-          Your inspection price: <strong>${axlePrices[axles]} + GST</strong> · allow {durationMins} minutes on the day.
+          Estimated inspection price: <strong>${axlePrices[axles]} + GST</strong> · allow {durationMins} minutes on the day.
+          <span className="mt-1 block text-xs text-mute">
+            Pricing is confirmed when we confirm your booking and inspect the vehicle.
+          </span>
         </div>
       )}
 
