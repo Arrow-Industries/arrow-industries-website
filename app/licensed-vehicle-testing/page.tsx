@@ -21,6 +21,8 @@ import { faqPageSchema, serviceSchema } from "@/lib/schema";
 import { getServiceBySlug } from "@/data/services";
 import { getServiceContent } from "@/data/serviceContent";
 import { site } from "@/data/site";
+import { RoadworthyBookingForm } from "@/components/RoadworthyBookingForm";
+import { getRwcBookingOptions } from "@/lib/roadworthy";
 
 const SLUG = "licensed-vehicle-testing";
 const lvtService = getServiceBySlug(SLUG);
@@ -34,7 +36,10 @@ export const metadata: Metadata = pageMetadata({
   path: `/${SLUG}`,
 });
 
-const bookingUrl = site.booking.roadworthy;
+// Booking requests land in the dashboard's Roadworthy tab for approval;
+// price list + lead time come from the same shared config. Re-checked
+// every 5 minutes so dashboard edits show up without a redeploy.
+export const revalidate = 300;
 
 const covered = [
   {
@@ -138,7 +143,19 @@ const faqs = [
   },
 ];
 
-export default function RoadworthyPage() {
+export default async function RoadworthyPage() {
+  const { options, leadDays, days } = await getRwcBookingOptions();
+  const minDateObj = new Date();
+  minDateObj.setDate(minDateObj.getDate() + leadDays);
+  const minDate = minDateObj.toISOString().slice(0, 10);
+  const dayNames = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const sortedDays = [...days].sort((a, b) => a - b);
+  const openDaysLabel =
+    sortedDays.length > 1 &&
+    sortedDays[sortedDays.length - 1] - sortedDays[0] === sortedDays.length - 1
+      ? `${dayNames[sortedDays[0]]} to ${dayNames[sortedDays[sortedDays.length - 1]]}`
+      : sortedDays.map((d) => dayNames[d]).join(", ");
+
   return (
     <>
       <JsonLd
@@ -158,7 +175,7 @@ export default function RoadworthyPage() {
         ]}
         actions={
           <>
-            <Button href={bookingUrl} size="lg" target="_blank" rel="noreferrer">
+            <Button href="#book" size="lg">
               <CalendarCheck className="h-4 w-4" aria-hidden />
               Book Inspection Online
             </Button>
@@ -169,6 +186,38 @@ export default function RoadworthyPage() {
           </>
         }
       />
+
+      {/* Booking request form — feeds the dashboard's approval queue */}
+      <section id="book" className="scroll-mt-24 bg-ink py-20 lg:py-28">
+        <Container>
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-5">
+              <SectionHeader
+                eyebrow="Request a booking"
+                heading="Pick a day — we'll confirm your time."
+                body="Tell us about the vehicle and when suits. The workshop checks the schedule and confirms every booking by email or phone, usually the same business day."
+              />
+              <ul className="mt-8 grid gap-3">
+                {[
+                  "Most inspections completed in 60–90 minutes",
+                  "Any defects documented in writing on the spot",
+                  "VicRoads-recognised certificate issued on a pass",
+                ].map((point) => (
+                  <li key={point} className="flex items-center gap-3 text-sm text-bone sm:text-base">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" strokeWidth={2} aria-hidden />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="lg:col-span-7">
+              <div className="relative border border-line-soft bg-ink-2 p-6 sm:p-8">
+                <RoadworthyBookingForm options={options} minDate={minDate} openDaysLabel={openDaysLabel} />
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
 
       {/* Booking — the conversion centrepiece */}
       <section className="bg-ink-2 py-20 lg:py-28">
@@ -194,12 +243,7 @@ export default function RoadworthyPage() {
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                <Button
-                  href={bookingUrl}
-                  size="lg"
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <Button href="#book" size="lg">
                   <CalendarCheck className="h-4 w-4" aria-hidden />
                   Book Inspection Online
                 </Button>
@@ -449,7 +493,7 @@ export default function RoadworthyPage() {
         body="VicRoads-licensed inspections from our Campbellfield workshop."
         primaryCta={{
           label: "Book Inspection Online",
-          href: bookingUrl,
+          href: "#book",
         }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
         footnote="VicRoads Licensed Vehicle Tester EX 12409 · Fast turnaround · Statewide-accepted certificates"

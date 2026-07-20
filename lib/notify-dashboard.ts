@@ -40,6 +40,22 @@ export async function notifyDashboardNewApplication(input: {
   });
 }
 
+export async function notifyDashboardNewRwcBooking(input: {
+  name: string;
+  inspection?: string | null;
+  preferredDate?: string | null;
+}): Promise<void> {
+  const body =
+    [input.inspection, input.preferredDate ? `wants ${input.preferredDate}` : null]
+      .filter(Boolean)
+      .join(" · ") || undefined;
+  await postNotify({
+    title: `New roadworthy booking — ${input.name}`,
+    body,
+    url: "/roadworthy",
+  });
+}
+
 /** Shared best-effort POST to the dashboard push endpoint (4s timeout). */
 async function postNotify(payload: { title: string; body?: string; url: string }): Promise<void> {
   const url = process.env.DASHBOARD_PUSH_URL;
