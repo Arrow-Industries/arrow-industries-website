@@ -8,14 +8,16 @@
  * Supabase record is the source of truth.
  *
  * Captures the full customer + vehicle details needed for the certificate
- * and invoicing: name split, ABN when booking as a company, licence number,
- * make/model/build year and VIN.
+ * and invoicing (name split, ABN, licence, make/model/year, VIN) plus
+ * optional photos, which are stored for the dashboard and attached to the
+ * staff alert.
  */
 
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
-import { sendMail, isMailerConfigured } from "@/lib/mailer";
+import { sendMail, bufferAttachments, isMailerConfigured } from "@/lib/mailer";
 import { getEmailSetting } from "@/lib/email-config";
-import { isEmail, isPhone, escapeHtml, dash, createRateLimiter } from "@/lib/form-utils";
+import { isEmail, isPhone, escapeHtml, dash, createRateLimiter, readAttachments } from "@/lib/form-utils";
+import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import { notifyDashboardNewRwcBooking } from "@/lib/notify-dashboard";
 import { getRwcBookingOptions } from "@/lib/roadworthy";
 import { site } from "@/data/site";
@@ -25,6 +27,8 @@ type SubmitResult =
   | { ok: false; error: string; field?: string };
 
 const DAY_NAMES = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const LOGO_URL = "https://arrowindustries.com.au/images/logo-black.png";
 
 const rateLimit = createRateLimiter("roadworthy");
 
@@ -36,6 +40,26 @@ function isValidAbn(raw: string): boolean {
   const sum = weights.reduce((acc, w, i) => acc + w * (Number(digits[i]) - (i === 0 ? 1 : 0)), 0);
   return sum % 89 === 0;
 }
+
+const fullAddress = `${site.address.line1}, ${site.address.suburb} ${site.address.state} ${site.address.postcode}`;
+
+/** Branded wrapper matching the dashboard's purchase-order emails. */
+function shell(title: string, inner: string): string {
+  return `
+  <div style="font-family:Arial,Helvetica,sans-serif;color:#111;max-width:640px">
+    <img src="${LOGO_URL}" alt="${escapeHtml(site.name)}" style="height:44px;margin-bottom:10px">
+    <h2 style="margin:0 0 2px">${escapeHtml(site.name)} — ${escapeHtml(title)}</h2>
+    <div style="color:#666;font-size:13px;margin-bottom:16px;line-height:1.5">${escapeHtml(site.legalName)} t/a ${escapeHtml(site.name)} · ABN ${escapeHtml(site.abn)}<br>${escapeHtml(fullAddress)}</div>
+    <div style="font-size:14px;line-height:1.6">${inner}</div>
+    <p style="color:#888;font-size:12px;margin-top:20px;border-top:1px solid #eee;padding-top:12px">
+      Questions? Reply to this email or call us on <a href="${site.phoneHref}" style="color:#888">${site.phone}</a>.<br>
+      ${escapeHtml(site.name)} · ${escapeHtml(fullAddress)}
+    </p>
+  </div>`;
+}
+
+const detailRow = (label: string, value: string) =>
+  `<tr><td style="padding:6px 16px 6px 0;color:#666;vertical-align:top;white-space:nowrap">${label}</td><td style="padding:6px 0">${value}</td></tr>`;
 
 export async function submitRoadworthyBooking(
   _prevState: SubmitResult | null,
@@ -111,6 +135,18 @@ export async function submitRoadworthyBooking(
     return { ok: false, error: `Inspections run ${open} — please pick one of those days.`, field: "preferredDate" };
   }
 
+  // Optional photos — images only, 10MB each.
+  const photoResult = await readAttachments(formData.getAll("photos"), {
+    allowedMime: /^image\//,
+    allowedExt: /\.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?)$/i,
+    typeError: (name) => `${name} isn't an image — please upload photos only.`,
+    tooLargeError: "Photos are too large combined — please upload fewer or smaller images.",
+    uploadError: "We couldn't read one of your photos — please try again.",
+    logTag: "roadworthy",
+  });
+  if (!photoResult.ok) return { ok: false, error: photoResult.error, field: "photos" };
+  const photos = photoResult.attachments;
+
   const limited = await rateLimit();
   if (!limited.ok)
     return { ok: false, error: "Too many requests — please wait a moment and try again, or call us." };
@@ -118,8 +154,12 @@ export async function submitRoadworthyBooking(
   const name = `${firstName} ${lastName}`;
   const vehicleText = [year, make, model].filter(Boolean).join(" ");
 
-  // 1) Durable record → dashboard approval queue. Detail columns are from
-  //    migration 035; retried without them if that migration isn't run yet.
+  // Store photos so the dashboard can show them (best-effort).
+  const storedPaths = await uploadLeadAttachments(photos, "roadworthy");
+
+  // 1) Durable record → dashboard approval queue. Newer columns degrade
+  //    gracefully: attachments (036) and detail fields (035) are dropped in
+  //    turn if those migrations haven't been run yet.
   let saved = false;
   const sb = getSupabaseAdmin();
   if (sb) {
@@ -141,7 +181,7 @@ export async function submitRoadworthyBooking(
       preferred_time: preferredTime || null,
       notes: message || null,
     };
-    const detailRow = {
+    const detailRowDb = {
       first_name: firstName,
       last_name: lastName,
       abn: abn || null,
@@ -151,18 +191,26 @@ export async function submitRoadworthyBooking(
       vehicle_year: year,
       vin,
     };
-    let { error } = await sb.from("rwc_bookings").insert({ ...baseRow, ...detailRow });
-    if (error && /column|schema cache/i.test(error.message)) {
-      ({ error } = await sb.from("rwc_bookings").insert(baseRow));
+    const attempts: Record<string, unknown>[] = [
+      ...(storedPaths.length ? [{ ...baseRow, ...detailRowDb, attachments: storedPaths }] : []),
+      { ...baseRow, ...detailRowDb },
+      baseRow,
+    ];
+    for (const row of attempts) {
+      const { error } = await sb.from("rwc_bookings").insert(row);
+      if (!error) {
+        saved = true;
+        break;
+      }
+      if (!/column|schema cache/i.test(error.message)) {
+        console.error("[roadworthy] Insert error:", error.message);
+        break;
+      }
     }
-    if (error) console.error("[roadworthy] Insert error:", error.message);
-    else {
-      saved = true;
-      await notifyDashboardNewRwcBooking({ name, inspection: item.label, preferredDate });
-    }
+    if (saved) await notifyDashboardNewRwcBooking({ name, inspection: item.label, preferredDate });
   }
 
-  // 2) Staff alert email.
+  // 2) Staff alert email (photos attached).
   let emailed = false;
   if (isMailerConfigured()) {
     const to = await getEmailSetting("roadworthy_email_to", "sales@arrowindustries.com.au");
@@ -180,22 +228,21 @@ export async function submitRoadworthyBooking(
       ["Inspection", item.label],
       ["Preferred date", preferredDate],
       ["Preferred time", dash(preferredTime)],
+      ["Photos", photos.length ? `${photos.length} attached` : "—"],
       ["Notes", dash(message)],
     ]
-      .map(
-        ([k, v]) =>
-          `<tr><td style="padding:4px 16px 4px 0;color:#666;vertical-align:top">${k}</td><td style="padding:4px 0">${escapeHtml(v)}</td></tr>`,
-      )
+      .map(([k, v]) => detailRow(k, escapeHtml(v)))
       .join("");
     try {
       await sendMail({
         to,
         subject: `Roadworthy booking request — ${name}${rego ? ` (${rego.toUpperCase()})` : ""}`,
-        html: `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6">
-          <p><strong>New roadworthy booking request</strong> from the website — approve or reject it in the dashboard's Roadworthy tab.</p>
-          <table style="border-collapse:collapse">${rows}</table>
-        </div>`,
+        html: shell("Roadworthy booking request", `
+          <p><strong>New booking request</strong> from the website — approve or reject it in the dashboard's Roadworthy tab.</p>
+          <table style="border-collapse:collapse;font-size:14px;border-top:2px solid #ddd;border-bottom:2px solid #ddd">${rows}</table>
+        `),
         replyTo: email || undefined,
+        attachments: bufferAttachments(photos),
       });
       emailed = true;
     } catch (err) {
@@ -208,13 +255,17 @@ export async function submitRoadworthyBooking(
         await sendMail({
           to: email,
           subject: "Roadworthy booking request received — Arrow Industries",
-          html: `<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.6;max-width:560px">
+          html: shell("Booking request received", `
             <p>Hi ${escapeHtml(firstName)},</p>
-            <p>Thanks — we've received your roadworthy inspection request for the <strong>${escapeHtml(vehicleText)}</strong>${rego ? ` (${escapeHtml(rego.toUpperCase())})` : ""} on <strong>${escapeHtml(preferredDate)}</strong>${preferredTime ? ` (${escapeHtml(preferredTime)})` : ""}.</p>
-            <p>This isn't confirmed yet: our team will check the schedule and email you a confirmed time, usually within the same business day.</p>
+            <p>Thanks — we've received your roadworthy inspection request:</p>
+            <table style="border-collapse:collapse;font-size:14px;border-top:2px solid #ddd;border-bottom:2px solid #ddd;margin:8px 0">
+              ${detailRow("Vehicle", `<strong>${escapeHtml(vehicleText)}</strong>${rego ? ` (${escapeHtml(rego.toUpperCase())})` : ""}`)}
+              ${detailRow("Inspection", escapeHtml(item.label))}
+              ${detailRow("Requested", `<strong>${escapeHtml(preferredDate)}</strong>${preferredTime ? ` · ${escapeHtml(preferredTime)}` : ""}`)}
+            </table>
+            <p>This isn't confirmed yet: our team will check the schedule and email you a confirmed time, usually within the same business day. Once confirmed, please plan to <strong>drop the vehicle off 15 minutes before your booking time</strong>.</p>
             <p>Need it urgently? Call us on <a href="${site.phoneHref}">${site.phone}</a>.</p>
-            <p style="color:#666;font-size:12px;margin-top:24px;border-top:1px solid #ddd;padding-top:12px">Arrow Industries · ${escapeHtml(site.address.line1)}, ${escapeHtml(site.address.suburb)} ${escapeHtml(site.address.state)} ${escapeHtml(site.address.postcode)}</p>
-          </div>`,
+          `),
         });
       } catch (err) {
         console.error("[roadworthy] customer ack error (non-fatal):", err);

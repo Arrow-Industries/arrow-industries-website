@@ -7,7 +7,7 @@
  */
 
 import { useActionState, useEffect, useRef, useState, isValidElement, cloneElement } from "react";
-import { CalendarCheck, CheckCircle2, ChevronDown } from "lucide-react";
+import { CalendarCheck, CheckCircle2, ChevronDown, ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/Button";
 import { submitRoadworthyBooking } from "@/lib/roadworthy-action";
 import type { RwcOption, RwcVehicleType } from "@/lib/roadworthy";
@@ -18,6 +18,13 @@ const inputBase =
 const labelBase = "text-sm font-semibold text-bone";
 
 const TIME_SLOTS = ["Morning (6am – 10am)", "Midday (10am – 1pm)", "Afternoon (1pm – 4pm)", "Any time"];
+
+const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+function formatBytes(bytes: number) {
+  if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
 
 function Field({
   label, name, required, hint, children,
@@ -62,8 +69,41 @@ export function RoadworthyBookingForm({
 }) {
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
   const [vehicleType, setVehicleType] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
   const selectedType = [...truckTypes, ...trailerTypes].find((t) => t.label === vehicleType);
+
+  function syncFileInput(next: File[]) {
+    // Replace the underlying <input> file list so FormData picks up the
+    // current selection (including after individual removals).
+    if (!fileInputRef.current) return;
+    const dt = new DataTransfer();
+    next.forEach((f) => dt.items.add(f));
+    fileInputRef.current.files = dt.files;
+  }
+
+  function handleFileChange(list: FileList | null) {
+    if (!list || list.length === 0) return;
+    const incoming = Array.from(list);
+    const oversize = incoming.find((f) => f.size > MAX_FILE_BYTES);
+    if (oversize) {
+      setFileError(`${oversize.name} is over 10MB. Please attach a smaller photo.`);
+      return;
+    }
+    setFileError(null);
+    const next = [...files, ...incoming];
+    setFiles(next);
+    syncFileInput(next);
+  }
+
+  function removeFile(index: number) {
+    const next = files.filter((_, i) => i !== index);
+    setFiles(next);
+    syncFileInput(next);
+    setFileError(null);
+  }
 
   useEffect(() => {
     if (state && !state.ok) {
@@ -83,6 +123,10 @@ export function RoadworthyBookingForm({
           Your time isn&rsquo;t locked in just yet — our team will check the
           schedule and confirm your inspection by email or phone, usually
           within the same business day.
+        </p>
+        <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-mute">
+          Once confirmed, please drop the vehicle off 15 minutes before your
+          booking time.
         </p>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-mute">
           Need it sooner? Call us on{" "}
@@ -208,6 +252,66 @@ export function RoadworthyBookingForm({
 
       <Field label="Anything we should know?" name="message">
         <textarea id="message" name="message" rows={3} placeholder="e.g. failed items from a previous inspection, fleet booking, access notes…" className={inputBase + " resize-none"} />
+      </Field>
+
+      <Field
+        label="Photos of the vehicle"
+        name="photos"
+        hint="Optional — a few photos of the vehicle (and anything you're unsure about) help us prepare. Max 10MB per photo."
+      >
+        <div className="flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="inline-flex w-fit items-center gap-2 rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone transition-colors hover:border-bone"
+          >
+            <ImagePlus className="h-4 w-4 text-accent" aria-hidden />
+            {files.length > 0
+              ? `${files.length} photo${files.length === 1 ? "" : "s"} selected — add more`
+              : "Add photos"}
+          </button>
+          <input
+            ref={fileInputRef}
+            id="photos"
+            name="photos"
+            type="file"
+            multiple
+            accept="image/*"
+            className="sr-only"
+            onChange={(e) => handleFileChange(e.target.files)}
+          />
+
+          {files.length > 0 && (
+            <ul className="flex flex-col gap-1.5">
+              {files.map((f, i) => (
+                <li
+                  key={`${f.name}-${i}`}
+                  className="flex items-center justify-between gap-3 rounded-sm border border-line-soft bg-ink-2 px-3 py-2 text-sm text-bone"
+                >
+                  <span className="flex min-w-0 items-center gap-2">
+                    <ImagePlus className="h-3.5 w-3.5 shrink-0 text-accent" aria-hidden />
+                    <span className="truncate">{f.name}</span>
+                    <span className="shrink-0 text-xs text-mute">{formatBytes(f.size)}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeFile(i)}
+                    aria-label={`Remove ${f.name}`}
+                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-sm text-mute hover:bg-ink-3 hover:text-bone"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {fileError && (
+            <p className="text-xs text-accent-text" role="alert">
+              {fileError}
+            </p>
+          )}
+        </div>
       </Field>
 
       {state && !state.ok && (
