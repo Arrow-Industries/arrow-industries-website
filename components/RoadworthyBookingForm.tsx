@@ -376,7 +376,7 @@ export function RoadworthyBookingForm({
         required
         hint={
           axlePrices && axles
-            ? `Inspection price: $${axlePrices[axles] ?? "—"} inc. GST · allow ${durationMins} minutes.`
+            ? `Inspection price: $${axlePrices[axles] ?? "—"} + GST · allow ${durationMins} minutes.`
             : `Sets your inspection price — allow ${durationMins} minutes.`
         }
       >
