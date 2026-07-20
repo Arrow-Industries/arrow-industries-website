@@ -110,7 +110,12 @@ export function RoadworthyBookingForm({
   const [shrinking, setShrinking] = useState(false);
   const [dragging, setDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
+  const [complete, setComplete] = useState(false);
+  // Price only appears once every mandatory field is filled — so no single
+  // field obviously drives it.
+  const recomputeComplete = () => setComplete(!!formRef.current?.checkValidity());
   const selectedType = [...truckTypes, ...trailerTypes].find((t) => t.label === vehicleType);
 
   function syncFileInput(next: File[]) {
@@ -199,6 +204,12 @@ export function RoadworthyBookingForm({
     return () => clearTimeout(t);
   }, [address]);
 
+  // Controlled fields update outside form input events.
+  useEffect(() => {
+    recomputeComplete();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vehicleType, axles, prefDate, address]);
+
   // Refresh the free time slots whenever the preferred date changes.
   useEffect(() => {
     if (!prefDate) {
@@ -250,7 +261,7 @@ export function RoadworthyBookingForm({
   }
 
   return (
-    <form action={formAction} className="grid gap-5" noValidate>
+    <form ref={formRef} action={formAction} className="grid gap-5" noValidate onInput={recomputeComplete} onChange={recomputeComplete}>
       {/* Honeypot — must remain empty. Hidden from real users + assistive tech. */}
       <div aria-hidden="true" className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden">
         <label htmlFor="rwc-website">Website (leave blank)</label>
@@ -374,11 +385,7 @@ export function RoadworthyBookingForm({
         label="Number of axles"
         name="axles"
         required
-        hint={
-          axlePrices && axles
-            ? `Inspection price: $${axlePrices[axles] ?? "—"} + GST · allow ${durationMins} minutes.`
-            : `Sets your inspection price — allow ${durationMins} minutes.`
-        }
+        hint={`Allow ${durationMins} minutes for the inspection.`}
       >
         <div className="relative sm:max-w-[calc(50%-0.625rem)]">
           <select
@@ -393,10 +400,7 @@ export function RoadworthyBookingForm({
               Select…
             </option>
             {[2, 3, 4, 5, 6].map((n) => (
-              <option key={n} value={n}>
-                {n}
-                {axlePrices?.[String(n)] != null ? ` — $${axlePrices[String(n)]}` : ""}
-              </option>
+              <option key={n} value={n}>{n}</option>
             ))}
           </select>
           <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden />
@@ -548,6 +552,12 @@ export function RoadworthyBookingForm({
         <p ref={errorRef} tabIndex={-1} role="alert" className="border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           {state.error}
         </p>
+      )}
+
+      {complete && axlePrices && axles && axlePrices[axles] != null && (
+        <div className="border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
+          Your inspection price: <strong>${axlePrices[axles]} + GST</strong> · allow {durationMins} minutes on the day.
+        </div>
       )}
 
       <div className="flex flex-wrap items-center gap-4">
