@@ -81,6 +81,7 @@ export function RoadworthyBookingForm({
   truckTypes,
   trailerTypes,
   axlePrices,
+  defectPrice,
   durationMins,
   minDate,
   openDaysLabel,
@@ -89,6 +90,8 @@ export function RoadworthyBookingForm({
   trailerTypes: RwcVehicleType[];
   /** Price per axle count — null hides prices from customers. */
   axlePrices: Record<string, number> | null;
+  /** Flat defect clearance certificate price — null hides it. */
+  defectPrice: number | null;
   durationMins: number;
   /** Earliest selectable preferred date (yyyy-mm-dd). */
   minDate: string;
@@ -96,6 +99,7 @@ export function RoadworthyBookingForm({
   openDaysLabel: string;
 }) {
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
+  const [service, setService] = useState<"rwc" | "defect">("rwc");
   const [vehicleType, setVehicleType] = useState("");
   const [axles, setAxles] = useState("");
   const [address, setAddress] = useState("");
@@ -267,6 +271,34 @@ export function RoadworthyBookingForm({
         <label htmlFor="rwc-website">Website (leave blank)</label>
         <input id="rwc-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
+
+      <input type="hidden" name="service" value={service} />
+      <fieldset>
+        <legend className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-mute">What do you need?</legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {(
+            [
+              ["rwc", "Roadworthy inspection", "Heavy vehicle roadworthy certificate (RWC) inspection."],
+              ["defect", "Defect clearance certificate", "Heavy Vehicle Defect Clearance Certificate — clear an issued defect notice."],
+            ] as const
+          ).map(([value, title, desc]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setService(value)}
+              aria-pressed={service === value}
+              className={`border px-4 py-3 text-left transition-colors ${
+                service === value
+                  ? "border-accent bg-accent/10"
+                  : "border-line-soft bg-ink-2 hover:border-line"
+              }`}
+            >
+              <span className="block text-sm font-semibold text-bone">{title}</span>
+              <span className="mt-1 block text-xs leading-relaxed text-mute">{desc}</span>
+            </button>
+          ))}
+        </div>
+      </fieldset>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="First name" name="firstName" required>
@@ -554,7 +586,15 @@ export function RoadworthyBookingForm({
         </p>
       )}
 
-      {complete && axlePrices && axles && axlePrices[axles] != null && (
+      {complete && service === "defect" && defectPrice != null && (
+        <div className="border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
+          Defect clearance certificate: <strong>${defectPrice} + GST</strong> per certificate · allow {durationMins} minutes on the day.
+          <span className="mt-1 block text-xs text-mute">
+            Pricing is confirmed when we confirm your booking and inspect the vehicle.
+          </span>
+        </div>
+      )}
+      {complete && service === "rwc" && axlePrices && axles && axlePrices[axles] != null && (
         <div className="border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
           Estimated inspection price: <strong>${axlePrices[axles]} + GST</strong> · allow {durationMins} minutes on the day.
           <span className="mt-1 block text-xs text-mute">

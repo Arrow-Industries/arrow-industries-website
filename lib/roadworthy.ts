@@ -24,6 +24,8 @@ export interface RwcBookingOptions {
   trailerTypes: RwcVehicleType[];
   /** Inspection price by axle count ("2"…"6") — THE price driver. */
   axlePrices: Record<string, number>;
+  /** Flat price per Heavy Vehicle Defect Clearance Certificate. */
+  defectPrice: number;
   /** Show prices to customers on the booking form. */
   showPrices: boolean;
   /** Flat inspection duration in minutes. */
@@ -76,6 +78,7 @@ const FALLBACK: RwcBookingOptions = {
     { label: "Road Train Trailer", desc: "A/B/C trailers (where applicable)" },
   ],
   axlePrices: { "2": 300, "3": 350, "4": 400, "5": 450, "6": 500 },
+  defectPrice: 250,
   showPrices: false,
   durationMins: 90,
   leadDays: 1,
@@ -147,6 +150,7 @@ export async function getRwcBookingOptions(): Promise<RwcBookingOptions> {
       truckTypes: cleanTypes(cfg?.truckTypes, FALLBACK.truckTypes),
       trailerTypes: cleanTypes(cfg?.trailerTypes, FALLBACK.trailerTypes),
       axlePrices,
+      defectPrice: Number(cfg?.defectPrice) >= 0 ? Math.round(Number(cfg.defectPrice)) : FALLBACK.defectPrice,
       showPrices,
       durationMins: Number(cfg?.durationMins) >= 15 ? Math.round(Number(cfg.durationMins)) : FALLBACK.durationMins,
       leadDays: Number.isFinite(Number(cfg?.leadDays)) ? Math.max(0, Number(cfg.leadDays)) : FALLBACK.leadDays,

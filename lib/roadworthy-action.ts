@@ -69,6 +69,7 @@ export async function submitRoadworthyBooking(
   // Honeypot — silently accept so bots think it worked.
   if (String(formData.get("website") ?? "").trim()) return { ok: true };
 
+  const service = String(formData.get("service") ?? "") === "defect" ? "defect" : "rwc";
   const firstName = String(formData.get("firstName") ?? "").trim();
   const lastName = String(formData.get("lastName") ?? "").trim();
   const company = String(formData.get("companyName") ?? "").trim();
@@ -123,7 +124,7 @@ export async function submitRoadworthyBooking(
   if (vin.replace(/\s/g, "").length < 5)
     return { ok: false, error: "Please provide the VIN (it's on the compliance plate).", field: "vin" };
 
-  const { leadDays, days, closures, axlePrices, durationMins, showPrices } = await getRwcBookingOptions();
+  const { leadDays, days, closures, axlePrices, defectPrice, durationMins, showPrices } = await getRwcBookingOptions();
 
   if (!preferredDate || !/^\d{4}-\d{2}-\d{2}$/.test(preferredDate))
     return { ok: false, error: "Please pick a preferred date.", field: "preferredDate" };
@@ -198,6 +199,7 @@ export async function submitRoadworthyBooking(
   if (!limited.ok)
     return { ok: false, error: "Too many requests — please wait a moment and try again, or call us." };
 
+  const serviceLabel = service === "defect" ? "defect clearance certificate" : "roadworthy inspection";
   const name = `${firstName} ${lastName}`;
   const vehicleText = [year, make, model].filter(Boolean).join(" ");
   // "any" or an "HH:MM" slot from the live schedule picker.
@@ -228,7 +230,7 @@ export async function submitRoadworthyBooking(
       rego: rego || null,
       vehicle: vehicleText,
       vehicle_type: vehicleType,
-      price: axlePrices[String(axles)] ?? null,
+      price: service === "defect" ? defectPrice : axlePrices[String(axles)] ?? null,
       duration_mins: durationMins,
       preferred_date: preferredDate,
       preferred_time: timeStored,
@@ -246,6 +248,7 @@ export async function submitRoadworthyBooking(
     };
     const withPhotos = storedPaths.length ? { attachments: storedPaths } : {};
     const attempts: Record<string, unknown>[] = [
+      { ...baseRow, ...detailRowDb, axles, address, ...withPhotos, ...(service === "defect" ? { service } : {}) },
       { ...baseRow, ...detailRowDb, axles, address, ...withPhotos },
       { ...baseRow, ...detailRowDb, axles, ...withPhotos },
       ...(storedPaths.length ? [{ ...baseRow, ...detailRowDb, ...withPhotos }] : []),
@@ -281,6 +284,7 @@ export async function submitRoadworthyBooking(
       }
     };
     const rows = [
+      ["Service", service === "defect" ? "Defect clearance certificate" : "Roadworthy inspection (RWC)"],
       ["Name", name],
       ["Company", dash(company)],
       ["ABN", dash(abn)],
@@ -303,9 +307,9 @@ export async function submitRoadworthyBooking(
     try {
       await sendAs({
         to,
-        subject: `Roadworthy booking request — ${name}${rego ? ` (${rego.toUpperCase()})` : ""}`,
-        html: shell("Roadworthy booking request", `
-          <p><strong>New booking request</strong> from the website — approve or reject it in the dashboard's Roadworthy tab.</p>
+        subject: `${service === "defect" ? "Defect clearance" : "Roadworthy"} booking request — ${name}${rego ? ` (${rego.toUpperCase()})` : ""}`,
+        html: shell(`${service === "defect" ? "Defect clearance" : "Roadworthy"} booking request`, `
+          <p><strong>New ${serviceLabel} request</strong> from the website — approve or reject it in the dashboard's Roadworthy tab.</p>
           <table style="border-collapse:collapse;font-size:14px;border-top:2px solid #ddd;border-bottom:2px solid #ddd">${rows}</table>
         `),
         replyTo: email || undefined,
@@ -321,17 +325,18 @@ export async function submitRoadworthyBooking(
       try {
         await sendAs({
           to: email,
-          subject: "Roadworthy booking request received — Arrow Industries",
+          subject: `${service === "defect" ? "Defect clearance" : "Roadworthy"} booking request received — Arrow Industries`,
           html: shell("Booking request received", `
             <p>Hi ${escapeHtml(firstName)},</p>
-            <p>Thanks — we've received your roadworthy inspection request:</p>
+            <p>Thanks — we've received your ${serviceLabel} request:</p>
             <table style="border-collapse:collapse;font-size:14px;border-top:2px solid #ddd;border-bottom:2px solid #ddd;margin:8px 0">
               ${detailRow("Vehicle", `<strong>${escapeHtml(vehicleText)}</strong>${rego ? ` (${escapeHtml(rego.toUpperCase())})` : ""}`)}
+              ${service === "defect" ? detailRow("Service", "<strong>Heavy Vehicle Defect Clearance Certificate</strong>") : ""}
               ${detailRow("Vehicle type", `${escapeHtml(vehicleType)} · ${axles} axle${axles === 1 ? "" : "s"}`)}
               ${detailRow("Requested", `<strong>${escapeHtml(preferredDate)}</strong> · ${escapeHtml(timeLabel)}`)}
-              ${showPrices && axlePrices[String(axles)] != null ? detailRow("Indicative price", `<strong>$${axlePrices[String(axles)].toFixed(2)} + GST</strong>`) : ""}
+              ${showPrices && (service === "defect" ? defectPrice != null : axlePrices[String(axles)] != null) ? detailRow("Indicative price", `<strong>$${(service === "defect" ? defectPrice : axlePrices[String(axles)]).toFixed(2)} + GST</strong>`) : ""}
             </table>
-            ${showPrices && axlePrices[String(axles)] != null ? `<p style="color:#666;font-size:13px;margin-top:2px">The indicative price is based on the vehicle details provided — the final price may change once your booking and vehicle details are confirmed.</p>` : ""}
+            ${showPrices && (service === "defect" ? defectPrice != null : axlePrices[String(axles)] != null) ? `<p style="color:#666;font-size:13px;margin-top:2px">The indicative price is based on the vehicle details provided — the final price may change once your booking and vehicle details are confirmed.</p>` : ""}
             <p>This isn't confirmed yet: our team will check the schedule and email you a confirmed time, usually within the same business day. Once confirmed, please plan to <strong>drop the vehicle off 15 minutes before your booking time</strong>.</p>
             <p>Need it urgently? Call us on <a href="${site.phoneHref}">${site.phone}</a>.</p>
           `),

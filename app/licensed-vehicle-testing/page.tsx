@@ -144,7 +144,7 @@ const faqs = [
 ];
 
 export default async function RoadworthyPage() {
-  const { truckTypes, trailerTypes, axlePrices, showPrices, durationMins, leadDays, days, hoursByDay } = await getRwcBookingOptions();
+  const { truckTypes, trailerTypes, axlePrices, defectPrice, showPrices, durationMins, leadDays, days, hoursByDay } = await getRwcBookingOptions();
   const fmt12 = (hhmm: string) => {
     const [h, m] = hhmm.split(":").map(Number);
     const h12 = ((h + 11) % 12) + 1;
@@ -222,7 +222,7 @@ export default async function RoadworthyPage() {
             </div>
             <div className="lg:col-span-7">
               <div className="relative border border-line-soft bg-ink-2 p-6 sm:p-8">
-                <RoadworthyBookingForm truckTypes={truckTypes} trailerTypes={trailerTypes} axlePrices={showPrices ? axlePrices : null} durationMins={durationMins} minDate={minDate} openDaysLabel={openDaysLabel} />
+                <RoadworthyBookingForm truckTypes={truckTypes} trailerTypes={trailerTypes} axlePrices={showPrices ? axlePrices : null} defectPrice={showPrices ? defectPrice : null} durationMins={durationMins} minDate={minDate} openDaysLabel={openDaysLabel} />
               </div>
             </div>
           </div>
