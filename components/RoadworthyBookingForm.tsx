@@ -100,6 +100,9 @@ export function RoadworthyBookingForm({
 }) {
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
   const [service, setService] = useState<"rwc" | "defect">("rwc");
+  const [company, setCompany] = useState("");
+  const [abn, setAbn] = useState("");
+  const [abnCheck, setAbnCheck] = useState<{ state: "idle" | "checking" | "ok" | "invalid" | "nomatch"; name?: string; gst?: boolean }>({ state: "idle" });
   const [vehicleType, setVehicleType] = useState("");
   const [axles, setAxles] = useState("");
   const [address, setAddress] = useState("");
@@ -175,6 +178,31 @@ export function RoadworthyBookingForm({
     syncFileInput(next);
     setFileError(null);
   }
+
+  // Validate the ABN against the ABR as they type — a gentle confirm, never a
+  // hard gate (the server-side checksum stays the real requirement).
+  useEffect(() => {
+    const digits = abn.replace(/\D/g, "");
+    if (digits.length !== 11) { setAbnCheck({ state: "idle" }); return; }
+    let live = true;
+    setAbnCheck({ state: "checking" });
+    const t = setTimeout(() => {
+      fetch(`/api/abn?abn=${digits}`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (!live) return;
+          if (d.configured === false) { setAbnCheck({ state: "idle" }); return; }
+          if (d.valid === false) { setAbnCheck({ state: "invalid" }); return; }
+          if (d.details?.entityName) {
+            setAbnCheck({ state: "ok", name: d.details.entityName, gst: d.details.gstRegistered ?? undefined });
+            // Fill the company name if they left it blank.
+            setCompany((c) => (c.trim() ? c : d.details.entityName));
+          } else setAbnCheck({ state: "nomatch" });
+        })
+        .catch(() => { if (live) setAbnCheck({ state: "idle" }); });
+    }, 500);
+    return () => { live = false; clearTimeout(t); };
+  }, [abn]);
 
   useEffect(() => {
     if (state && !state.ok) {
@@ -308,10 +336,19 @@ export function RoadworthyBookingForm({
           <input id="lastName" name="lastName" type="text" required autoComplete="family-name" className={inputBase} />
         </Field>
         <Field label="Company name" name="companyName" hint="Optional — for company vehicles.">
-          <input id="companyName" name="companyName" type="text" autoComplete="organization" className={inputBase} />
+          <input id="companyName" name="companyName" type="text" value={company} onChange={(e) => setCompany(e.target.value)} autoComplete="organization" className={inputBase} />
         </Field>
         <Field label="ABN" name="abn" hint="Required when booking as a company — goes on the invoice.">
-          <input id="abn" name="abn" type="text" inputMode="numeric" placeholder="11 digits" className={inputBase} />
+          <input id="abn" name="abn" type="text" inputMode="numeric" placeholder="11 digits" value={abn} onChange={(e) => setAbn(e.target.value)} className={inputBase} />
+          {abnCheck.state === "checking" ? (
+            <p className="mt-1 text-xs text-mute">Checking the ABN…</p>
+          ) : abnCheck.state === "ok" ? (
+            <p className="mt-1 text-xs text-green-400">✓ {abnCheck.name}{abnCheck.gst === false ? " · not GST registered" : ""}</p>
+          ) : abnCheck.state === "invalid" ? (
+            <p className="mt-1 text-xs text-amber-400">That ABN doesn&rsquo;t look right — please check the 11 digits.</p>
+          ) : abnCheck.state === "nomatch" ? (
+            <p className="mt-1 text-xs text-amber-400">We couldn&rsquo;t find that ABN on the register — double-check it.</p>
+          ) : null}
         </Field>
         <Field label="Email" name="email" required hint="Your confirmation goes here.">
           <input id="email" name="email" type="email" required autoComplete="email" className={inputBase} />
