@@ -335,9 +335,6 @@ export function RoadworthyBookingForm({
         <Field label="Last name" name="lastName" required>
           <input id="lastName" name="lastName" type="text" required autoComplete="family-name" className={inputBase} />
         </Field>
-        <Field label="Company name" name="companyName" hint="Optional — for company vehicles.">
-          <input id="companyName" name="companyName" type="text" value={company} onChange={(e) => setCompany(e.target.value)} autoComplete="organization" className={inputBase} />
-        </Field>
         <Field label="ABN" name="abn" hint="Required when booking as a company — goes on the invoice.">
           <input id="abn" name="abn" type="text" inputMode="numeric" placeholder="11 digits" value={abn} onChange={(e) => setAbn(e.target.value)} className={inputBase} />
           {abnCheck.state === "checking" ? (
@@ -349,6 +346,9 @@ export function RoadworthyBookingForm({
           ) : abnCheck.state === "nomatch" ? (
             <p className="mt-1 text-xs text-amber-400">We couldn&rsquo;t find that ABN on the register — double-check it.</p>
           ) : null}
+        </Field>
+        <Field label="Company name" name="companyName" hint="Auto-filled from your ABN — edit if needed.">
+          <input id="companyName" name="companyName" type="text" value={company} onChange={(e) => setCompany(e.target.value)} autoComplete="organization" className={inputBase} />
         </Field>
         <Field label="Email" name="email" required hint="Your confirmation goes here.">
           <input id="email" name="email" type="email" required autoComplete="email" className={inputBase} />
