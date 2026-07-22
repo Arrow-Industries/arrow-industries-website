@@ -382,8 +382,11 @@ export function RoadworthyBookingForm({
         <Field label="Email" name="email" required hint="Your confirmation goes here.">
           <input id="email" name="email" type="email" required autoComplete="email" className={inputBase} />
         </Field>
-        <Field label="Phone" name="phone" required>
-          <input id="phone" name="phone" type="tel" required autoComplete="tel" placeholder="e.g. 0468 067 280" className={inputBase} />
+        <Field label="Phone" name="phone" required hint="Australian mobile — saved as +61.">
+          <div className="relative">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-mute">+61</span>
+            <input id="phone" name="phone" type="tel" required autoComplete="tel" inputMode="tel" placeholder="412 345 678" className={inputBase + " pl-12"} />
+          </div>
         </Field>
         <Field label="Driver licence number" name="licenceNumber" required hint="Needed for the inspection paperwork.">
           <input id="licenceNumber" name="licenceNumber" type="text" className={inputBase} />

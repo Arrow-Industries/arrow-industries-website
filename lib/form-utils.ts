@@ -20,6 +20,18 @@ export function isPhone(v: string) {
   return digits.length >= 7 && digits.length <= 15;
 }
 
+/** Normalise an Australian number to +61 E.164 (e.g. 0412 345 678 →
+ *  +61412345678). Leaves anything that isn't a 9-digit AU national number as
+ *  typed. Used so bookings + Square/SMS always carry a valid +61 number. */
+export function toAuPhone(v: string): string {
+  const raw = v.trim();
+  let d = raw.replace(/[^\d]/g, "");
+  if (d.startsWith("0061")) d = d.slice(4);
+  else if (d.length === 11 && d.startsWith("61")) d = d.slice(2);
+  d = d.replace(/^0/, ""); // drop the trunk 0
+  return d.length === 9 ? `+61${d}` : raw;
+}
+
 /* ---------- Email rendering ---------- */
 
 /** Em-dash placeholder for empty values in emails. */

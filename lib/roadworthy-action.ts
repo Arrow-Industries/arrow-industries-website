@@ -16,7 +16,7 @@
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { sendMail, bufferAttachments, isMailerConfigured } from "@/lib/mailer";
 import { getEmailSetting } from "@/lib/email-config";
-import { isEmail, isPhone, escapeHtml, dash, createRateLimiter, readAttachments } from "@/lib/form-utils";
+import { isEmail, isPhone, toAuPhone, escapeHtml, dash, createRateLimiter, readAttachments } from "@/lib/form-utils";
 import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import { notifyDashboardNewRwcBooking } from "@/lib/notify-dashboard";
 import { getRwcBookingOptions } from "@/lib/roadworthy";
@@ -228,7 +228,7 @@ export async function submitRoadworthyBooking(
       name,
       business_name: company || null,
       email,
-      phone,
+      phone: toAuPhone(phone),
       rego: rego || null,
       vehicle: vehicleText,
       vehicle_type: vehicleType,
