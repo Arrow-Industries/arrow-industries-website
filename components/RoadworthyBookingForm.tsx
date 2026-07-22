@@ -100,6 +100,7 @@ export function RoadworthyBookingForm({
 }) {
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
   const [service, setService] = useState<"rwc" | "defect">("rwc");
+  const [inspectionRound, setInspectionRound] = useState<"first" | "second">("first");
   const [company, setCompany] = useState("");
   const [abn, setAbn] = useState("");
   const [abnCheck, setAbnCheck] = useState<{ state: "idle" | "checking" | "ok" | "invalid" | "nomatch"; name?: string; gst?: boolean }>({ state: "idle" });
@@ -327,6 +328,34 @@ export function RoadworthyBookingForm({
           ))}
         </div>
       </fieldset>
+
+      <input type="hidden" name="inspectionRound" value={inspectionRound} />
+      {service === "rwc" && (
+        <fieldset>
+          <legend className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-mute">Is this a re-inspection?</legend>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {(
+              [
+                ["first", "1st inspection", "Your vehicle's roadworthy inspection."],
+                ["second", "2nd inspection", "Re-inspection after a failed check — bring your original report. Free within 14 days if we did the first."],
+              ] as const
+            ).map(([value, title, desc]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setInspectionRound(value)}
+                aria-pressed={inspectionRound === value}
+                className={`border px-4 py-3 text-left transition-colors ${
+                  inspectionRound === value ? "border-accent bg-accent/10" : "border-line-soft bg-ink-2 hover:border-line"
+                }`}
+              >
+                <span className="block text-sm font-semibold text-bone">{title}</span>
+                <span className="mt-1 block text-xs leading-relaxed text-mute">{desc}</span>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      )}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="First name" name="firstName" required>

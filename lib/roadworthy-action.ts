@@ -88,6 +88,8 @@ export async function submitRoadworthyBooking(
   // "Other…" options carry a __other_* value; the real type is typed in.
   const vehicleType = vehicleTypeRaw.startsWith("__other") ? vehicleTypeOther : vehicleTypeRaw;
   const axlesRaw = String(formData.get("axles") ?? "").trim();
+  // 1st inspection or a re-inspection after a fail (staff confirm free at approval).
+  const inspectionRound = String(formData.get("inspectionRound") ?? "") === "second" ? "second" : "first";
   const preferredDate = String(formData.get("preferredDate") ?? "").trim();
   const preferredTime = String(formData.get("preferredTime") ?? "").trim();
   const message = String(formData.get("message") ?? "").trim();
@@ -247,7 +249,9 @@ export async function submitRoadworthyBooking(
       vin,
     };
     const withPhotos = storedPaths.length ? { attachments: storedPaths } : {};
+    const roundDb = inspectionRound === "second" ? { inspection_round: "second" } : {};
     const attempts: Record<string, unknown>[] = [
+      { ...baseRow, ...detailRowDb, axles, address, ...withPhotos, ...roundDb, ...(service === "defect" ? { service } : {}) },
       { ...baseRow, ...detailRowDb, axles, address, ...withPhotos, ...(service === "defect" ? { service } : {}) },
       { ...baseRow, ...detailRowDb, axles, address, ...withPhotos },
       { ...baseRow, ...detailRowDb, axles, ...withPhotos },
