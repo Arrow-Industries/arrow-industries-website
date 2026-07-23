@@ -158,7 +158,7 @@ export async function submitCareersForm(
   const fullName = [firstName, lastName].filter(Boolean).join(" ");
   const mobile = String(formData.get("mobile") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
-  const suburb = String(formData.get("suburb") ?? "").trim();
+  const address = String(formData.get("address") ?? "").trim();
 
   // Role information
   const role = String(formData.get("role") ?? "").trim();
@@ -227,8 +227,12 @@ export async function submitCareersForm(
       field: "email",
     };
   }
-  if (!suburb) {
-    return { ok: false, error: "Please provide your suburb.", field: "suburb" };
+  if (address.length < 8) {
+    return {
+      ok: false,
+      error: "Please provide your residential address.",
+      field: "address",
+    };
   }
   if (!roleOptions.includes(role as (typeof roleOptions)[number])) {
     return {
@@ -323,7 +327,7 @@ export async function submitCareersForm(
     fullName,
     mobile,
     email,
-    suburb,
+    address,
     role,
     industryExperience,
     yearsExperience,
@@ -351,7 +355,9 @@ export async function submitCareersForm(
     name: fullName,
     email,
     mobile,
-    suburb,
+    // The applications table column is still named `suburb`; it now holds the
+    // applicant's full address.
+    suburb: address,
     role,
     industryExperience,
     yearsExperience,
@@ -365,6 +371,8 @@ export async function submitCareersForm(
     details: {
       firstName,
       lastName,
+      // Correctly-named copy for the dashboard (the column above is legacy).
+      address,
       licenceClass,
       forklift,
       tradeQualified,
@@ -424,7 +432,7 @@ async function syncMonday(
       fullName: f.fullName,
       mobile: f.mobile,
       email: f.email,
-      suburb: f.suburb,
+      suburb: f.address,
       role: f.role,
       industryExperience: f.industryExperience,
       yearsExperience: f.yearsExperience,
@@ -453,7 +461,7 @@ interface CareerFields {
   fullName: string;
   mobile: string;
   email: string;
-  suburb: string;
+  address: string;
   role: string;
   industryExperience: string;
   yearsExperience: string;
@@ -484,7 +492,7 @@ function renderText(f: CareerFields, score: number, category: string) {
     `Name: ${dash(f.fullName)}`,
     `Mobile: ${dash(f.mobile)}`,
     `Email: ${dash(f.email)}`,
-    `Suburb: ${dash(f.suburb)}`,
+    `Address: ${dash(f.address)}`,
     "",
     "— Role Information —",
     `Role of interest: ${dash(f.role)}`,
@@ -548,7 +556,7 @@ function renderHtml(f: CareerFields, score: number, category: string) {
             ${row("Name", f.fullName)}
             ${row("Mobile", f.mobile)}
             ${row("Email", f.email)}
-            ${row("Suburb", f.suburb)}
+            ${row("Address", f.address)}
             ${sectionHeading("Role Information")}
             ${row("Role of interest", f.role)}
             ${row("Relevant industry experience", f.industryExperience)}
