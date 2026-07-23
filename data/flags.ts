@@ -12,5 +12,5 @@ export const flags = {
    *           instead. All the real page code is preserved and untouched — set
    *           this back to `true` to bring roadworthy inspections back online.
    */
-  roadworthyAvailable: false,
+  roadworthyAvailable: true,
 } as const;
