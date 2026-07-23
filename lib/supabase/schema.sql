@@ -52,7 +52,8 @@ create table if not exists public.applications (
   name                text not null,
   email               text,
   mobile              text,
-  suburb              text,
+  address             text,                   -- full residential address
+  suburb              text,                   -- legacy; mirrors address for the dashboard
   role                text,
   industry_experience text,
   years_experience    text,

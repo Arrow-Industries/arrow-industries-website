@@ -355,8 +355,10 @@ export async function submitCareersForm(
     name: fullName,
     email,
     mobile,
-    // The applications table column is still named `suburb`; it now holds the
-    // applicant's full address.
+    address,
+    // Legacy column, still written so the existing dashboard (which reads
+    // `suburb`) keeps showing the applicant's location. Safe to drop once the
+    // dashboard reads `address`.
     suburb: address,
     role,
     industryExperience,
@@ -371,8 +373,6 @@ export async function submitCareersForm(
     details: {
       firstName,
       lastName,
-      // Correctly-named copy for the dashboard (the column above is legacy).
-      address,
       licenceClass,
       forklift,
       tradeQualified,

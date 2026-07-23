@@ -34,6 +34,9 @@ export interface ApplicationRecord {
   name: string;
   email?: string;
   mobile?: string;
+  /** Full residential address. */
+  address?: string;
+  /** Legacy location column — still written so the dashboard keeps showing it. */
   suburb?: string;
   role?: string;
   industryExperience?: string;
@@ -101,6 +104,7 @@ export async function saveApplication(app: ApplicationRecord): Promise<boolean> 
       name: app.name,
       email: app.email || null,
       mobile: app.mobile || null,
+      address: app.address || null,
       suburb: app.suburb || null,
       role: app.role || null,
       industry_experience: app.industryExperience || null,
