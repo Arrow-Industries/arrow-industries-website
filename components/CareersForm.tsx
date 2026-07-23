@@ -132,6 +132,44 @@ export function CareersForm() {
   const [fileError, setFileError] = useState<string | null>(null);
   const [whyHireCount, setWhyHireCount] = useState(0);
 
+  // Address lookup (Google Places via our proxy) — same behaviour as the
+  // roadworthy booking form. Degrades to a plain text input when the Places
+  // key isn't configured.
+  const [address, setAddress] = useState("");
+  const [addrSuggestions, setAddrSuggestions] = useState<string[]>([]);
+  const [addrOpen, setAddrOpen] = useState(false);
+  const addrPicked = useRef(false);
+
+  useEffect(() => {
+    // Don't re-query the text we just injected from a picked suggestion.
+    if (addrPicked.current) {
+      addrPicked.current = false;
+      return;
+    }
+    const q = address.trim();
+    if (q.length < 4) {
+      setAddrSuggestions([]);
+      setAddrOpen(false);
+      return;
+    }
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `/api/places/autocomplete?q=${encodeURIComponent(q)}`,
+        ).then((r) => r.json());
+        const list: string[] = (res?.suggestions ?? []).map(
+          (x: { text: string }) => x.text,
+        );
+        setAddrSuggestions(list);
+        setAddrOpen(list.length > 0);
+      } catch {
+        setAddrSuggestions([]);
+        setAddrOpen(false);
+      }
+    }, 300);
+    return () => clearTimeout(t);
+  }, [address]);
+
   // On a failed submit, focus the offending field (fall back to the summary).
   useEffect(() => {
     if (state && !state.ok) {
@@ -276,16 +314,41 @@ export function CareersForm() {
             />
           </Field>
 
-          <Field label="Suburb" name="suburb" required>
-            <input
-              id="suburb"
-              name="suburb"
-              type="text"
-              required
-              autoComplete="address-level2"
-              placeholder="e.g. Campbellfield"
-              className={inputBase}
-            />
+          <Field label="Address" name="address" required>
+            <div className="relative">
+              <input
+                id="address"
+                name="address"
+                type="text"
+                required
+                autoComplete="street-address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                onBlur={() => setTimeout(() => setAddrOpen(false), 150)}
+                placeholder="Start typing your address…"
+                className={inputBase}
+              />
+              {addrOpen && addrSuggestions.length > 0 && (
+                <ul className="absolute z-20 mt-1 w-full overflow-hidden rounded-sm border border-line bg-ink-2 shadow-xl">
+                  {addrSuggestions.map((sug) => (
+                    <li key={sug}>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          addrPicked.current = true;
+                          setAddress(sug);
+                          setAddrOpen(false);
+                        }}
+                        className="block w-full px-4 py-2.5 text-left text-sm text-bone hover:bg-ink-3"
+                      >
+                        {sug}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </Field>
         </div>
       </fieldset>

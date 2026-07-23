@@ -51,17 +51,42 @@ export async function getRwcSlots(date: string): Promise<RwcSlotResult> {
   let dayEnd = "16:00";
   let slotMins = 90;
   let configApplied = false;
+  /** Minute windows the workshop isn't taking bookings in. */
+  const blocked: { start: number; end: number }[] = [];
   if (sb) {
     try {
-      const { data } = await sb.storage.from("app-config").download("rwc-config.json");
-      if (data) {
+      // Read past the Storage CDN: objects are cached, so a plain download()
+      // can serve the config from before staff closed a day or added a break.
+      let text: string | null = null;
+      const { data: signed } = await sb.storage.from("app-config").createSignedUrl("rwc-config.json", 60);
+      if (signed?.signedUrl) {
+        const res = await fetch(`${signed.signedUrl}&_=${Date.now()}`, { cache: "no-store" });
+        if (res.ok) text = await res.text();
+      }
+      if (text === null) {
+        const { data } = await sb.storage.from("app-config").download("rwc-config.json");
+        if (data) text = await data.text();
+      }
+      if (text !== null) {
         configApplied = true;
-        const cfg = JSON.parse(await data.text());
+        const cfg = JSON.parse(text);
         // Closures (public holidays, shutdown weeks) win outright.
-        const closure = (Array.isArray(cfg?.closures) ? cfg.closures : []).find(
+        const onDate = (Array.isArray(cfg?.closures) ? cfg.closures : []).filter(
           (c: { from?: string; to?: string }) => YMD.test(c?.from ?? "") && YMD.test(c?.to ?? "") && c.from! <= date && date <= c.to!,
         );
-        if (closure) return { closed: true, closedReason: String(closure.reason ?? "") || undefined, slots: [] };
+        // A closure with no times shuts the whole day; with times it just
+        // blocks that window.
+        const wholeDay = onDate.find((c: { start?: string; end?: string }) => !HHMM.test(c?.start ?? "") || !HHMM.test(c?.end ?? ""));
+        if (wholeDay) return { closed: true, closedReason: String(wholeDay.reason ?? "") || undefined, slots: [] };
+        for (const c of onDate) blocked.push({ start: toMin(c.start), end: toMin(c.end) });
+
+        // Recurring block-outs (lunch, standing meetings).
+        for (const b of Array.isArray(cfg?.breaks) ? cfg.breaks : []) {
+          if (!HHMM.test(b?.start ?? "") || !HHMM.test(b?.end ?? "")) continue;
+          const days: number[] = Array.isArray(b.days) ? b.days.map(Number) : [];
+          if (days.length && !days.includes(isoDay)) continue;
+          blocked.push({ start: toMin(b.start), end: toMin(b.end) });
+        }
 
         if (Number(cfg?.durationMins) >= 15) slotMins = Math.round(Number(cfg.durationMins));
 
@@ -118,6 +143,7 @@ export async function getRwcSlots(date: string): Promise<RwcSlotResult> {
   for (let m = startMin; m + slotMins <= endMin; m += slotMins) {
     if (m < minStart) continue;
     if (busy.some((b) => b.start < m + slotMins && b.end > m)) continue;
+    if (blocked.some((b) => b.start < m + slotMins && b.end > m)) continue;
     const h = Math.floor(m / 60);
     const mm = m % 60;
     const h12 = ((h + 11) % 12) + 1;
