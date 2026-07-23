@@ -29,6 +29,9 @@ const roleOptions = [
   "Hydraulic Fitter",
   "Trade Assistant",
   "Apprentice",
+  "Engineer",
+  "Operations Supervisor",
+  "Administration",
   "Other",
 ] as const;
 
@@ -228,13 +231,24 @@ export function CareersForm() {
       <fieldset className="grid gap-5">
         <legend className={subHeadingBase}>Personal Details</legend>
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="Name" name="fullName" required>
+          <Field label="First Name" name="firstName" required>
             <input
-              id="fullName"
-              name="fullName"
+              id="firstName"
+              name="firstName"
               type="text"
               required
-              autoComplete="name"
+              autoComplete="given-name"
+              className={inputBase}
+            />
+          </Field>
+
+          <Field label="Last Name" name="lastName" required>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              required
+              autoComplete="family-name"
               className={inputBase}
             />
           </Field>

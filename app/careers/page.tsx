@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import {
+  Briefcase,
   CheckCircle2,
+  ClipboardList,
   Clock,
   Drill,
   GraduationCap,
@@ -11,6 +13,7 @@ import {
   Mail,
   MapPin,
   PaintRoller,
+  Ruler,
   Users,
   Zap,
 } from "lucide-react";
@@ -94,6 +97,21 @@ const roles = [
     icon: GraduationCap,
     title: "Apprentice",
     body: "Start your trade career in a busy workshop with hands-on training and real projects.",
+  },
+  {
+    icon: Ruler,
+    title: "Engineer",
+    body: "Design and engineering support for custom builds — drawings, specs and compliance.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Operations Supervisor",
+    body: "Coordinate the workshop floor — scheduling, workflow and keeping builds on track.",
+  },
+  {
+    icon: Briefcase,
+    title: "Administration",
+    body: "Office and customer support — scheduling, paperwork, invoicing and keeping things running.",
   },
   {
     icon: Users,
@@ -232,7 +250,7 @@ export default function CareersPage() {
         <Container>
           <SectionHeader
             eyebrow="Roles we hire for"
-            heading="The trades that build an Arrow unit."
+            heading="The roles that build an Arrow unit."
           />
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {roles.map((role) => {

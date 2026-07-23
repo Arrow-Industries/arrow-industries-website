@@ -26,6 +26,9 @@ const roleOptions = [
   "Hydraulic Fitter",
   "Trade Assistant",
   "Apprentice",
+  "Engineer",
+  "Operations Supervisor",
+  "Administration",
   "Other",
 ] as const;
 
@@ -149,7 +152,10 @@ export async function submitCareersForm(
   if (honeypot) return { ok: true };
 
   // Personal details
-  const fullName = String(formData.get("fullName") ?? "").trim();
+  const firstName = String(formData.get("firstName") ?? "").trim();
+  const lastName = String(formData.get("lastName") ?? "").trim();
+  // Everything downstream (email, Monday, Supabase) uses a single display name.
+  const fullName = [firstName, lastName].filter(Boolean).join(" ");
   const mobile = String(formData.get("mobile") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const suburb = String(formData.get("suburb") ?? "").trim();
@@ -179,8 +185,19 @@ export async function submitCareersForm(
 
   /* ---------- Validation (return on first failure) ---------- */
 
-  if (!fullName) {
-    return { ok: false, error: "Please provide your name.", field: "fullName" };
+  if (!firstName) {
+    return {
+      ok: false,
+      error: "Please provide your first name.",
+      field: "firstName",
+    };
+  }
+  if (!lastName) {
+    return {
+      ok: false,
+      error: "Please provide your last name.",
+      field: "lastName",
+    };
   }
   if (!mobile) {
     return {
@@ -346,6 +363,8 @@ export async function submitCareersForm(
     message,
     resumeNames: storedResumes.length ? storedResumes : fields.attachmentNames,
     details: {
+      firstName,
+      lastName,
       licenceClass,
       forklift,
       tradeQualified,
