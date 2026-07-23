@@ -101,9 +101,20 @@ export async function getRwcBookingOptions(): Promise<RwcBookingOptions> {
   const sb = getSupabaseAdmin();
   if (!sb) return FALLBACK;
   try {
-    const { data, error } = await sb.storage.from("app-config").download("rwc-config.json");
-    if (error || !data) return FALLBACK;
-    const cfg = JSON.parse(await data.text());
+    // Read past the Storage CDN — a plain download() can serve the config from
+    // before staff changed the hours.
+    let text: string | null = null;
+    const { data: signed } = await sb.storage.from("app-config").createSignedUrl("rwc-config.json", 60);
+    if (signed?.signedUrl) {
+      const res = await fetch(`${signed.signedUrl}&_=${Date.now()}`, { cache: "no-store" });
+      if (res.ok) text = await res.text();
+    }
+    if (text === null) {
+      const { data, error } = await sb.storage.from("app-config").download("rwc-config.json");
+      if (error || !data) return FALLBACK;
+      text = await data.text();
+    }
+    const cfg = JSON.parse(text);
     const showPrices = !!cfg?.showPricesOnWebsite;
 
     const cleanTypes = (list: unknown, fallback: RwcVehicleType[]): RwcVehicleType[] => {
@@ -139,8 +150,14 @@ export async function getRwcBookingOptions(): Promise<RwcBookingOptions> {
       const end = HHMM.test(cfg?.dayEnd ?? "") ? cfg.dayEnd : "16:00";
       hoursByDay = {};
       for (const d of [1, 2, 3, 4, 5, 6, 7]) hoursByDay[String(d)] = days.includes(d) ? { start, end } : null;
+      // Only the legacy shape falls back. Explicit per-day hours win even when
+      // every day is closed — that's a shutdown, not a broken config, and
+      // overriding it quietly reopened the workshop online.
+      if (!days.length) {
+        days = FALLBACK.days;
+        for (const d of [1, 2, 3, 4, 5, 6, 7]) hoursByDay[String(d)] = days.includes(d) ? { start, end } : null;
+      }
     }
-    if (!days.length) days = FALLBACK.days;
 
     const closures: RwcClosureRange[] = (Array.isArray(cfg?.closures) ? cfg.closures : [])
       .filter((c: { from?: string; to?: string }) => YMD.test(c?.from ?? "") && YMD.test(c?.to ?? ""))
