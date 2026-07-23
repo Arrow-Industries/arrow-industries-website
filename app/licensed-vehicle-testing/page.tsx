@@ -22,7 +22,9 @@ import { getServiceBySlug } from "@/data/services";
 import { getServiceContent } from "@/data/serviceContent";
 import { site } from "@/data/site";
 import { RoadworthyBookingForm } from "@/components/RoadworthyBookingForm";
+import { RoadworthyUnavailable } from "@/components/RoadworthyUnavailable";
 import { getRwcBookingOptions } from "@/lib/roadworthy";
+import { flags } from "@/data/flags";
 
 const SLUG = "licensed-vehicle-testing";
 const lvtService = getServiceBySlug(SLUG);
@@ -144,6 +146,13 @@ const faqs = [
 ];
 
 export default async function RoadworthyPage() {
+  // Roadworthy inspections toggled offline — show the unavailable notice at the
+  // same URL and skip the booking fetch + service JSON-LD. Flip
+  // flags.roadworthyAvailable back to true to restore the full page.
+  if (!flags.roadworthyAvailable) {
+    return <RoadworthyUnavailable />;
+  }
+
   const { truckTypes, trailerTypes, axlePrices, defectPrice, showPrices, durationMins, leadDays, days, hoursByDay } = await getRwcBookingOptions();
   const fmt12 = (hhmm: string) => {
     const [h, m] = hhmm.split(":").map(Number);
