@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 // This route handles the quote form's server action, which can carry up to
-// ~25MB of attachments and streams them to Microsoft Graph in chunks. Vercel's
+// ~20MB of attachments and posts them to Gmail's upload endpoint. Vercel's
 // default function duration is too tight for that on a slow connection; Pro
 // (with Fluid compute) allows far longer, so give it real headroom.
 export const maxDuration = 60;

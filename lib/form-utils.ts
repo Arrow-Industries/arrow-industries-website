@@ -138,7 +138,13 @@ export function createRateLimiter(
 /* ---------- Attachments ---------- */
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB per file
-const MAX_TOTAL_BYTES = 25 * 1024 * 1024; // 25 MB combined (under Resend's per-email cap)
+// 20 MB combined. The binding constraint is Gmail, which caps an assembled
+// message at 35 MB: base64 plus RFC 2045 line wrapping inflates attachments by
+// about 37%, so 20 MB goes out as roughly 28.7 MB and leaves real headroom for
+// headers and the HTML body. The old 25 MB encoded to ~35.9 MB, which is over
+// the line or a rounding error away from it depending on how Google counts a
+// megabyte — too fine a margin for a customer's quote request.
+const MAX_TOTAL_BYTES = 20 * 1024 * 1024;
 
 export interface Attachment {
   filename: string;

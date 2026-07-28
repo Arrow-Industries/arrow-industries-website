@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
-import { sendMail, isMailerConfigured, verifyMailer } from "@/lib/mailer";
+import { sendMail, isMailerConfigured, verifyMailer, activeProvider } from "@/lib/mailer";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Microsoft 365 / Graph mailer health check.
+ * Mailer health check — reports whichever provider is actually carrying mail.
  *
  * Enquiry emails are a best-effort alert (the durable record is Supabase), so a
- * broken mailer fails silently. This endpoint surfaces the real Graph error.
+ * broken mailer fails silently. This endpoint surfaces the real error, and
+ * `provider` tells you whether that was Gmail or Microsoft Graph.
  *
  * By default it only verifies that app-only credentials can obtain a token —
  * it sends nothing. Add `?send=1` (optionally `&to=someone@example.com`) to
@@ -37,6 +38,7 @@ export async function GET(req: Request) {
 
   const body: Record<string, unknown> = {
     configured: isMailerConfigured(),
+    provider: activeProvider(),
     mailFrom: process.env.MAIL_FROM ?? null,
     tokenOk: auth.ok,
   };
@@ -49,7 +51,7 @@ export async function GET(req: Request) {
       await sendMail({
         to,
         subject: "Arrow website mailer health check",
-        html: "<p>Mailer health check from the Arrow Industries website (Microsoft Graph, app-only). If you received this, enquiry email delivery is working.</p>",
+        html: `<p>Mailer health check from the Arrow Industries website (provider: ${activeProvider() ?? "none"}). If you received this, enquiry email delivery is working.</p>`,
       });
       body.sent = { to };
     } catch (err) {
