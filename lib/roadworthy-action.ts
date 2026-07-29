@@ -155,7 +155,9 @@ export async function submitRoadworthyBooking(
       field: "preferredDate",
     };
 
-  // Optional photos — images only, 10MB each.
+  // Optional photos — images only. Sizes are enforced by lib/upload-limits.ts
+  // (Vercel rejects request bodies past 4.5MB), and the browser shrinks them
+  // before they get here.
   const photoResult = await readAttachments(formData.getAll("photos"), {
     allowedMime: /^image\//,
     allowedExt: /\.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?)$/i,

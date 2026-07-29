@@ -19,6 +19,7 @@ import { submitCareersForm } from "@/lib/careers";
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
 import { site } from "@/data/site";
+import { formatBytes, prepareFiles } from "@/lib/upload-limits";
 
 /* ---------- Option lists (must match lib/careers.ts whitelists exactly) ---------- */
 
@@ -112,14 +113,6 @@ const labelBase =
 const subHeadingBase =
   "text-xs font-semibold uppercase tracking-[0.22em] text-accent-text";
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
-
-function formatBytes(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
 export function CareersForm() {
   const [state, formAction, isPending] = useActionState(
     submitCareersForm,
@@ -187,18 +180,13 @@ export function CareersForm() {
     fileInputRef.current.files = dt.files;
   }
 
-  function handleFileChange(list: FileList | null) {
+  async function handleFileChange(list: FileList | null) {
     if (!list || list.length === 0) return;
-    const incoming = Array.from(list);
-    const oversize = incoming.find((f) => f.size > MAX_FILE_BYTES);
-    if (oversize) {
-      setFileError(
-        `${oversize.name} is over 10MB. Please attach a smaller file.`,
-      );
-      return;
-    }
-    setFileError(null);
-    const next = [...files, ...incoming];
+    // Combined budget, not just per-file — see lib/upload-limits.ts.
+    const { accepted, error } = await prepareFiles(files, Array.from(list));
+    setFileError(error);
+    if (!accepted.length) return;
+    const next = [...files, ...accepted];
     setFiles(next);
     syncFileInput(next);
   }

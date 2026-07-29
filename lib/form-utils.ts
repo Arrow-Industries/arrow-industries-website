@@ -137,14 +137,11 @@ export function createRateLimiter(
 
 /* ---------- Attachments ---------- */
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB per file
-// 20 MB combined. The binding constraint is Gmail, which caps an assembled
-// message at 35 MB: base64 plus RFC 2045 line wrapping inflates attachments by
-// about 37%, so 20 MB goes out as roughly 28.7 MB and leaves real headroom for
-// headers and the HTML body. The old 25 MB encoded to ~35.9 MB, which is over
-// the line or a rounding error away from it depending on how Google counts a
-// megabyte — too fine a margin for a customer's quote request.
-const MAX_TOTAL_BYTES = 20 * 1024 * 1024;
+// The limits live in lib/upload-limits.ts so the browser and the server can't
+// drift apart — they had, and the mismatch was invisible until a submission
+// died at Vercel's 4.5 MB request cap with a bare 413. See that file for why
+// these numbers are what they are.
+import { MAX_FILE_BYTES, MAX_TOTAL_BYTES, formatBytes } from "@/lib/upload-limits";
 
 export interface Attachment {
   filename: string;
@@ -184,7 +181,7 @@ export async function readAttachments(
     if (file.size > MAX_FILE_BYTES) {
       return {
         ok: false,
-        error: `${file.name} is over 10MB. Please attach a smaller file.`,
+        error: `${file.name} is over ${formatBytes(MAX_FILE_BYTES)}. Please attach a smaller file.`,
       };
     }
     if (!opts.allowedMime.test(file.type) && !opts.allowedExt.test(file.name)) {

@@ -19,6 +19,7 @@ import { submitFinanceForm } from "@/lib/finance";
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
 import { site } from "@/data/site";
+import { formatBytes, prepareFiles, LIMIT_HINT } from "@/lib/upload-limits";
 
 /* ---------- Option lists (must match lib/finance.ts whitelists exactly) ---------- */
 
@@ -83,14 +84,6 @@ const labelBase =
 const subHeadingBase =
   "text-xs font-semibold uppercase tracking-[0.22em] text-accent-text";
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
-
-function formatBytes(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
 export function FinanceForm() {
   const [state, formAction, isPending] = useActionState(
     submitFinanceForm,
@@ -119,18 +112,13 @@ export function FinanceForm() {
     fileInputRef.current.files = dt.files;
   }
 
-  function handleFileChange(list: FileList | null) {
+  async function handleFileChange(list: FileList | null) {
     if (!list || list.length === 0) return;
-    const incoming = Array.from(list);
-    const oversize = incoming.find((f) => f.size > MAX_FILE_BYTES);
-    if (oversize) {
-      setFileError(
-        `${oversize.name} is over 10MB. Please attach a smaller file.`,
-      );
-      return;
-    }
-    setFileError(null);
-    const next = [...files, ...incoming];
+    // Combined budget, not just per-file — see lib/upload-limits.ts.
+    const { accepted, error } = await prepareFiles(files, Array.from(list));
+    setFileError(error);
+    if (!accepted.length) return;
+    const next = [...files, ...accepted];
     setFiles(next);
     syncFileInput(next);
   }
@@ -366,7 +354,7 @@ export function FinanceForm() {
         <Field
           label="Attach quote or spec sheet"
           name="attachments"
-          hint="Optional — PDF, Word or image files. Max 10MB per file."
+          hint={`Optional — PDF, Word or image files. ${LIMIT_HINT}`}
         >
           <div className="flex flex-col gap-3">
             <button

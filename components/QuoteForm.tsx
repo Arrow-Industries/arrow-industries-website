@@ -19,6 +19,7 @@ import { submitQuoteForm } from "@/lib/email";
 import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
 import { site } from "@/data/site";
+import { formatBytes, prepareFiles, LIMIT_HINT } from "@/lib/upload-limits";
 
 const enquiryTypes = [
   "Tipper Truck Body",
@@ -35,14 +36,6 @@ const inputBase =
 
 const labelBase =
   "block text-xs font-semibold uppercase tracking-[0.16em] text-mute";
-
-const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10 MB
-
-function formatBytes(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
 
 export function QuoteForm() {
   const [state, formAction, isPending] = useActionState(submitQuoteForm, null);
@@ -72,20 +65,18 @@ export function QuoteForm() {
     fileInputRef.current.files = dt.files;
   }
 
-  function handleFileChange(list: FileList | null) {
+  async function handleFileChange(list: FileList | null) {
     if (!list || list.length === 0) return;
-    const incoming = Array.from(list);
-    const oversize = incoming.find((f) => f.size > MAX_FILE_BYTES);
-    if (oversize) {
-      setFileError(
-        `${oversize.name} is over 10MB. Please attach a smaller file.`,
-      );
-      return;
+    // Shrinks photos and enforces the COMBINED budget, not just per-file —
+    // two large images used to pass this check and then die at Vercel's
+    // request limit with an unexplained failure.
+    const { accepted, error } = await prepareFiles(files, Array.from(list));
+    setFileError(error);
+    if (accepted.length) {
+      const next = [...files, ...accepted];
+      setFiles(next);
+      syncFileInput(next);
     }
-    setFileError(null);
-    const next = [...files, ...incoming];
-    setFiles(next);
-    syncFileInput(next);
   }
 
   function removeFile(index: number) {
@@ -304,7 +295,7 @@ export function QuoteForm() {
       <Field
         label="Attach drawings or photos"
         name="attachments"
-        hint="Upload drawings, site photos, damage images or spec sheets to help us assess your enquiry. Max 10MB per file."
+        hint={`Upload drawings, site photos, damage images or spec sheets to help us assess your enquiry. ${LIMIT_HINT}`}
       >
         <div className="flex flex-col gap-3">
           <button

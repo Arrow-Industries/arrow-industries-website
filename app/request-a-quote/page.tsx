@@ -14,10 +14,11 @@ export const metadata: Metadata = pageMetadata({
   path: "/request-a-quote",
 });
 
-// This route handles the quote form's server action, which can carry up to
-// ~20MB of attachments and posts them to Gmail's upload endpoint. Vercel's
-// default function duration is too tight for that on a slow connection; Pro
-// (with Fluid compute) allows far longer, so give it real headroom.
+// This route handles the quote form's server action, which carries up to
+// ~3.5MB of attachments (Vercel rejects request bodies past 4.5MB — see
+// lib/upload-limits.ts) and posts them on to Gmail. The default function
+// duration is too tight for that on a slow connection; Pro (with Fluid
+// compute) allows far longer, so give it real headroom.
 export const maxDuration = 60;
 
 const reassurance = [

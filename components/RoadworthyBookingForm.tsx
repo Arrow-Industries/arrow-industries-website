@@ -18,38 +18,15 @@ const inputBase =
   "w-full rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone placeholder:text-mute focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
 const labelBase = "text-sm font-semibold text-bone";
 
-// Vercel rejects request bodies over ~4.5MB, so every photo is compressed in
-// the browser and the combined payload stays safely under that.
-const SHRINK_ABOVE = 500 * 1024; // compress anything bigger than 500KB
-const MAX_FILE_BYTES = 3 * 1024 * 1024; // per photo, post-compression
-const MAX_TOTAL_BYTES = 3_500_000; // combined payload budget
-
-function formatBytes(bytes: number) {
-  if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-}
-
-/** Downscale a photo in the browser (max 1600px, JPEG 80%) so phone camera
- *  shots upload reliably. Falls back to the original file if anything goes
- *  wrong (e.g. a format the browser can't decode). */
-async function shrinkPhoto(file: File): Promise<File> {
-  try {
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return file;
-    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    bitmap.close();
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.8));
-    if (!blob || blob.size >= file.size) return file;
-    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
-  } catch {
-    return file;
-  }
-}
+// This form worked the Vercel limit out first and capped itself; the shared
+// module now carries those numbers so the other forms can't disagree.
+import {
+  SHRINK_ABOVE,
+  MAX_FILE_BYTES,
+  MAX_TOTAL_BYTES,
+  formatBytes,
+  shrinkImage as shrinkPhoto,
+} from "@/lib/upload-limits";
 
 function Field({
   label, name, required, hint, children,
