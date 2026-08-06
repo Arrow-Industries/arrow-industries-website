@@ -54,6 +54,19 @@ function Field({
   );
 }
 
+// Device-local "remember me" for repeat customers. Contact fields only.
+const SAVED_KEY = "arrow.rwc.customer";
+const REMEMBER_FIELDS = [
+  "firstName",
+  "lastName",
+  "companyName",
+  "abn",
+  "email",
+  "phone",
+  "licenceNumber",
+  "address",
+] as const;
+
 export function RoadworthyBookingForm({
   truckTypes,
   trailerTypes,
@@ -76,6 +89,12 @@ export function RoadworthyBookingForm({
   openDaysLabel: string;
 }) {
   const [state, formAction, isPending] = useActionState(submitRoadworthyBooking, null);
+  // Repeat customers: remember their CONTACT details on this device only (not
+  // vehicle details — every booking is a different vehicle). Nothing about the
+  // customer leaves their browser; this adds no server-side storage.
+  const [remember, setRemember] = useState(false);
+  const [hasSaved, setHasSaved] = useState(false);
+  const pendingSave = useRef<Record<string, string> | null>(null);
   const [service, setService] = useState<"rwc" | "defect">("rwc");
   const [inspectionRound, setInspectionRound] = useState<"first" | "second">("first");
   const [company, setCompany] = useState("");
@@ -101,6 +120,40 @@ export function RoadworthyBookingForm({
   // Price only appears once every mandatory field is filled — so no single
   // field obviously drives it.
   const recomputeComplete = () => setComplete(!!formRef.current?.checkValidity());
+
+  // Snapshot the contact fields on submit so we can persist them once the
+  // server confirms the booking. Runs before the server action.
+  function captureForSave() {
+    const f = formRef.current;
+    if (!f) return;
+    const fd = new FormData(f);
+    const snap: Record<string, string> = {};
+    for (const name of REMEMBER_FIELDS) snap[name] = String(fd.get(name) ?? "");
+    pendingSave.current = snap;
+  }
+
+  /** Clear the remembered details and blank the contact fields. */
+  function forgetSaved() {
+    try {
+      localStorage.removeItem(SAVED_KEY);
+    } catch {
+      /* storage may be unavailable (private mode) */
+    }
+    setHasSaved(false);
+    setRemember(false);
+    setCompany("");
+    setAbn("");
+    addrPicked.current = true;
+    setAddress("");
+    const f = formRef.current;
+    if (f) {
+      for (const name of ["firstName", "lastName", "email", "phone", "licenceNumber"]) {
+        const el = f.elements.namedItem(name) as HTMLInputElement | null;
+        if (el) el.value = "";
+      }
+    }
+    recomputeComplete();
+  }
   const selectedType = [...truckTypes, ...trailerTypes].find((t) => t.label === vehicleType);
 
   function syncFileInput(next: File[]) {
@@ -182,6 +235,36 @@ export function RoadworthyBookingForm({
     return () => { live = false; clearTimeout(t); };
   }, [abn]);
 
+  // On load, prefill the contact fields from a previous booking on this device.
+  useEffect(() => {
+    let saved: Record<string, string> | null = null;
+    try {
+      const raw = localStorage.getItem(SAVED_KEY);
+      if (raw) saved = JSON.parse(raw) as Record<string, string>;
+    } catch {
+      /* corrupt/blocked storage — ignore */
+    }
+    if (!saved) return;
+    setHasSaved(true);
+    setRemember(true);
+    if (saved.companyName) setCompany(saved.companyName);
+    if (saved.abn) setAbn(saved.abn);
+    if (saved.address) {
+      addrPicked.current = true; // don't pop the autocomplete for prefilled text
+      setAddress(saved.address);
+    }
+    const f = formRef.current;
+    if (f) {
+      for (const name of ["firstName", "lastName", "email", "phone", "licenceNumber"]) {
+        const el = f.elements.namedItem(name) as HTMLInputElement | null;
+        if (el && saved[name]) el.value = saved[name];
+      }
+    }
+    recomputeComplete();
+    // Run once on mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (state && !state.ok) {
       const target = state.field ? document.getElementById(state.field) : errorRef.current;
@@ -191,8 +274,18 @@ export function RoadworthyBookingForm({
     // users aren't left staring at where the bottom of the form used to be.
     if (state?.ok) {
       document.getElementById("book")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Persist (or clear) the contact details for next time, per the checkbox.
+      try {
+        if (remember && pendingSave.current) {
+          localStorage.setItem(SAVED_KEY, JSON.stringify(pendingSave.current));
+        } else if (!remember) {
+          localStorage.removeItem(SAVED_KEY);
+        }
+      } catch {
+        /* storage unavailable — non-fatal */
+      }
     }
-  }, [state]);
+  }, [state, remember]);
 
   // Address suggestions (Google Places via our proxy) — confirms the
   // residential address as it's typed. Silently absent when not configured.
@@ -271,7 +364,7 @@ export function RoadworthyBookingForm({
   }
 
   return (
-    <form ref={formRef} action={formAction} className="grid gap-5" noValidate onInput={recomputeComplete} onChange={recomputeComplete}>
+    <form ref={formRef} action={formAction} className="grid gap-5" noValidate onSubmit={captureForSave} onInput={recomputeComplete} onChange={recomputeComplete}>
       {/* Honeypot — must remain empty. Hidden from real users + assistive tech. */}
       <div aria-hidden="true" className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden">
         <label htmlFor="rwc-website">Website (leave blank)</label>
@@ -648,6 +741,31 @@ export function RoadworthyBookingForm({
           </span>
         </div>
       )}
+
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <label className="inline-flex cursor-pointer items-center gap-2.5 text-sm text-mute">
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={(e) => setRemember(e.target.checked)}
+            className="h-4 w-4 shrink-0 accent-accent"
+          />
+          Remember my details on this device for next time
+        </label>
+        {hasSaved && (
+          <button
+            type="button"
+            onClick={forgetSaved}
+            className="text-xs text-mute underline underline-offset-2 hover:text-bone"
+          >
+            Not you? Clear saved details
+          </button>
+        )}
+      </div>
+      <p className="-mt-2 text-xs text-mute/80">
+        Only your contact details are saved, and only in this browser — never
+        the vehicle. Not stored on our servers.
+      </p>
 
       <div className="flex flex-wrap items-center gap-4">
         <Button type="submit" size="lg" disabled={isPending}>
