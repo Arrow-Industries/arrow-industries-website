@@ -46,6 +46,33 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "30mb",
     },
   },
+  /*
+   * Customer quotes live on this domain, and are served by the dashboard.
+   *
+   * A quote link is the most consequential thing Arrow emails anyone: sign
+   * here for $60,000. It was going out as
+   * "arrow-industries-dashboard.vercel.app/quote/sMeVwEn…" — an address that
+   * looks like somebody's build server and reads, to a careful customer, like
+   * exactly the sort of link you are told not to click.
+   *
+   * So the page is proxied under arrowindustries.com.au while the dashboard
+   * keeps owning it. Both paths are needed: the HTML, and the endpoint the
+   * page calls to take an option on or off and to accept — that fetch is
+   * same-origin, so without the second rule the quote renders and then does
+   * nothing.
+   *
+   * The dashboard sets an absolute assetPrefix so its scripts and styles still
+   * resolve from there rather than from here.
+   */
+  async rewrites() {
+    const dashboard = "https://dashboard.arrowindustries.com.au";
+    return [
+      { source: "/quote/:token", destination: `${dashboard}/quote/:token` },
+      { source: "/quote/:token/:path*", destination: `${dashboard}/quote/:token/:path*` },
+      { source: "/api/quote/:token", destination: `${dashboard}/api/quote/:token` },
+    ];
+  },
+
   async headers() {
     return [
       { source: "/:path*", headers: SECURITY_HEADERS },
