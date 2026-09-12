@@ -24,7 +24,9 @@ import { formatBytes, prepareFiles } from "@/lib/upload-limits";
 /* ---------- Option lists (must match lib/careers.ts whitelists exactly) ---------- */
 
 const roleOptions = [
-  "Boilermaker / Fabricator",
+  "Welder / Fabricator",
+  "Senior Welder / Fabricator",
+  "Qualified Boilermaker / Welder",
   "Auto Electrician",
   "Painter",
   "Hydraulic Fitter",

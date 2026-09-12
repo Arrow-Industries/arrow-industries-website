@@ -20,7 +20,9 @@ import {
 /* ---------- Option whitelists (must match the form exactly) ---------- */
 
 const roleOptions = [
-  "Boilermaker / Fabricator",
+  "Welder / Fabricator",
+  "Senior Welder / Fabricator",
+  "Qualified Boilermaker / Welder",
   "Auto Electrician",
   "Painter",
   "Hydraulic Fitter",

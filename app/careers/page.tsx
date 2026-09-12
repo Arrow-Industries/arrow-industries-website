@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import {
+  Award,
   Briefcase,
   CheckCircle2,
   ClipboardList,
   Clock,
   Drill,
+  Flame,
   GraduationCap,
   HandHelping,
   Hammer,
@@ -69,9 +71,19 @@ const lookFor = [
 
 const roles = [
   {
+    icon: Flame,
+    title: "Welder / Fabricator",
+    body: "Entry-level or general welding and fabrication, working under direction. No formal qualification or prior experience required.",
+  },
+  {
     icon: Hammer,
-    title: "Boilermaker / Fabricator",
-    body: "Heavy fabrication of tipper bodies, trailers and custom steel builds from start to finish.",
+    title: "Senior Welder / Fabricator",
+    body: "Experienced welder/fabricator who works independently, reads drawings and handles more complex builds — without a formal trade qualification.",
+  },
+  {
+    icon: Award,
+    title: "Qualified Boilermaker / Welder",
+    body: "Holds a recognised trade qualification — skilled fabrication, welding, drawing interpretation and complex manufacturing work.",
   },
   {
     icon: Zap,
