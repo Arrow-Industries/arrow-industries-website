@@ -347,7 +347,12 @@ export function CareersForm() {
       <fieldset className="grid gap-5">
         <legend className={subHeadingBase}>Role Information</legend>
 
-        <Field label="Role You're Interested In" name="role" required>
+        <Field
+          label="Role You're Interested In"
+          name="role"
+          required
+          hint="Not trade-qualified? Choose Welder / Fabricator, or Senior Welder / Fabricator if you work independently from drawings. Pick Qualified Boilermaker / Welder only if you hold a recognised trade qualification."
+        >
           <SelectField
             id="role"
             name="role"
@@ -609,12 +614,14 @@ function SelectField({
   required,
   placeholder,
   options,
+  "aria-describedby": ariaDescribedby,
 }: {
   id: string;
   name: string;
   required?: boolean;
   placeholder: string;
   options: readonly string[];
+  "aria-describedby"?: string;
 }) {
   return (
     <div className="relative">
@@ -622,6 +629,7 @@ function SelectField({
         id={id}
         name={name}
         required={required}
+        aria-describedby={ariaDescribedby}
         defaultValue=""
         className={cn(
           inputBase,
