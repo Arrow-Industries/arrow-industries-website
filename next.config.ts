@@ -70,6 +70,18 @@ const nextConfig: NextConfig = {
       { source: "/quote/:token", destination: `${dashboard}/quote/:token` },
       { source: "/quote/:token/:path*", destination: `${dashboard}/quote/:token/:path*` },
       { source: "/api/quote/:token", destination: `${dashboard}/api/quote/:token` },
+      /*
+       * Where a customer watches their build — same arrangement, same reason.
+       *
+       * The dashboard builds these links against this domain already, so
+       * without these rules every tracking link Arrow sends lands on the
+       * marketing site and reads "page not found". The second rule matters as
+       * much as the first: the page links on to /track/<token>/quote for the
+       * quote they accepted, and a rule for the token alone would send that
+       * to a 404 one click later.
+       */
+      { source: "/track/:token", destination: `${dashboard}/track/:token` },
+      { source: "/track/:token/:path*", destination: `${dashboard}/track/:token/:path*` },
     ];
   },
 
