@@ -179,7 +179,7 @@ export default function CareersPage() {
               Apply Now
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
-              Call 0468 067 280
+              Call {site.phone}
             </Button>
           </>
         }
@@ -395,7 +395,7 @@ export default function CareersPage() {
         heading="Reckon you'd be a good fit?"
         body="Send your details through and we'll be in touch if your experience matches a current or upcoming opportunity."
         primaryCta={{ label: "Apply Now", href: "#apply" }}
-        phoneCta={{ label: "Call 0468 067 280", href: site.phoneHref }}
+        phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />
     </>
   );

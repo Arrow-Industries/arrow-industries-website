@@ -171,7 +171,7 @@ export default function FinancePage() {
               Apply for Finance
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
-              Call 0468 067 280
+              Call {site.phone}
             </Button>
           </>
         }

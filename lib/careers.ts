@@ -81,7 +81,7 @@ const TO =
   "sales@arrowindustries.com.au";
 
 const GENERIC_ERROR =
-  "Something went wrong. Please call us on 0468 067 280 or email sales@arrowindustries.com.au.";
+  "Something went wrong. Please call us on 0499 717 171 or email sales@arrowindustries.com.au.";
 const UPLOAD_ERROR =
   "Resume upload failed. Please try again or email your resume to sales@arrowindustries.com.au.";
 

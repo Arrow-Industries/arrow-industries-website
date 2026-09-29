@@ -179,7 +179,7 @@ export function QuoteForm() {
             name="phone"
             type="tel"
             autoComplete="tel"
-            placeholder="e.g. 0468 067 280"
+            placeholder="e.g. 0412 345 678"
             className={inputBase}
           />
         </Field>

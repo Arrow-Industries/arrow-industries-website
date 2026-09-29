@@ -34,7 +34,7 @@ type SubmitResult =
 const TO = process.env.QUOTE_EMAIL_TO ?? "sales@arrowindustries.com.au";
 
 const GENERIC_ERROR =
-  "Something went wrong. Please call us on 0468 067 280 or email sales@arrowindustries.com.au.";
+  "Something went wrong. Please call us on 0499 717 171 or email sales@arrowindustries.com.au.";
 const UPLOAD_ERROR =
   "File upload failed. Please try again or email your files to sales@arrowindustries.com.au.";
 
