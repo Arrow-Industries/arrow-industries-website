@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { site } from "@/data/site";
 import { getPublishedTerms, parseTerms, boldRuns, type TermsBlock } from "@/lib/terms-of-supply";
+import Link from "next/link";
 
 export const metadata: Metadata = pageMetadata({
   title: "Terms & Conditions for the Supply of Goods and Services",
@@ -73,6 +74,28 @@ export default async function TermsPage() {
                   {terms.version}, effective {longDate(terms.effectiveFrom)}
                 </dd>
               </dl>
+            </div>
+
+            {/*
+              Where a trade customer is already reading what an account is
+              subject to — which is the moment they want one. Under the
+              issuer block rather than in the clauses: an offer inside the
+              terms would read as part of them.
+            */}
+            <div className="mb-12 border border-accent/40 bg-ink-2 p-6">
+              <p className="font-display text-base font-bold text-bone">
+                Want an account with us?
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-mute">
+                Trade customers can apply for a credit account online. It takes about five
+                minutes and we come back to you within two business days.
+              </p>
+              <Link
+                href="/credit"
+                className="mt-4 inline-block border border-accent px-5 py-2.5 text-sm font-semibold text-bone hover:bg-accent hover:text-white"
+              >
+                Apply for a credit account
+              </Link>
             </div>
 
             <div className="text-sm leading-relaxed sm:text-base">

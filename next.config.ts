@@ -82,6 +82,19 @@ const nextConfig: NextConfig = {
        */
       { source: "/track/:token", destination: `${dashboard}/track/:token` },
       { source: "/track/:token/:path*", destination: `${dashboard}/track/:token/:path*` },
+      /*
+       * Applying for a credit account — same arrangement again.
+       *
+       * This one is linked from the site, from quotes and from emails, so it
+       * is the address a customer is asked to type in or forward on. It has
+       * to read as Arrow's, not as a dashboard somebody has never heard of.
+       * Three rules: the introduction, the application itself, and the
+       * endpoints the form saves and submits through, which are same-origin
+       * fetches and would 404 without a rule of their own.
+       */
+      { source: "/credit", destination: `${dashboard}/credit` },
+      { source: "/credit/:path*", destination: `${dashboard}/credit/:path*` },
+      { source: "/api/credit/:path*", destination: `${dashboard}/api/credit/:path*` },
     ];
   },
 

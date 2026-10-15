@@ -81,6 +81,10 @@ export const footerLinks = {
     { label: "Request a Quote", href: "/request-a-quote" },
     { label: "Contact", href: "/contact" },
     { label: "Warranty", href: "/warranty" },
+    // Served by the dashboard, proxied onto this domain — see next.config.
+    // Beside the terms on purpose: a trade customer reading what the account
+    // is subject to is the one most likely to want one.
+    { label: "Apply for a credit account", href: "/credit" },
     { label: "Terms & Conditions", href: "/terms-conditions" },
   ],
 };
