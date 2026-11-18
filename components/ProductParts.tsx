@@ -62,7 +62,7 @@ export function ViewBuildsLink() {
   return (
     <Link
       href="/builds"
-      className="group inline-flex items-center gap-0.5 text-sm font-medium text-accent-text"
+      className="group inline-flex min-h-11 items-center gap-0.5 text-sm font-medium text-accent-text"
     >
       View builds
       <ChevronRight
@@ -250,7 +250,7 @@ export function PhotoBand({
 export function WorkshopStrip({
   items,
 }: {
-  items: { photo: Photo; title: string; body: string }[];
+  items: { photo: Photo; title: string; body?: string }[];
 }) {
   return (
     <ul className="mt-6 grid gap-3 md:grid-cols-3">
@@ -267,7 +267,7 @@ export function WorkshopStrip({
           </div>
           <div className="p-4 sm:p-5">
             <h3 className="font-display text-[1.0625rem] font-semibold text-bone">{item.title}</h3>
-            <p className="mt-1 text-sm leading-relaxed text-mute">{item.body}</p>
+            {item.body && <p className="mt-1 text-sm leading-relaxed text-mute">{item.body}</p>}
           </div>
         </li>
       ))}

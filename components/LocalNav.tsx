@@ -53,7 +53,7 @@ export function LocalNav({ items, label }: { items: LocalNavItem[]; label: strin
               href={`#${item.id}`}
               aria-current={active === item.id ? "true" : undefined}
               className={cn(
-                "inline-flex h-8 items-center rounded-full px-3 text-[0.8125rem] font-medium transition-colors",
+                "inline-flex h-11 items-center rounded-full px-3.5 text-[0.8125rem] font-medium transition-colors lg:h-8 lg:px-3",
                 active === item.id
                   ? "bg-white/[0.12] text-bone"
                   : "text-mute hover:text-bone",

@@ -70,7 +70,7 @@ export function BuildsGallery({ builds }: { builds: BuildItem[] }) {
             aria-pressed={f.id === active.id}
             onClick={() => setFilterId(f.id)}
             className={cn(
-              "h-9 shrink-0 rounded-full px-3.5 text-[0.8125rem] font-medium transition-colors",
+              "h-11 shrink-0 rounded-full px-4 text-[0.8125rem] font-medium transition-colors lg:h-9 lg:px-3.5",
               f.id === active.id
                 ? "bg-bone text-ink"
                 : "bg-white/[0.08] text-bone/80 hover:bg-white/[0.14] hover:text-bone",

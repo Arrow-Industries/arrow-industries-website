@@ -48,10 +48,8 @@ export default async function HomePage() {
       <CTASection
         eyebrow="Request a quote"
         heading="Get a quote for your next build or repair"
-        body="Tell us your application, payload and chassis — we'll return a build proposal, lead time and pricing."
         primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
         secondaryCta={{ label: "View builds", href: "/builds" }}
-        footnote="Built to spec. Supported by the team that builds your unit."
       />
     </>
   );
@@ -74,9 +72,7 @@ function Hero() {
           <span className="text-accent">engineered for real work.</span>
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
-          Melbourne-based manufacturer engineering custom tipper bodies, dog
-          trailers and semi trailers for civil, quarry, haulage and waste
-          operators across Australia.
+          Built in Melbourne for operators across Australia.
         </p>
         <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
           <Button href="/request-a-quote" size="lg">
@@ -132,7 +128,6 @@ function ProductsSection() {
         <SectionHeader
           eyebrow="What we build"
           heading="Built in Campbellfield for the work ahead."
-          body="Every tipper body and trailer is engineered around your chassis, payload and application."
         />
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <PhotoCard
@@ -197,17 +192,14 @@ function WorkshopSection() {
             {
               photo: media.welding,
               title: "Fabricated in-house",
-              body: "Welds laid by qualified fabricators and inspected before paint.",
             },
             {
               photo: media.paintBooth,
               title: "Finished to your colour",
-              body: "2-pack paint, with a clean finish on every build.",
             },
             {
               photo: media.onSite,
               title: "Ready for real work",
-              body: "Built for quarries, tip sites and unsealed roads.",
             },
           ]}
         />
@@ -226,9 +218,6 @@ function ConfigureSection() {
             <h2 className="font-display text-[1.75rem] font-semibold leading-[1.1] text-bone sm:text-4xl">
               Spec your truck in a few clicks.
             </h2>
-            <p className="mt-3 max-w-md text-[0.9375rem] leading-relaxed text-mute sm:text-base">
-              Choose the setup, colour and options, then send your build to the workshop for a quote.
-            </p>
             <div className="mt-5">
               <Button href="/configure" size="lg">
                 Configure your build
@@ -269,7 +258,7 @@ function RecentBuildsSection({ builds }: { builds: BuildItem[] }) {
                 href={site.social.instagram}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2.5 transition-colors hover:text-accent-text"
+                className="inline-flex min-h-11 items-center gap-2.5 transition-colors hover:text-accent-text"
               >
                 <Instagram className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
                 Follow the workshop
@@ -278,7 +267,7 @@ function RecentBuildsSection({ builds }: { builds: BuildItem[] }) {
           />
           <Link
             href="/builds"
-            className="group inline-flex items-center gap-0.5 text-sm font-medium text-accent-text"
+            className="group inline-flex min-h-11 items-center gap-0.5 text-sm font-medium text-accent-text"
           >
             View builds
             <ChevronRight

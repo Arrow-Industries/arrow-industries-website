@@ -5,7 +5,7 @@ export const site = {
   tradingAs: "Samaro Pty Ltd t/a Arrow Industries & Co",
   tagline: "Heavy-duty tipper bodies and trailers, built in Melbourne.",
   description:
-    "Family-owned Melbourne manufacturer building custom tipper truck bodies, dog trailers and semi trailers. Built for civil, quarry, demolition, construction and fleet operators across Australia.",
+    "Family-owned Melbourne manufacturer of custom tipper truck bodies, dog trailers and semi trailers for civil, quarry and fleet operators across Australia.",
   url: "https://arrowindustries.com.au",
   phone: "0499 717 171",
   /** E.164 international format — preferred for schema.org/structured data NAP. */

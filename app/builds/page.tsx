@@ -22,6 +22,7 @@ export const metadata: Metadata = pageMetadata({
 export const revalidate = 3600;
 
 const socials = [
+  { label: "Instagram", href: site.social.instagram, icon: Instagram },
   { label: "Facebook", href: site.social.facebook, icon: Facebook },
   { label: "LinkedIn", href: site.social.linkedin, icon: Linkedin },
 ];
@@ -66,43 +67,30 @@ export default async function BuildsPage() {
       <PageHero
         compact
         eyebrow="Builds"
-        heading="A selection of recent work from the Arrow workshop."
-        body="Browse tipper bodies, dog trailers and semi trailers, and select any build for a closer look."
+        heading="Recent work from the Arrow workshop."
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Builds", href: "/builds" },
         ]}
         actions={
-          <>
-            <Button
-              href={site.social.instagram}
-              target="_blank"
-              rel="noreferrer"
-              size="lg"
-              variant="secondary"
-            >
-              <Instagram className="h-4 w-4" aria-hidden />
-              Follow on Instagram
-            </Button>
-            <ul className="flex items-center gap-1.5">
-              {socials.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <li key={s.label}>
-                    <a
-                      href={s.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={`Arrow Industries on ${s.label}`}
-                      className="icon-btn"
-                    >
-                      <Icon className="h-4 w-4" aria-hidden />
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </>
+          <ul className="flex items-center gap-1.5">
+            {socials.map((s) => {
+              const Icon = s.icon;
+              return (
+                <li key={s.label}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Arrow Industries on ${s.label}`}
+                    className="icon-btn"
+                  >
+                    <Icon className="h-4 w-4" aria-hidden />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         }
       />
 
@@ -134,7 +122,6 @@ export default async function BuildsPage() {
       <CTASection
         eyebrow="Request a quote"
         heading="Have a build in mind?"
-        body="Tell us your application, payload and chassis, and we'll come back with a build proposal, lead time and pricing."
         secondaryCta={{ label: "Configure your build", href: "/configure" }}
       />
     </>
