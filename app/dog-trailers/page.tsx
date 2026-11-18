@@ -3,7 +3,6 @@ import { pageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TrailerPageTemplate } from "@/components/TrailerPageTemplate";
 import { getServiceBySlug } from "@/data/services";
-import { fetchTopInstagramMedia } from "@/lib/instagram";
 
 const slug = "dog-trailers";
 
@@ -102,15 +101,9 @@ const features = [
   "Access steps and practical operator features",
 ];
 
-const midPageCta = {
-  headline: "Already running a tipper?",
-  body: "Send the lead-truck setup — we'll come back with a matched dog build proposal.",
-};
-
-export default async function Page() {
+export default function Page() {
   const service = getServiceBySlug(slug);
   if (!service) notFound();
-  const posts = await fetchTopInstagramMedia(6, 30);
 
   return (
     <TrailerPageTemplate
@@ -128,9 +121,7 @@ export default async function Page() {
         trailerType,
         completeSetup,
         features,
-        midPageCta,
         faqs,
-        posts,
       }}
     />
   );

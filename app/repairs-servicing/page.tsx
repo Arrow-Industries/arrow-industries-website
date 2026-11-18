@@ -171,7 +171,7 @@ export default function RepairsPage() {
               rel="noreferrer"
             >
               <CalendarCheck className="h-4 w-4" aria-hidden />
-              Book Inspection Online
+              Book an inspection
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
               <Phone className="h-4 w-4" aria-hidden />
@@ -364,7 +364,7 @@ export default function RepairsPage() {
         heading="Need a tipper or trailer repaired?"
         body="Book an inspection, get a clear quote and have the work completed from our Campbellfield workshop."
         primaryCta={{
-          label: "Book Inspection Online",
+          label: "Book an inspection",
           href: bookingUrl,
         }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}

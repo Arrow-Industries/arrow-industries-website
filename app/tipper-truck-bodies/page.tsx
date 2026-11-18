@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowRight,
-  Check,
-  Instagram,
-  Phone,
-} from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { CTASection } from "@/components/CTASection";
@@ -16,14 +9,19 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { JsonLd } from "@/components/JsonLd";
 import { LocalNav } from "@/components/LocalNav";
 import { ProductHero } from "@/components/ProductHero";
+import {
+  BuildCards,
+  CheckGrid,
+  CheckList,
+  InfoGrid,
+  Pills,
+  ProcessSteps,
+  ViewBuildsLink,
+} from "@/components/ProductParts";
+import { SpecTabs } from "@/components/SpecTabs";
 import { SectionHeader } from "@/components/SectionHeader";
 import { getServiceBySlug } from "@/data/services";
 import { site } from "@/data/site";
-import {
-  fetchTopInstagramMedia,
-  thumbFor,
-  type IgMedia,
-} from "@/lib/instagram";
 import {
   breadcrumbSchema,
   faqPageSchema,
@@ -90,7 +88,7 @@ const tipperContent: ServiceContent = {
   ctaHeading: "Discuss your next build.",
   ctaBody:
     "Send us your chassis, application and target payload — we'll come back with a build proposal, lead time and pricing.",
-  ctaPrimaryLabel: "Discuss Your Next Build",
+  ctaPrimaryLabel: "Request a quote",
 };
 
 const credibilityPoints = [
@@ -253,17 +251,10 @@ const process = [
   },
 ];
 
-const fallbackBuilds = [
-  { src: "/images/builds/build-1.jpg", alt: "Arrow Industries 8x4 tipper body" },
-  { src: "/images/builds/build-2.jpg", alt: "Arrow Industries dog trailer" },
-  { src: "/images/builds/build-3.jpg", alt: "Arrow Industries semi trailer" },
-];
-
-export default async function Page() {
+export default function Page() {
   const service = getServiceBySlug(slug);
   if (!service) notFound();
 
-  const igPosts = await fetchTopInstagramMedia(6, 30);
   const crumbs = [
     { label: "Home", href: "/" },
     { label: "Products" },
@@ -297,12 +288,12 @@ export default async function Page() {
         actions={
           <>
             <Button href="/request-a-quote" size="lg">
-              Discuss your next build
+              Request a quote
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
               <Phone className="h-4 w-4 text-accent-text" aria-hidden />
-              Talk to Arrow
+              Call {site.phone}
             </Button>
           </>
         }
@@ -314,13 +305,13 @@ export default async function Page() {
           { id: "overview", label: "Overview" },
           { id: "builds", label: "Builds" },
           { id: "chassis", label: "Chassis" },
-          { id: "options", label: "Options" },
+          { id: "setup", label: "Setup" },
+          { id: "specs", label: "Specs" },
           { id: "process", label: "Process" },
           { id: "faq", label: "FAQ" },
         ]}
       />
 
-      {/* 2 — NO CATALOGUE BUILDS */}
       <section id="overview" className="section">
         <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
@@ -336,90 +327,27 @@ export default async function Page() {
               correctly, balanced for the truck, and finished for the work it
               needs to do.
             </p>
+            <div className="mt-5">
+              <Pills items={applications} />
+            </div>
           </div>
         </Container>
       </section>
 
-      {/* 3 — RECENT BUILDS (curated cards, high priority) */}
       <section id="builds" className="section">
         <Container>
-          <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeader
               eyebrow="Recent builds"
               heading="Real trucks. Real jobs."
               body="A snapshot of recent units off the workshop floor."
             />
-            <Button href="/gallery" variant="ghost" size="md">
-              View gallery →
-            </Button>
+            <ViewBuildsLink />
           </div>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-            {recentBuilds.map((b) => (
-              <li
-                key={b.title}
-                className="card group flex flex-col overflow-hidden"
-              >
-                <div className="relative aspect-[5/4] overflow-hidden">
-                  <Image
-                    src={b.src}
-                    alt={b.alt}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-4 p-6">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
-                      {b.title}
-                    </h3>
-                    <span className="eyebrow">
-                      {b.application}
-                    </span>
-                  </div>
-                  <ul className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-mute sm:text-sm">
-                    {b.specs.map((s, i) => (
-                      <li key={s} className="flex items-center gap-3">
-                        {i > 0 && (
-                          <span aria-hidden className="text-mute/50">
-                            •
-                          </span>
-                        )}
-                        <span>{s}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <BuildCards builds={recentBuilds} />
         </Container>
       </section>
 
-      {/* 4 — BUILT FOR REAL APPLICATIONS */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Built for real applications"
-            heading="Where Arrow tippers earn their keep."
-          />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
-            {applications.map((item) => (
-              <li
-                key={item}
-                className="flex items-center gap-3 bg-ink-2 px-6 py-7"
-              >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                <span className="font-display text-sm font-semibold text-bone sm:text-base">
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      {/* 5 — CONFIGURATIONS (4 chassis types with typical use) */}
       <section id="chassis" className="section">
         <Container>
           <SectionHeader
@@ -427,10 +355,10 @@ export default async function Page() {
             heading="4x2, 6x4, 8x4 and 10x4 — built to the chassis."
             body="Custom-built for the chassis you run and the work the unit will actually do."
           />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {chassisConfigs.map((c) => (
-              <li key={c.title} className="card flex flex-col gap-4 p-5 sm:p-6">
-                <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
+              <li key={c.title} className="card flex flex-col gap-2 p-5">
+                <h3 className="font-display text-[1.0625rem] font-semibold text-bone">
                   {c.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">{c.use}</p>
@@ -440,185 +368,64 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 6 — BUILT AS A COMPLETE SETUP (critical differentiator) */}
-      <section className="section">
+      <section id="setup" className="section">
         <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Complete working setup"
               heading="Built as a complete working setup."
+              body="A tipper body is only one part of the system. Every Arrow build is designed as a complete working setup — from the body and subframe through to hydraulics, hoist configuration, and trailer connections where required."
             />
-            <p className="mt-6 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
-              A tipper body is only one part of the system. Every Arrow build
-              is designed as a complete working setup &mdash; from the body
-              and subframe through to hydraulics, hoist configuration, and
-              trailer connections where required.
-            </p>
-            <p className="mt-6 eyebrow">
-              The result
-            </p>
-            <ul className="mt-4 list-group">
-              {completeSetup.outcomes.map((o) => (
-                <li
-                  key={o}
-                  className="list-row"
-                >
-                  <Check
-                    className="mt-1 h-4 w-4 shrink-0 text-accent"
-                    strokeWidth={2}
-                    aria-hidden
-                  />
-                  <p className="text-sm leading-relaxed text-bone sm:text-base">
-                    {o}
-                  </p>
-                </li>
-              ))}
-            </ul>
+            <p className="eyebrow mb-2 mt-5">The result</p>
+            <CheckList items={completeSetup.outcomes} />
           </div>
           <div className="lg:col-span-7">
-            <ul className="grid gap-3 sm:grid-cols-1">
-              {completeSetup.features.map((f) => (
-                <li
-                  key={f}
-                  className="card flex items-start gap-4 p-5 sm:p-6"
-                >
-                  <span
-                    aria-hidden
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
-                  />
-                  <p className="text-sm leading-relaxed text-bone sm:text-base">
-                    {f}
-                  </p>
-                </li>
-              ))}
-            </ul>
+            <CheckList items={completeSetup.features} />
           </div>
         </Container>
       </section>
 
-      {/* 7 — MATERIALS & ENGINEERING */}
-      <section className="section">
+      <section id="specs" className="section">
         <Container>
           <SectionHeader
-            eyebrow="Materials & engineering"
-            heading="Specified for heavy work. Built to survive it."
-            body="No vague claims — the steel, the welds and the geometry that put your unit on the road and keep it there."
-          />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-            {materials.map((m) => (
-              <li key={m.title} className="card flex flex-col gap-3 p-5 sm:p-6">
-                <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
-                  {m.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-mute">{m.body}</p>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      {/* Mid-page CTA */}
-      <section className="section">
-        <Container>
-          <div className="card flex flex-wrap items-center justify-between gap-5 p-5 sm:p-6">
-          <div>
-            <p className="font-display text-lg font-semibold text-bone sm:text-xl">
-              Got a chassis ready to spec?
-            </p>
-            <p className="mt-1 text-sm text-mute">
-              Send the details &mdash; we&rsquo;ll come back with a build
-              proposal.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button href="/request-a-quote" size="md">
-              Get a Build Proposal
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Button>
-            <Button href={site.phoneHref} size="md" variant="secondary">
-              <Phone className="h-4 w-4 text-accent" aria-hidden />
-              {site.phone}
-            </Button>
-          </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* 8 — BUILD OPTIONS */}
-      <section id="options" className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Build options"
+            eyebrow="Specifications"
             heading="Configure the unit to suit the work."
             body="Practical options operators actually ask for — specified up front, integrated into the build, supported after delivery."
+            className="mb-6"
           />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {buildOptions.map((f) => (
-              <li
-                key={f}
-                className="card flex items-start gap-4 p-5 sm:p-6"
-              >
-                <Check
-                  className="mt-1 h-4 w-4 shrink-0 text-accent"
-                  strokeWidth={2}
-                  aria-hidden
-                />
-                <p className="text-sm leading-relaxed text-bone sm:text-base">
-                  {f}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <SpecTabs
+            label="Tipper body specifications"
+            tabs={[
+              {
+                id: "options",
+                label: "Build options",
+                content: <CheckGrid items={buildOptions} />,
+              },
+              {
+                id: "materials",
+                label: "Materials & engineering",
+                content: <InfoGrid items={materials} />,
+              },
+              {
+                id: "why-arrow",
+                label: "Why Arrow",
+                content: <InfoGrid items={whyArrow} />,
+              },
+            ]}
+          />
         </Container>
       </section>
 
-      {/* 9 — WHY ARROW */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Why Arrow"
-            heading="Built for the operator, not the showroom."
-          />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {whyArrow.map((w) => (
-              <li key={w.title} className="card flex flex-col gap-3 p-5 sm:p-6">
-                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
-                  {w.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-mute">{w.body}</p>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      {/* 10 — REAL BUILDS (expanded IG gallery) */}
-      <RealBuildsSection posts={igPosts} />
-
-      {/* 11 — PROCESS */}
       <section id="process" className="section">
         <Container>
           <SectionHeader
             eyebrow="The build process"
             heading="From first call to delivery — five steps."
           />
-          <ol className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {process.map((p) => (
-              <li key={p.step} className="card flex flex-col gap-3 p-5 sm:p-6">
-                <span className="step-num">
-                  {p.step}
-                </span>
-                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
-                  {p.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-mute">{p.body}</p>
-              </li>
-            ))}
-          </ol>
+          <ProcessSteps steps={process} />
         </Container>
       </section>
 
-      {/* FAQ — kept for SEO and operator questions */}
       <section id="faq" className="section">
         <Container>
           <SectionHeader eyebrow="FAQ" heading="Common questions, answered." />
@@ -628,98 +435,14 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* 12 — FINAL CTA */}
       <CTASection
-        eyebrow="Talk to Arrow"
+        eyebrow="Request a quote"
         heading={tipperContent.ctaHeading}
         body={tipperContent.ctaBody}
-        primaryCta={{
-          label: "Discuss Your Next Build",
-          href: "/request-a-quote",
-        }}
+        primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
         footnote="Built in Melbourne. Backed by the team that built it."
       />
     </>
-  );
-}
-
-function RealBuildsSection({ posts }: { posts: IgMedia[] }) {
-  const usingIg = posts.length > 0;
-  return (
-    <section className="section">
-      <Container>
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeader
-            eyebrow="Workshop gallery"
-            heading={
-              usingIg ? (
-                <a
-                  href={site.social.instagram}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-3 transition-colors hover:text-accent-text sm:gap-4"
-                >
-                  <Instagram
-                    className="h-7 w-7 sm:h-8 sm:w-8 lg:h-10 lg:w-10"
-                    aria-hidden
-                  />
-                  From the workshop floor
-                </a>
-              ) : (
-                "From the workshop floor"
-              )
-            }
-            body="Full truck shots, fabrication detail and on-site work — pulled live from Instagram."
-          />
-          <Button href="/gallery" variant="ghost" size="md">
-            View gallery →
-          </Button>
-        </div>
-        {usingIg ? (
-          <ul className="mt-12 grid grid-cols-2 gap-2 md:grid-cols-3 lg:gap-3">
-            {posts.map((p) => (
-              <li key={p.id} className="aspect-square overflow-hidden rounded-xl bg-ink-2">
-                <a
-                  href={p.permalink}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={p.caption?.slice(0, 120) || "View on Instagram"}
-                  className="block h-full w-full"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={thumbFor(p)}
-                    alt=""
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-300 hover:scale-[1.04]"
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
-            {fallbackBuilds.map((b, i) => (
-              <li key={`fallback-${i}`}>
-                <Link
-                  href="/gallery"
-                  aria-label="View gallery"
-                  className="group relative block aspect-[5/4] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
-                >
-                  <Image
-                    src={b.src}
-                    alt={b.alt}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Container>
-    </section>
   );
 }

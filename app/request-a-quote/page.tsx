@@ -43,12 +43,12 @@ export default function RequestAQuotePage() {
   return (
     <>
       <PageHero
-        eyebrow="Request a Quote"
+        eyebrow="Request a quote"
         heading="Tell us what you need built, repaired or certified."
         body="The more you tell us up front — chassis, payload, application, target lead time — the faster we can come back with a build proposal and price."
         crumbs={[
           { label: "Home", href: "/" },
-          { label: "Request a Quote", href: "/request-a-quote" },
+          { label: "Request a quote", href: "/request-a-quote" },
         ]}
       />
 

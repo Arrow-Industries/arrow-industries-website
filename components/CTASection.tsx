@@ -15,7 +15,7 @@ export function CTASection({
   eyebrow,
   heading,
   body,
-  primaryCta = { label: "Request a Quote", href: "/request-a-quote" },
+  primaryCta = { label: "Request a quote", href: "/request-a-quote" },
   secondaryCta,
   phoneCta,
   footnote,

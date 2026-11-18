@@ -592,7 +592,7 @@ export function CareersForm() {
 
       <div className="flex flex-col gap-4 pt-2">
         <Button type="submit" size="lg" disabled={isPending}>
-          {isPending ? "Sending…" : "Submit Application"}
+          {isPending ? "Sending…" : "Submit application"}
           {!isPending && <ArrowRight className="h-4 w-4" aria-hidden />}
         </Button>
         <p className="text-xs leading-relaxed text-mute">

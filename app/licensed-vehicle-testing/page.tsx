@@ -196,7 +196,7 @@ export default async function RoadworthyPage() {
           <>
             <Button href="#book" size="lg">
               <CalendarCheck className="h-4 w-4" aria-hidden />
-              Book Inspection Online
+              Book an inspection
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
               <Phone className="h-4 w-4" aria-hidden />
@@ -458,7 +458,7 @@ export default async function RoadworthyPage() {
         heading="Book your heavy vehicle or trailer inspection today."
         body="VicRoads-licensed inspections from our Campbellfield workshop."
         primaryCta={{
-          label: "Book Inspection Online",
+          label: "Book an inspection",
           href: "#book",
         }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}

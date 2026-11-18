@@ -13,4 +13,10 @@ export const flags = {
    *           this back to `true` to bring roadworthy inspections back online.
    */
   roadworthyAvailable: true,
+
+  /**
+   * Warranty page. Stays hidden until the final wording is supplied: `false`
+   * takes it out of the menus and sitemap and /warranty shows "page not found".
+   */
+  warrantyPublished: false,
 } as const;

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import type { ReactNode } from "react";
+import { notFound } from "next/navigation";
+import { flags } from "@/data/flags";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { site } from "@/data/site";
@@ -13,6 +15,8 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function WarrantyPage() {
+  if (!flags.warrantyPublished) notFound();
+
   return (
     <>
       <PageHero

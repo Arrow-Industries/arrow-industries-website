@@ -83,11 +83,11 @@ export default function AboutPage() {
         actions={
           <>
             <Button href="/request-a-quote" size="lg">
-              Request a Quote
+              Request a quote
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
               <Phone className="h-4 w-4" aria-hidden />
-              Call Now
+              Call {site.phone}
             </Button>
           </>
         }
@@ -322,8 +322,8 @@ export default function AboutPage() {
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <SectionHeader eyebrow="Recent work" heading="Recent builds" />
-            <Button href="/gallery" variant="ghost">
-              View gallery →
+            <Button href="/builds" variant="ghost">
+              View builds
             </Button>
           </div>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -379,7 +379,7 @@ export default function AboutPage() {
         eyebrow="Talk to us"
         heading="Get a quote for your next build or repair"
         body="Speak with the Arrow team to get a quote or next steps."
-        primaryCta={{ label: "Request a Quote", href: "/request-a-quote" }}
+        primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />
     </>

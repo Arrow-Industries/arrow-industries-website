@@ -98,6 +98,11 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  // The gallery became Builds; old links and search results follow it there.
+  async redirects() {
+    return [{ source: "/gallery", destination: "/builds", permanent: true }];
+  },
+
   async headers() {
     return [
       { source: "/:path*", headers: SECURITY_HEADERS },

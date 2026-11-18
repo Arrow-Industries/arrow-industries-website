@@ -147,7 +147,7 @@ export const serviceContent: Record<string, ServiceContent> = {
     ctaHeading: "Ready to spec your tipper?",
     ctaBody:
       "Tell us your application, payload and requirements — we'll come back with a build proposal and pricing.",
-    ctaPrimaryLabel: "Request a Tipper Quote",
+    ctaPrimaryLabel: "Request a quote",
   },
 
   "dog-trailers": {
@@ -257,7 +257,7 @@ export const serviceContent: Record<string, ServiceContent> = {
     ctaHeading: "Ready to spec your dog trailer?",
     ctaBody:
       "Tell us your application, payload and requirements — we'll come back with a build proposal and pricing.",
-    ctaPrimaryLabel: "Request a Dog Trailer Quote",
+    ctaPrimaryLabel: "Request a quote",
   },
 
   "semi-trailers": {
@@ -367,7 +367,7 @@ export const serviceContent: Record<string, ServiceContent> = {
     ctaHeading: "Ready to spec your semi trailer?",
     ctaBody:
       "Tell us your application, payload and requirements — we'll come back with a build proposal and pricing.",
-    ctaPrimaryLabel: "Request a Semi Trailer Quote",
+    ctaPrimaryLabel: "Request a quote",
   },
 
   "repairs-servicing": {
@@ -474,7 +474,7 @@ export const serviceContent: Record<string, ServiceContent> = {
     ctaHeading: "Truck body or trailer needs work?",
     ctaBody:
       "Bring it to our Campbellfield workshop. We'll inspect, quote in writing and book you in fast.",
-    ctaPrimaryLabel: "Book a Repair",
+    ctaPrimaryLabel: "Request a quote",
   },
 
   "licensed-vehicle-testing": {
@@ -579,7 +579,7 @@ export const serviceContent: Record<string, ServiceContent> = {
     ctaHeading: "Need a roadworthy certificate?",
     ctaBody:
       "Book your heavy or light vehicle in for a VicRoads-licensed inspection at our Campbellfield workshop.",
-    ctaPrimaryLabel: "Book a Roadworthy",
+    ctaPrimaryLabel: "Request a quote",
   },
 };
 

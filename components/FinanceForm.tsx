@@ -457,7 +457,7 @@ export function FinanceForm() {
 
       <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
         <Button type="submit" size="lg" disabled={isPending}>
-          {isPending ? "Sending…" : "Submit Finance Enquiry"}
+          {isPending ? "Sending…" : "Submit finance enquiry"}
           {!isPending && <ArrowRight className="h-4 w-4" aria-hidden />}
         </Button>
         <p className="text-xs text-mute">

@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
@@ -219,17 +220,53 @@ export function Navbar() {
                     </button>
                     {openGroup === item.label && (
                       <ul className="border-t border-line-soft bg-white/[0.025] py-1">
-                        {item.children.map((child) => (
-                          <li key={child.href}>
-                            <Link
-                              href={child.href}
-                              onClick={() => setOpen(false)}
-                              className="flex min-h-11 items-center px-6 py-2 text-sm text-bone/85"
-                            >
-                              {child.label}
-                            </Link>
-                          </li>
-                        ))}
+                        {item.children.map((child) => {
+                          const rowClass =
+                            "flex min-h-12 items-center gap-3 px-4 py-2 text-sm text-bone/90";
+                          const content = (
+                            <>
+                              {child.image && (
+                                <span className="relative h-9 w-12 shrink-0 overflow-hidden rounded-md bg-ink-3">
+                                  <Image
+                                    src={child.image}
+                                    alt=""
+                                    fill
+                                    sizes="48px"
+                                    className="object-cover"
+                                    style={{ objectPosition: child.imagePosition }}
+                                  />
+                                </span>
+                              )}
+                              <span className="min-w-0 flex-1">{child.label}</span>
+                              {child.external && (
+                                <ArrowUpRight className="h-4 w-4 text-mute" aria-hidden />
+                              )}
+                            </>
+                          );
+                          return (
+                            <li key={child.href}>
+                              {child.external ? (
+                                <a
+                                  href={child.href}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  onClick={() => setOpen(false)}
+                                  className={rowClass}
+                                >
+                                  {content}
+                                </a>
+                              ) : (
+                                <Link
+                                  href={child.href}
+                                  onClick={() => setOpen(false)}
+                                  className={rowClass}
+                                >
+                                  {content}
+                                </Link>
+                              )}
+                            </li>
+                          );
+                        })}
                       </ul>
                     )}
                   </li>
@@ -376,33 +413,134 @@ function DesktopNavItem({ item, pathname }: { item: NavItem; pathname: string })
         />
       </button>
       {open && (
-        <div className="absolute left-0 top-full w-76 pt-2">
-          <ul
+        <div
+          className={cn(
+            "absolute left-0 top-full pt-2",
+            item.menu === "photos" ? "w-[38rem]" : "w-80",
+          )}
+        >
+          <div
             id={submenuId}
-            className="material popover origin-top-left p-1.5 animate-pop"
+            className="popover origin-top-left bg-[rgb(24_24_27/0.98)] p-1.5 animate-pop"
           >
-            {item.children.map((child) => (
-              <li key={child.href}>
-                <Link
-                  href={child.href}
-                  className="group block rounded-[0.5rem] px-2.5 py-2 transition-colors hover:bg-accent focus-visible:bg-accent"
-                  aria-current={pathname === child.href ? "page" : undefined}
-                  onClick={() => setOpen(false)}
-                >
-                  <span className="block text-[0.8125rem] font-medium text-bone group-hover:text-white group-focus-visible:text-white">
-                    {child.label}
-                  </span>
-                  {child.description && (
-                    <span className="mt-0.5 block text-xs text-mute group-hover:text-white/85 group-focus-visible:text-white/85">
-                      {child.description}
-                    </span>
-                  )}
-                </Link>
-              </li>
-            ))}
-          </ul>
+            {item.menu === "photos" ? (
+              <PhotoMenu item={item} pathname={pathname} onPick={() => setOpen(false)} />
+            ) : (
+              <ListMenu item={item} pathname={pathname} onPick={() => setOpen(false)} />
+            )}
+          </div>
         </div>
       )}
     </li>
+  );
+}
+
+interface MenuProps {
+  item: NavItem;
+  pathname: string;
+  onPick: () => void;
+}
+
+function PhotoMenu({ item, pathname, onPick }: MenuProps) {
+  return (
+    <>
+      <ul className="grid grid-cols-3 gap-1.5">
+        {item.children?.map((child) => (
+          <li key={child.href}>
+            <Link
+              href={child.href}
+              onClick={onPick}
+              aria-current={pathname === child.href ? "page" : undefined}
+              className="group relative block aspect-[4/5] overflow-hidden rounded-[0.625rem] bg-ink-3"
+            >
+              {child.image && (
+                <Image
+                  src={child.image}
+                  alt=""
+                  fill
+                  sizes="200px"
+                  className="object-cover transition-transform duration-500 ease-[var(--ease-mac)] group-hover:scale-105"
+                  style={{ objectPosition: child.imagePosition }}
+                />
+              )}
+              <span
+                aria-hidden
+                className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(transparent,rgb(11_11_13/0.92))]"
+              />
+              <span className="absolute inset-x-3 bottom-2.5">
+                <span className="block text-sm font-semibold text-white">{child.label}</span>
+                {child.description && (
+                  <span className="mt-0.5 block text-xs text-white/75">{child.description}</span>
+                )}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-1.5 flex items-center justify-between gap-3 px-2 py-1">
+        <Link
+          href="/builds"
+          onClick={onPick}
+          className="inline-flex items-center gap-0.5 text-[0.8125rem] font-medium text-accent-text"
+        >
+          View builds
+          <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+        </Link>
+        <Button href="/request-a-quote" size="sm" onClick={onPick}>
+          Request a quote
+        </Button>
+      </div>
+    </>
+  );
+}
+
+function ListMenu({ item, pathname, onPick }: MenuProps) {
+  return (
+    <ul>
+      {item.children?.map((child) => {
+        const Icon = child.icon;
+        const rowClass =
+          "group flex items-center gap-3 rounded-[0.5rem] px-2 py-2 transition-colors hover:bg-white/[0.08] focus-visible:bg-white/[0.08]";
+        const content = (
+          <>
+            {Icon && (
+              <span className="icon-tile h-9 w-9 rounded-[0.625rem]">
+                <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+              </span>
+            )}
+            <span className="min-w-0 flex-1">
+              <span className="block text-[0.8125rem] font-medium text-bone">{child.label}</span>
+              {child.description && (
+                <span className="mt-0.5 block text-xs text-mute">{child.description}</span>
+              )}
+            </span>
+            {child.badge && (
+              <span className="rounded-full bg-accent px-2 py-0.5 text-[0.6875rem] font-semibold text-white">
+                {child.badge}
+              </span>
+            )}
+            {child.external && <ArrowUpRight className="h-4 w-4 text-mute" aria-hidden />}
+          </>
+        );
+        return (
+          <li key={child.href}>
+            {child.external ? (
+              <a href={child.href} target="_blank" rel="noreferrer" onClick={onPick} className={rowClass}>
+                {content}
+              </a>
+            ) : (
+              <Link
+                href={child.href}
+                onClick={onPick}
+                aria-current={pathname === child.href ? "page" : undefined}
+                className={rowClass}
+              >
+                {content}
+              </Link>
+            )}
+          </li>
+        );
+      })}
+    </ul>
   );
 }

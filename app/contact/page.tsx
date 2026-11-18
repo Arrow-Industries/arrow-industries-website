@@ -59,7 +59,7 @@ export default function ContactPage() {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-[0.8125rem] font-medium text-white/85">
-                  Call Now
+                  Call now
                 </p>
                 <p className="mt-1 font-display text-2xl font-semibold leading-tight sm:text-3xl">
                   {site.phone}
@@ -218,7 +218,7 @@ export default function ContactPage() {
                     className="inline-flex h-11 items-center justify-center gap-1.5 rounded-sm bg-accent px-4 text-sm font-medium text-white transition-colors hover:bg-accent-hover lg:h-9"
                   >
                     <Phone className="h-3.5 w-3.5" aria-hidden />
-                    Call Now
+                    Call now
                   </a>
                 </div>
               </div>
@@ -250,10 +250,10 @@ export default function ContactPage() {
       </section>
 
       <CTASection
-        eyebrow="Get a Quote"
+        eyebrow="Request a quote"
         heading="Get a quote for your next build or repair"
         body="Send your specs and the Arrow team will respond with the next steps."
-        primaryCta={{ label: "Request a Quote", href: "/request-a-quote" }}
+        primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />
     </>

@@ -36,11 +36,11 @@ export default async function HomePage() {
       <RecentBuildsSection posts={topPosts} />
       <PartnersSection />
       <CTASection
-        eyebrow="Get a quote"
+        eyebrow="Request a quote"
         heading="Get a quote for your next build or repair"
         body="Tell us your application, payload and chassis — we'll return a build proposal, lead time and pricing."
         primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
-        secondaryCta={{ label: "View builds", href: "/gallery" }}
+        secondaryCta={{ label: "View builds", href: "/builds" }}
         footnote="Built to spec. Supported by the team that builds your unit."
       />
     </>
@@ -73,8 +73,8 @@ function Hero() {
             Request a quote
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Button>
-          <Button href="/gallery" size="lg" variant="secondary">
-            View our builds
+          <Button href="/builds" size="lg" variant="secondary">
+            View builds
           </Button>
         </div>
 
@@ -118,7 +118,14 @@ function Hero() {
 function ServicesSection() {
   const [feature, ...rest] = services;
   const wide = rest[rest.length - 1];
-  const standard = rest.slice(0, -1);
+  // Roadworthy is a main part of the business, so it leads the smaller cards.
+  const standard = rest
+    .slice(0, -1)
+    .sort(
+      (a, b) =>
+        Number(b.slug === "licensed-vehicle-testing") -
+        Number(a.slug === "licensed-vehicle-testing"),
+    );
 
   return (
     <section className="section">
@@ -191,10 +198,10 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
             }
           />
           <Link
-            href="/gallery"
+            href="/builds"
             className="group inline-flex items-center gap-0.5 text-sm font-medium text-accent-text"
           >
-            View gallery
+            View builds
             <ChevronRight
               className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
               aria-hidden
@@ -228,8 +235,8 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
             : FALLBACK_BUILDS.map((b, i) => (
                 <li key={`fallback-${i}`}>
                   <Link
-                    href="/gallery"
-                    aria-label="View gallery"
+                    href="/builds"
+                    aria-label="View builds"
                     className="group relative block aspect-[5/4] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
                   >
                     <Image

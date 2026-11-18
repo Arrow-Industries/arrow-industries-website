@@ -110,8 +110,8 @@ export function QuoteForm() {
           .
         </p>
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-          <Button href="/gallery" size="md">
-            View recent builds
+          <Button href="/builds" size="md">
+            View builds
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Button>
           <Button href="/" size="md" variant="secondary">
@@ -388,7 +388,7 @@ export function QuoteForm() {
 
       <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
         <Button type="submit" size="lg" disabled={isPending}>
-          {isPending ? "Sending…" : "Submit Enquiry"}
+          {isPending ? "Sending…" : "Submit enquiry"}
           {!isPending && <ArrowRight className="h-4 w-4" aria-hidden />}
         </Button>
         <p className="text-xs text-mute">

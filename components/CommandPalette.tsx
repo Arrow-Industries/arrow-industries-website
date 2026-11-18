@@ -112,8 +112,8 @@ const COMMANDS: Command[] = [
   },
   {
     group: "Company",
-    label: "Gallery",
-    href: "/gallery",
+    label: "Builds",
+    href: "/builds",
     icon: Images,
     keywords: "photos builds instagram work",
   },
@@ -138,7 +138,9 @@ const COMMANDS: Command[] = [
     icon: CreditCard,
     keywords: "trade account terms",
   },
-  { group: "Company", label: "Warranty", href: "/warranty", icon: ShieldCheck },
+  ...(flags.warrantyPublished
+    ? [{ group: "Company" as const, label: "Warranty", href: "/warranty", icon: ShieldCheck }]
+    : []),
   {
     group: "Company",
     label: "Terms & Conditions",

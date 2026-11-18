@@ -20,7 +20,7 @@ export default function NotFound() {
             Back to Home
           </Button>
           <Button href="/request-a-quote" variant="secondary" size="lg">
-            Request a Quote
+            Request a quote
           </Button>
         </div>
       </Container>

@@ -66,7 +66,7 @@ export function ServicePageTemplate({
         actions={
           <>
             <Button href="/request-a-quote" size="lg">
-              Request a Quote
+              Request a quote
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
@@ -245,14 +245,14 @@ export function ServicePageTemplate({
       </section>
 
       <CTASection
-        eyebrow="Get a Quote"
+        eyebrow="Request a quote"
         heading={content.ctaHeading}
         body={content.ctaBody}
         primaryCta={{
-          label: content.ctaPrimaryLabel ?? "Request a Quote",
+          label: content.ctaPrimaryLabel ?? "Request a quote",
           href: "/request-a-quote",
         }}
-        secondaryCta={{ label: "View Our Builds", href: "/gallery" }}
+        secondaryCta={{ label: "View builds", href: "/builds" }}
       />
     </>
   );

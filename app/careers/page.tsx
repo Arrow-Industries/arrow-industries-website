@@ -176,7 +176,7 @@ export default function CareersPage() {
         actions={
           <>
             <Button href="#apply" size="lg">
-              Apply Now
+              Apply now
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
               Call {site.phone}
@@ -394,7 +394,7 @@ export default function CareersPage() {
         eyebrow="Get in touch"
         heading="Reckon you'd be a good fit?"
         body="Send your details through and we'll be in touch if your experience matches a current or upcoming opportunity."
-        primaryCta={{ label: "Apply Now", href: "#apply" }}
+        primaryCta={{ label: "Apply now", href: "#apply" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />
     </>
