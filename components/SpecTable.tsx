@@ -33,40 +33,30 @@ export function SpecTable({
   return (
     <div>
       {(eyebrow || heading) && (
-        <div className="mb-8">
-          {eyebrow && (
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
-              {eyebrow}
-            </p>
-          )}
+        <div className="mb-5">
+          {eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}
           {heading && (
-            <h3 className="font-display text-2xl font-extrabold leading-tight text-bone sm:text-3xl">
+            <h3 className="font-display text-xl font-semibold leading-tight text-bone sm:text-2xl">
               {heading}
             </h3>
           )}
         </div>
       )}
 
-      <div className="overflow-hidden border border-line-soft bg-ink-2">
-        <dl className="divide-y divide-line-soft">
-          {rows.map((row) => (
-            <div
-              key={row.label}
-              className="grid grid-cols-1 gap-1 px-6 py-5 sm:grid-cols-[12rem_1fr] sm:gap-6 sm:py-6"
-            >
-              <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
-                {row.label}
-              </dt>
-              <dd className="text-sm leading-relaxed text-bone sm:text-base">
-                {row.value}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+      <dl className="list-group">
+        {rows.map((row) => (
+          <div
+            key={row.label}
+            className="grid grid-cols-1 gap-0.5 px-[1.125rem] py-3 sm:grid-cols-[11rem_1fr] sm:gap-5"
+          >
+            <dt className="text-sm text-mute">{row.label}</dt>
+            <dd className="text-sm leading-relaxed text-bone">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
 
       {footnote && (
-        <p className="mt-4 text-xs leading-relaxed text-mute">{footnote}</p>
+        <p className="mt-3 text-xs leading-relaxed text-mute">{footnote}</p>
       )}
     </div>
   );

@@ -13,13 +13,7 @@ export function PartnerLogos() {
 
   return (
     <div
-      className="group relative overflow-hidden"
-      style={{
-        maskImage:
-          "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)",
-        WebkitMaskImage:
-          "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)",
-      }}
+      className="marquee-mask group relative overflow-hidden"
     >
       <ul
         className="logo-marquee-track flex w-max items-center gap-12 py-3 group-hover:[animation-play-state:paused] sm:gap-16"
@@ -42,7 +36,7 @@ export function PartnerLogos() {
                 className="block h-12 w-32 object-contain sm:h-14 sm:w-40"
               />
             ) : (
-              <span className="block whitespace-nowrap text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute/60 opacity-90 grayscale transition-all duration-300 hover:text-mute hover:opacity-100 hover:grayscale-0 sm:text-xs">
+              <span className="block whitespace-nowrap label/60 opacity-90 grayscale transition-all duration-300 hover:text-mute hover:opacity-100 hover:grayscale-0 sm:text-xs">
                 {p.name}
               </span>
             )}

@@ -52,16 +52,16 @@ export default function RequestAQuotePage() {
         ]}
       />
 
-      <section className="border-b border-line bg-ink py-16 lg:py-20">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-7">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
+          <div className="card p-5 sm:p-7 lg:col-span-7">
             <QuoteForm />
           </div>
 
           <aside className="lg:col-span-5">
-            <div className="sticky top-24 flex flex-col gap-6">
-              <div className="border border-line bg-ink-2 p-6">
-                <h2 className="text-base font-bold text-bone">
+            <div className="sticky top-20 flex flex-col gap-3">
+              <div className="card p-5">
+                <h2 className="text-base font-semibold text-bone">
                   Or call us directly
                 </h2>
                 <p className="mt-2 text-sm text-mute">
@@ -70,26 +70,26 @@ export default function RequestAQuotePage() {
                 </p>
                 <a
                   href={site.phoneHref}
-                  className="mt-4 inline-flex items-center gap-2 text-lg font-bold text-accent-text hover:underline"
+                  className="mt-4 inline-flex items-center gap-2 text-lg font-semibold text-bone transition-colors hover:text-accent-text"
                 >
                   <Phone className="h-5 w-5" aria-hidden />
                   {site.phone}
                 </a>
               </div>
 
-              <ul className="grid gap-px overflow-hidden border border-line bg-line">
+              <ul className="list-group">
                 {reassurance.map((r) => {
                   const Icon = r.icon;
                   return (
                     <li
                       key={r.title}
-                      className="flex gap-4 bg-ink-2 p-5"
+                      className="flex gap-3.5 p-4"
                     >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
+                      <span className="icon-tile">
                         <Icon className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} />
                       </span>
                       <div>
-                        <h3 className="text-sm font-bold text-bone">
+                        <h3 className="text-sm font-semibold text-bone">
                           {r.title}
                         </h3>
                         <p className="mt-1 text-xs text-mute">{r.body}</p>

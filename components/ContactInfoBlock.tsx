@@ -3,7 +3,7 @@ import { site } from "@/data/site";
 
 export function ContactInfoBlock() {
   return (
-    <div className="grid grid-cols-1 gap-px overflow-hidden border border-line bg-line">
+    <div className="list-group">
       <Item
         icon={Phone}
         label="Phone"
@@ -46,7 +46,7 @@ export function ContactInfoBlock() {
         icon={Clock}
         label="Hours"
         primary={
-          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
+          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-sm font-normal">
             {site.hours.map((h) => (
               <div key={h.label} className="contents">
                 <dt className="text-bone">{h.label}</dt>
@@ -70,15 +70,13 @@ function Item({
   primary: React.ReactNode;
 }) {
   return (
-    <div className="flex gap-5 bg-ink-2 p-6">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
-        <Icon className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} />
+    <div className="list-row gap-3.5">
+      <span className="icon-tile">
+        <Icon className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
-          {label}
-        </p>
-        <div className="mt-1.5 text-sm font-medium leading-relaxed text-bone">
+        <p className="label">{label}</p>
+        <div className="mt-0.5 text-sm font-medium leading-relaxed text-bone">
           {primary}
         </div>
       </div>

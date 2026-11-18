@@ -3,22 +3,24 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "reac
 import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "secondary" | "ghost";
-type Size = "md" | "lg";
+type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-sm font-semibold uppercase tracking-[0.12em] transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-[0.625rem] font-medium tracking-[-0.008em] transition-[background-color,box-shadow,transform,color] duration-150 ease-out active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-accent text-white border border-accent hover:bg-accent-hover hover:border-accent-hover shadow-[0_1px_0_0_rgba(255,255,255,0.08)_inset]",
+    "bg-[linear-gradient(180deg,#e7100a,#d90500)] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.22),0_1px_2px_rgb(0_0_0/0.45)] hover:bg-[linear-gradient(180deg,#d90500,#c80500)]",
   secondary:
-    "bg-transparent text-bone border border-bone/25 hover:border-bone/60 hover:bg-bone/5",
-  ghost: "bg-transparent text-bone hover:text-accent-text",
+    "bg-white/[0.08] text-bone shadow-[inset_0_0_0_1px_rgb(255_255_255/0.1),inset_0_1px_0_rgb(255_255_255/0.06)] hover:bg-white/[0.13]",
+  ghost: "text-bone hover:bg-white/[0.08]",
 };
 
 const sizes: Record<Size, string> = {
-  md: "px-5 py-3 text-xs",
-  lg: "px-8 py-4 text-sm",
+  sm: "h-8 px-3 text-[0.8125rem]",
+  // 44px on touch screens, the compact desktop size from lg up.
+  md: "h-11 px-4 text-sm lg:h-9",
+  lg: "h-11 px-5 text-[0.9375rem]",
 };
 
 interface BaseProps {

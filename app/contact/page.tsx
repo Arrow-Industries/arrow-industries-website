@@ -4,7 +4,6 @@ import { ArrowRight, CheckCircle2, Clock, Facebook, Instagram, Linkedin, Mail, M
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { CTASection } from "@/components/CTASection";
-import { Button } from "@/components/Button";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = pageMetadata({
@@ -47,22 +46,22 @@ export default function ContactPage() {
       />
 
       {/* Primary contact actions — phone is dominant, email secondary */}
-      <section className="border-b border-line bg-ink-2 py-10 lg:py-12">
+      <section className="section">
         <Container>
-          <div className="grid gap-4 lg:grid-cols-5 lg:gap-5">
+          <div className="grid gap-3 lg:grid-cols-5">
             {/* Phone — primary, accent-filled */}
             <a
               href={site.phoneHref}
-              className="group relative flex items-center gap-5 overflow-hidden border border-accent bg-accent p-6 text-white transition-all hover:bg-accent-hover sm:p-7 lg:col-span-3"
+              className="card-link group relative flex items-center gap-4 overflow-hidden rounded-2xl bg-[linear-gradient(180deg,#e7100a,#c80500)] p-5 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.2)] sm:p-6 lg:col-span-3"
             >
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center border border-white/30 bg-white/10">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
                 <Phone className="h-6 w-6 text-white" strokeWidth={2} aria-hidden />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[0.7rem] font-bold uppercase tracking-[0.22em] text-white/80">
+                <p className="text-[0.8125rem] font-medium text-white/85">
                   Call Now
                 </p>
-                <p className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">
+                <p className="mt-1 font-display text-2xl font-semibold leading-tight sm:text-3xl">
                   {site.phone}
                 </p>
                 <p className="mt-1 text-xs text-white/85">
@@ -78,13 +77,13 @@ export default function ContactPage() {
             {/* Email — secondary */}
             <a
               href={site.emailHref}
-              className="group flex items-center gap-5 border border-line bg-ink p-6 transition-colors hover:border-accent lg:col-span-2"
+              className="card card-link group flex items-center gap-4 p-5 sm:p-6 lg:col-span-2"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center border border-accent/40 bg-accent/10 transition-colors group-hover:bg-accent/20">
+              <span className="icon-tile">
                 <Mail className="h-5 w-5 text-accent" strokeWidth={1.5} aria-hidden />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[0.7rem] font-bold uppercase tracking-[0.22em] text-mute">
+                <p className="label">
                   Email
                 </p>
                 <p className="mt-1 break-all text-base font-semibold text-bone sm:text-lg">
@@ -98,20 +97,20 @@ export default function ContactPage() {
       </section>
 
       {/* Main info + map */}
-      <section className="border-b border-line bg-ink py-16 lg:py-20">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
 
           {/* Left column */}
-          <div className="flex flex-col gap-10 lg:col-span-5">
+          <div className="flex flex-col gap-6 lg:col-span-5">
 
             {/* Address + Hours */}
-            <div className="grid grid-cols-1 gap-px overflow-hidden border border-line bg-line">
-              <div className="flex gap-5 bg-ink-2 p-6">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
+            <div className="list-group">
+              <div className="list-row gap-3.5">
+                <span className="icon-tile">
                   <MapPin className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} aria-hidden />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">Workshop</p>
+                  <p className="label">Workshop</p>
                   <div className="mt-1.5 text-sm font-medium leading-relaxed text-bone">
                     <a
                       href={site.address.mapsHref}
@@ -127,12 +126,12 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="flex gap-5 bg-ink-2 p-6">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
+              <div className="list-row gap-3.5">
+                <span className="icon-tile">
                   <Clock className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} aria-hidden />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">Hours</p>
+                  <p className="label">Hours</p>
                   <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
                     {site.hours.map((h) => (
                       <div key={h.label} className="contents">
@@ -147,7 +146,7 @@ export default function ContactPage() {
 
             {/* What can we help with */}
             <div>
-              <h2 className="font-display text-xl font-bold text-bone sm:text-2xl">
+              <h2 className="font-display text-xl font-semibold text-bone sm:text-2xl">
                 What can we help with?
               </h2>
               <ul className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
@@ -168,11 +167,11 @@ export default function ContactPage() {
             </div>
 
             {/* Social */}
-            <div className="border-t border-line pt-6">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-mute">
+            <div>
+              <p className="label mb-2">
                 Follow us
               </p>
-              <ul className="flex items-center gap-3">
+              <ul className="flex items-center gap-1.5">
                 {socials.map((s) => {
                   const Icon = s.icon;
                   return (
@@ -182,7 +181,7 @@ export default function ContactPage() {
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Arrow Industries on ${s.label}`}
-                        className="inline-flex h-10 w-10 items-center justify-center border border-line bg-ink-2 text-bone transition-colors hover:border-accent hover:bg-accent hover:text-white"
+                        className="icon-btn"
                       >
                         <Icon className="h-4 w-4" aria-hidden />
                       </a>
@@ -195,12 +194,12 @@ export default function ContactPage() {
 
           {/* Right column — map */}
           <div className="lg:col-span-7">
-            <div className="overflow-hidden border border-line bg-ink-2">
-              <div className="border-b border-line p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
+            <div className="card overflow-hidden">
+              <div className="border-b border-line-soft p-5 sm:p-6">
+                <p className="eyebrow">
                   Workshop Location
                 </p>
-                <p className="mt-2 font-display text-lg font-bold text-bone sm:text-xl">
+                <p className="mt-2 font-display text-lg font-semibold text-bone sm:text-xl">
                   {site.address.line1}, {site.address.suburb} {site.address.state}{" "}
                   {site.address.postcode}
                 </p>
@@ -209,14 +208,14 @@ export default function ContactPage() {
                     href={site.address.mapsHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 border border-line bg-ink px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-bone transition-colors hover:border-accent hover:text-accent-text"
+                    className="inline-flex h-11 items-center justify-center gap-1.5 rounded-sm bg-white/[0.08] px-4 text-sm font-medium text-bone transition-colors hover:bg-white/[0.13] lg:h-9"
                   >
                     <MapPin className="h-3.5 w-3.5" aria-hidden />
                     Open in Google Maps
                   </a>
                   <a
                     href={site.phoneHref}
-                    className="inline-flex items-center justify-center gap-1.5 border border-accent bg-accent px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-accent-hover"
+                    className="inline-flex h-11 items-center justify-center gap-1.5 rounded-sm bg-accent px-4 text-sm font-medium text-white transition-colors hover:bg-accent-hover lg:h-9"
                   >
                     <Phone className="h-3.5 w-3.5" aria-hidden />
                     Call Now
@@ -224,7 +223,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="aspect-[4/3] w-full bg-ink">
+              <div className="aspect-[4/3] w-full bg-ink-2">
                 <iframe
                   title="Arrow Industries — Campbellfield workshop map"
                   src={mapEmbed}
@@ -241,7 +240,7 @@ export default function ContactPage() {
       </section>
 
       {/* Trust line */}
-      <section className="border-b border-line bg-ink py-8">
+      <section className="section">
         <Container>
           <p className="text-center text-sm text-mute sm:text-base">
             Serving Melbourne&rsquo;s transport, construction and haulage industries for{" "}

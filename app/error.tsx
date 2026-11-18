@@ -8,6 +8,7 @@
 
 import { useEffect } from "react";
 import { RefreshCw, Phone } from "lucide-react";
+import { Button } from "@/components/Button";
 import { site } from "@/data/site";
 
 export default function ErrorPage({
@@ -24,10 +25,10 @@ export default function ErrorPage({
   return (
     <div className="flex min-h-[70vh] items-center justify-center bg-ink px-6 py-24">
       <div className="max-w-md text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
+        <p className="eyebrow">
           Something went wrong
         </p>
-        <h1 className="mt-4 font-display text-3xl font-extrabold text-bone">
+        <h1 className="mt-4 font-display text-3xl font-semibold text-bone">
           Sorry — that didn&rsquo;t go through.
         </h1>
         <p className="mt-4 text-sm leading-relaxed text-mute sm:text-base">
@@ -35,21 +36,14 @@ export default function ErrorPage({
           keeps happening, call us and we&rsquo;ll sort it out on the spot.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={reset}
-            className="inline-flex items-center gap-2 bg-accent px-5 py-3 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-accent/90"
-          >
+          <Button onClick={reset} size="lg">
             <RefreshCw className="h-4 w-4" aria-hidden />
             Try again
-          </button>
-          <a
-            href={site.phoneHref}
-            className="inline-flex items-center gap-2 border border-line px-5 py-3 text-sm font-semibold uppercase tracking-wide text-bone transition-colors hover:border-bone"
-          >
+          </Button>
+          <Button href={site.phoneHref} size="lg" variant="secondary">
             <Phone className="h-4 w-4" aria-hidden />
             Call {site.phone}
-          </a>
+          </Button>
         </div>
       </div>
     </div>

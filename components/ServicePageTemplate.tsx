@@ -78,8 +78,8 @@ export function ServicePageTemplate({
       />
 
       {/* Overview */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Overview"
@@ -87,7 +87,7 @@ export function ServicePageTemplate({
             />
           </div>
           <div className="lg:col-span-7">
-            <p className="text-base leading-relaxed text-mute sm:text-lg">
+            <p className="text-[0.9375rem] leading-relaxed text-mute sm:text-base">
               {content.intro}
             </p>
           </div>
@@ -95,19 +95,19 @@ export function ServicePageTemplate({
       </section>
 
       {/* Key features */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Key features"
             heading="Built to perform, configured to suit."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {content.keyFeatures.slice(0, 6).map((f) => (
-              <li key={f.title} className="flex flex-col gap-3 bg-ink-2 p-8">
-                <span className="flex h-12 w-12 items-center justify-center bg-accent/10 text-accent">
+              <li key={f.title} className="card flex flex-col gap-3 p-5 sm:p-6">
+                <span className="icon-tile">
                   <ShieldCheck className="h-5 w-5" strokeWidth={1.5} aria-hidden />
                 </span>
-                <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                   {f.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">
@@ -120,8 +120,8 @@ export function ServicePageTemplate({
       </section>
 
       {/* Use cases */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Use cases"
@@ -150,20 +150,20 @@ export function ServicePageTemplate({
       </section>
 
       {/* Configuration / Build options */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Configuration"
             heading="Every spec point is yours to set."
             body="Tell us how the unit needs to work — we engineer the build to suit. No catalogue sizes, no compromises."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {content.buildOptions.map((b) => (
               <li
                 key={b.title}
-                className="flex flex-col gap-3 bg-ink-2 p-8"
+                className="card flex flex-col gap-3 p-5 sm:p-6"
               >
-                <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                   {b.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">
@@ -176,8 +176,8 @@ export function ServicePageTemplate({
       </section>
 
       {/* Compliance */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Compliance & specifications"
@@ -186,11 +186,11 @@ export function ServicePageTemplate({
             />
           </div>
           <div className="lg:col-span-7">
-            <ul className="divide-y divide-line-soft">
+            <ul className="list-group">
               {content.compliance.map((c) => (
                 <li
                   key={c}
-                  className="flex items-start gap-4 py-5 first:pt-0 last:pb-0"
+                  className="list-row"
                 >
                   <Check
                     className="mt-1 h-4 w-4 shrink-0 text-accent"
@@ -208,20 +208,20 @@ export function ServicePageTemplate({
       </section>
 
       {/* How your build comes together */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="The build process"
             heading="How your build comes together."
             body="A clear four-step path from first call to delivery."
           />
-          <ol className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {buildProcess.map((p) => (
-              <li key={p.step} className="flex flex-col gap-3 bg-ink-2 p-8">
-                <span className="font-display text-3xl font-extrabold text-accent">
+              <li key={p.step} className="card flex flex-col gap-3 p-5 sm:p-6">
+                <span className="step-num">
                   {p.step}
                 </span>
-                <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                   {p.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">{p.body}</p>
@@ -232,13 +232,13 @@ export function ServicePageTemplate({
       </section>
 
       {/* FAQ */}
-      <section className="bg-ink-2 py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="FAQ"
             heading="Common questions, answered."
           />
-          <div className="mt-12">
+          <div className="mt-6">
             <FAQAccordion items={content.faqs} />
           </div>
         </Container>

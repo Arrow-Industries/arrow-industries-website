@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Instagram, Phone } from "lucide-react";
+import { ArrowRight, ChevronRight, Instagram } from "lucide-react";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { TrustBar } from "@/components/TrustBar";
@@ -31,156 +31,121 @@ export default async function HomePage() {
     <>
       <link rel="canonical" href={`${site.url}/`} />
       <Hero />
-      <TrustBar />
-      <SpecPromise />
       <ServicesSection />
       <TrustedBy />
       <RecentBuildsSection posts={topPosts} />
       <PartnersSection />
       <CTASection
-        eyebrow="Get a Quote"
+        eyebrow="Get a quote"
         heading="Get a quote for your next build or repair"
         body="Tell us your application, payload and chassis — we'll return a build proposal, lead time and pricing."
-        primaryCta={{ label: "Request a Quote →", href: "/request-a-quote" }}
-        secondaryCta={{ label: "View Builds →", href: "/gallery" }}
+        primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
+        secondaryCta={{ label: "View builds", href: "/gallery" }}
         footnote="Built to spec. Supported by the team that builds your unit."
       />
     </>
   );
 }
 
-function SpecPromise() {
-  return (
-    <section className="bg-ink pt-3 pb-7">
-      <Container>
-        <p className="mx-auto max-w-3xl text-center text-sm leading-relaxed text-mute sm:text-base">
-          Built with proven components for demanding work, backed by{" "}
-          <span className="font-semibold text-bone">workshop support</span>.
-        </p>
-      </Container>
-    </section>
-  );
-}
-
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden border-b border-line">
-      {/* Background layer — poster image (always present) + looping video over the top */}
-      <div aria-hidden className="absolute inset-0 -z-10">
-        {/* Static poster fallback — visible until the video loads, on prefers-reduced-motion, or if the video fails. LCP element on the homepage so we use next/image with priority. */}
-        <Image
-          src="/images/home/hero-poster.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <video
-          className="hero-bg-video absolute inset-0 h-full w-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          poster="/images/home/hero-poster.jpg"
-          aria-hidden="true"
-        >
-          <source src="/videos/home-hero.mp4" type="video/mp4" />
-        </video>
-      </div>
+    <section className="relative isolate overflow-hidden">
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 -z-10 h-[40rem] bg-[radial-gradient(55%_70%_at_50%_0%,rgb(225_6_0/0.17),transparent_72%)]"
+      />
+      <Container className="pt-12 text-center sm:pt-16 lg:pt-20">
+        <p className="pill">
+          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
+          Melbourne workshop · 25+ years
+        </p>
+        <h1 className="mx-auto mt-5 max-w-4xl font-display text-[2.5rem] font-semibold leading-[1.03] text-bone sm:text-6xl lg:text-[4.5rem]">
+          Custom tipper bodies and trailers{" "}
+          <span className="text-accent">engineered for real work.</span>
+        </h1>
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
+          Melbourne-based manufacturer engineering custom tipper bodies, dog
+          trailers and semi trailers for civil, quarry, haulage and waste
+          operators across Australia.
+        </p>
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+          <Button href="/request-a-quote" size="lg">
+            Request a quote
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Button>
+          <Button href="/gallery" size="lg" variant="secondary">
+            View our builds
+          </Button>
+        </div>
 
-      {/* Overlay — left-weighted dark gradient so text stays readable while the
-          right-side visual remains visible. Plus subtle red brand glows. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(10,10,10,0.85)_0%,rgba(10,10,10,0.55)_45%,rgba(10,10,10,0.25)_100%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(10,10,10,0.4)_0%,transparent_30%,transparent_70%,rgba(10,10,10,0.7)_100%)]"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,rgba(225,6,0,0.18),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(225,6,0,0.10),transparent_60%)]"
-      />
-
-      <Container className="relative pt-12 pb-16 lg:pt-16 lg:pb-20">
-        <div className="max-w-4xl">
-          <Image
-            src="/images/logo-white.png"
-            alt="Arrow Industries"
-            width={224}
-            height={224}
-            priority
-            className="h-36 w-36 sm:h-44 sm:w-44 lg:h-56 lg:w-56"
+        {/* The stage. The poster is the LCP image; the video plays over it. */}
+        <div className="relative mx-auto mt-10 max-w-6xl lg:mt-14">
+          <div
+            aria-hidden
+            className="absolute -inset-x-10 -bottom-10 top-1/3 -z-10 bg-[radial-gradient(50%_50%_at_50%_60%,rgb(225_6_0/0.2),transparent_75%)] blur-2xl"
           />
-          <p className="mt-2 inline-flex items-center gap-2 border border-line-soft/60 bg-ink-2/40 px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute backdrop-blur-sm">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-            Melbourne workshop · 25+ years
-          </p>
-          <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] text-bone sm:text-5xl lg:text-[4.25rem]">
-            Custom tipper bodies and trailers{" "}
-            <span className="text-accent">engineered for real work.</span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
-            Melbourne-based manufacturer engineering custom tipper bodies, dog
-            trailers and semi trailers for civil, quarry, haulage and waste
-            operators across Australia.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-2">
-            <Button href="/request-a-quote" size="lg">
-              Request a Quote
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Button>
-            <Button href={site.phoneHref} size="lg" variant="secondary">
-              <Phone className="h-4 w-4 text-accent" aria-hidden />
-              Call now: {site.phone}
-            </Button>
-          </div>
-          <div className="mt-3">
-            <Link
-              href="/gallery"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-mute transition-colors hover:text-accent-text"
+          <div className="relative aspect-video overflow-hidden rounded-2xl border border-line bg-ink-2 shadow-[var(--shadow-float)] lg:rounded-3xl">
+            <Image
+              src="/images/home/hero-stage-v1.jpg"
+              alt="An Arrow Industries tipper body on a five-axle truck in a studio"
+              fill
+              priority
+              sizes="(min-width: 1216px) 1152px, 100vw"
+              className="object-cover"
+            />
+            <video
+              className="hero-bg-video absolute inset-0 h-full w-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              poster="/images/home/hero-stage-v1.jpg"
+              aria-hidden="true"
             >
-              View our builds
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-            </Link>
+              <source src="/videos/home-hero.mp4" type="video/mp4" />
+            </video>
           </div>
-          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-mute">
-            Call our team or send your details — we&rsquo;ll get your build
-            underway.
-          </p>
-          <p className="mt-3 text-xs font-semibold text-mute/80">
-            Built to spec. Ready for real work.
-          </p>
         </div>
       </Container>
+      <div className="pt-7 lg:pt-9">
+        <TrustBar />
+      </div>
     </section>
   );
 }
 
 function ServicesSection() {
-  return (
-    <section className="bg-ink pt-24 pb-28 lg:pt-32 lg:pb-36">
-      <Container>
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-start md:gap-8">
-          <SectionHeader
-            eyebrow="Our capability"
-            heading="What we build and service"
-            body="Built, fabricated and serviced from our Campbellfield workshop — one team, every build engineered to suit the job."
-          />
-          <Button href="/request-a-quote" variant="secondary" size="md">
-            Request a Quote
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Button>
-        </div>
+  const [feature, ...rest] = services;
+  const wide = rest[rest.length - 1];
+  const standard = rest.slice(0, -1);
 
-        <div className="mt-16 grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12">
-          {services.map((s) => (
-            <ServiceCard key={s.slug} service={s} />
+  return (
+    <section className="section">
+      <Container>
+        <SectionHeader
+          eyebrow="Our capability"
+          heading="What we build and service"
+          body="Built, fabricated and serviced from our Campbellfield workshop — one team, every build engineered to suit the job."
+        />
+
+        <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <li className="sm:col-span-2">
+            <ServiceCard
+              service={feature}
+              variant="feature"
+              image="/images/builds/build-2.jpg"
+            />
+          </li>
+          {standard.map((s) => (
+            <li key={s.slug}>
+              <ServiceCard service={s} />
+            </li>
           ))}
-        </div>
+          <li className="sm:col-span-2 lg:col-span-3">
+            <ServiceCard service={wide} variant="wide" />
+          </li>
+        </ul>
       </Container>
     </section>
   );
@@ -189,24 +154,24 @@ function ServicesSection() {
 const FALLBACK_BUILDS = [
   {
     src: "/images/builds/build-1.jpg",
-    alt: "Recent Arrow Industries 8x4 tipper body build for quarry application",
+    alt: "Arrow Industries tipper body on a white cab-over truck, side view",
   },
   {
     src: "/images/builds/build-2.jpg",
-    alt: "Recent Arrow Industries dog trailer build for civil construction",
+    alt: "Arrow Industries tipper body with a graphite finish, side view",
   },
   {
     src: "/images/builds/build-3.jpg",
-    alt: "Recent Arrow Industries semi trailer build for bulk haulage",
+    alt: "Rear three-quarter view of an Arrow Industries tipper body",
   },
 ];
 
 function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
   const usingIg = posts.length > 0;
   return (
-    <section className="bg-ink pt-4 pb-20 lg:pt-6 lg:pb-28">
+    <section className="section">
       <Container>
-        <div className="flex flex-wrap items-end justify-between gap-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeader
             eyebrow={usingIg ? "Recent builds" : "Recent work"}
             heading={
@@ -215,12 +180,9 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
                   href={site.social.instagram}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-3 transition-colors hover:text-accent-text sm:gap-4"
+                  className="inline-flex items-center gap-2.5 transition-colors hover:text-accent-text"
                 >
-                  <Instagram
-                    className="h-7 w-7 sm:h-8 sm:w-8 lg:h-10 lg:w-10"
-                    aria-hidden
-                  />
+                  <Instagram className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
                   Follow us on Instagram
                 </a>
               ) : (
@@ -228,11 +190,18 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
               )
             }
           />
-          <Button href="/gallery" variant="ghost" size="md">
-            View gallery →
-          </Button>
+          <Link
+            href="/gallery"
+            className="group inline-flex items-center gap-0.5 text-sm font-medium text-accent-text"
+          >
+            View gallery
+            <ChevronRight
+              className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </Link>
         </div>
-        <ul className="mt-12 grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {usingIg
             ? posts.map((p) => (
                 <li key={p.id}>
@@ -241,20 +210,18 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={p.caption?.slice(0, 120) || "View on Instagram"}
-                    className="group relative block aspect-[5/4] overflow-hidden bg-ink-2"
+                    className="group relative block aspect-[5/4] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={thumbFor(p)}
                       alt=""
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.03]"
                     />
-                    <div className="absolute inset-x-0 bottom-0 flex items-center bg-gradient-to-t from-ink via-ink/80 to-transparent px-5 pt-10 pb-5">
-                      <span className="font-display text-base font-bold text-bone">
-                        @{p.username || "arrowindustries"}
-                      </span>
-                    </div>
+                    <span className="material absolute bottom-2.5 left-2.5 rounded-full px-2.5 py-1 text-xs font-medium text-bone">
+                      @{p.username || "arrowindustries"}
+                    </span>
                   </a>
                 </li>
               ))
@@ -263,14 +230,14 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
                   <Link
                     href="/gallery"
                     aria-label="View gallery"
-                    className="group relative block aspect-[5/4] overflow-hidden bg-ink-2"
+                    className="group relative block aspect-[5/4] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
                   >
                     <Image
                       src={b.src}
                       alt={b.alt}
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.03]"
                     />
                   </Link>
                 </li>
@@ -283,17 +250,15 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
 
 function PartnersSection() {
   return (
-    <section className="bg-ink-2 py-16 lg:py-20">
+    <section className="section">
       <Container>
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent-text">
-            Components
-          </p>
-          <h2 className="mt-3 font-display text-lg font-extrabold leading-[1.15] text-bone sm:text-xl">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="eyebrow">Components</p>
+          <h2 className="mt-1.5 font-display text-lg font-semibold leading-snug text-bone sm:text-xl">
             Built with proven components from industry-leading suppliers
           </h2>
         </div>
-        <div className="mt-8">
+        <div className="mt-5">
           <PartnerLogos />
         </div>
       </Container>

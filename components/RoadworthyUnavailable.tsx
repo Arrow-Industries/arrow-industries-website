@@ -22,17 +22,17 @@ export function RoadworthyUnavailable() {
         ]}
       />
 
-      <section className="bg-ink py-16 lg:py-24">
+      <section className="section">
         <Container>
-          <div className="mx-auto max-w-2xl border border-line-soft bg-ink-2 p-8 sm:p-12">
-            <span className="flex h-12 w-12 items-center justify-center border border-accent/40 bg-accent/10">
+          <div className="card mx-auto max-w-2xl p-6 sm:p-10">
+            <span className="icon-tile">
               <CalendarOff
                 className="h-5 w-5 text-accent"
                 strokeWidth={1.5}
                 aria-hidden
               />
             </span>
-            <h2 className="mt-6 font-display text-2xl font-extrabold leading-tight text-bone sm:text-3xl">
+            <h2 className="mt-6 font-display text-2xl font-semibold leading-tight text-bone sm:text-3xl">
               Online booking is paused
             </h2>
             <p className="mt-4 text-base leading-relaxed text-mute">

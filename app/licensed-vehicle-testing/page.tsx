@@ -207,9 +207,9 @@ export default async function RoadworthyPage() {
       />
 
       {/* Booking request form — feeds the dashboard's approval queue */}
-      <section id="book" className="scroll-mt-24 bg-ink py-20 lg:py-28">
+      <section id="book" className="section">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-5">
               <SectionHeader
                 eyebrow="Request a booking"
@@ -230,7 +230,7 @@ export default async function RoadworthyPage() {
               </ul>
             </div>
             <div className="lg:col-span-7">
-              <div className="relative border border-line-soft bg-ink-2 p-6 sm:p-8">
+              <div className="card p-5 sm:p-7">
                 <RoadworthyBookingForm truckTypes={truckTypes} trailerTypes={trailerTypes} axlePrices={showPrices ? axlePrices : null} defectPrice={showPrices ? defectPrice : null} durationMins={durationMins} minDate={minDate} openDaysLabel={openDaysLabel} />
               </div>
             </div>
@@ -238,129 +238,82 @@ export default async function RoadworthyPage() {
         </Container>
       </section>
 
-      {/* Booking — the conversion centrepiece */}
-      <section className="bg-ink-2 py-20 lg:py-28">
-        <Container>
-          <div className="grid gap-10 overflow-hidden border border-line-soft bg-ink md:grid-cols-12">
-            {/* Left — booking copy + CTAs */}
-            <div className="flex flex-col justify-between gap-10 p-8 sm:p-12 md:col-span-7">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
-                  Book online
-                </p>
-                <h2 className="mt-4 font-display text-3xl font-extrabold leading-[1.1] text-bone sm:text-4xl">
-                  Book your inspection. Get back on the road.
-                </h2>
-                <p className="mt-5 max-w-xl text-base leading-relaxed text-mute sm:text-lg">
-                  Secure a time, confirm your vehicle details and have your
-                  inspection completed at our Campbellfield workshop.
-                </p>
-                <p className="mt-5 inline-flex items-center gap-2 border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent-text">
-                  <CalendarCheck className="h-4 w-4 shrink-0" aria-hidden />
-                  Inspections by appointment, Monday – Friday.
-                </p>
+      {/* Visit details, hours and the QR for the workshop wall */}
+      <section className="section">
+        <Container className="grid gap-3 md:grid-cols-12">
+          <div className="list-group md:col-span-8">
+            <div className="list-row gap-3.5">
+              <span className="icon-tile">
+                <MapPin className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="label">Workshop</p>
+                <a
+                  href={site.address.mapsHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-0.5 block text-sm font-medium leading-relaxed text-bone hover:text-accent-text"
+                >
+                  {site.address.line1}, {site.address.suburb} {site.address.state}{" "}
+                  {site.address.postcode}
+                </a>
               </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <Button href="#book" size="lg">
-                  <CalendarCheck className="h-4 w-4" aria-hidden />
-                  Book Inspection Online
-                </Button>
-                <Button href={site.phoneHref} size="lg" variant="secondary">
-                  <Phone className="h-4 w-4" aria-hidden />
-                  Call {site.phone}
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-1 gap-px overflow-hidden border-t border-line-soft bg-line-soft">
-                <div className="flex gap-5 bg-ink p-6">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
-                    <MapPin className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} aria-hidden />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
-                      Workshop
-                    </p>
-                    <div className="mt-1.5 text-sm font-medium leading-relaxed text-bone">
-                      <a
-                        href={site.address.mapsHref}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="hover:text-accent-text"
-                      >
-                        {site.address.line1}
-                        <br />
-                        {site.address.suburb} {site.address.state}{" "}
-                        {site.address.postcode}
-                      </a>
+            </div>
+            <div className="list-row gap-3.5">
+              <span className="icon-tile">
+                <Clock className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="label">Inspection hours, by appointment</p>
+                <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-sm">
+                  {hoursRows.map((h) => (
+                    <div key={h.label} className="contents">
+                      <dt className="text-bone">{h.label}</dt>
+                      <dd className="text-right tabular-nums text-mute">{h.time}</dd>
                     </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-5 bg-ink p-6">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
-                    <Clock className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} aria-hidden />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
-                      Inspection hours
-                    </p>
-                    <dl className="mt-1.5 grid gap-3 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-1.5">
-                      {hoursRows.map((h) => (
-                        <div key={h.label} className="sm:contents">
-                          <dt className="font-medium text-bone">{h.label}</dt>
-                          <dd className="text-mute sm:text-right sm:tabular-nums">
-                            {h.time}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
-                </div>
+                  ))}
+                </dl>
               </div>
             </div>
+          </div>
 
-            {/* Right — QR card */}
-            <div className="flex flex-col items-center justify-center gap-5 border-t border-line-soft bg-ink-2 p-8 sm:p-12 md:col-span-5 md:border-l md:border-t-0">
-              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent-text">
-                Scan to book
-              </p>
-              <div className="bg-white p-4">
-                <Image
-                  src="/images/lvt/booking-qr-v2.png"
-                  alt="QR code — book a roadworthy inspection at Arrow Industries"
-                  width={240}
-                  height={240}
-                  className="h-60 w-60"
-                  unoptimized
-                />
-              </div>
-              <p className="max-w-xs text-center text-xs leading-relaxed text-mute">
-                Scan with your phone camera to open the booking form directly.
-              </p>
+          <div className="card hidden flex-col items-center justify-center gap-3 p-5 text-center md:col-span-4 md:flex">
+            <p className="eyebrow">Scan to book</p>
+            <div className="rounded-xl bg-white p-2.5">
+              <Image
+                src="/images/lvt/booking-qr-v2.png"
+                alt="QR code — book a roadworthy inspection at Arrow Industries"
+                width={160}
+                height={160}
+                className="h-40 w-40"
+                unoptimized
+              />
             </div>
+            <p className="max-w-[14rem] text-xs leading-relaxed text-mute">
+              Open the booking form on your phone.
+            </p>
           </div>
         </Container>
       </section>
 
       {/* What's covered */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="What's covered"
             heading="Heavy vehicle and trailer inspections."
             body="Full inspection scope — backed by 25+ years of experience building tippers and trailers ourselves."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2">
             {covered.map((c) => {
               const Icon = c.icon;
               return (
-                <li key={c.title} className="flex gap-5 bg-ink-2 p-8 sm:p-10">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center bg-accent/10 text-accent">
+                <li key={c.title} className="card flex gap-5 p-5 sm:p-6">
+                  <span className="icon-tile">
                     <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
                   </span>
                   <div>
-                    <h3 className="font-display text-lg font-bold text-bone">
+                    <h3 className="font-display text-lg font-semibold text-bone">
                       {c.title}
                     </h3>
                     <p className="mt-2 text-sm leading-relaxed text-mute sm:text-base">
@@ -375,8 +328,8 @@ export default async function RoadworthyPage() {
       </section>
 
       {/* Who it's for */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Who it's for"
@@ -405,19 +358,19 @@ export default async function RoadworthyPage() {
       </section>
 
       {/* Inspection types */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Inspection types"
             heading="Pick the inspection that suits the job."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {inspectionTypes.map((t) => (
               <li
                 key={t.title}
-                className="flex flex-col gap-3 bg-ink-2 p-8"
+                className="card flex flex-col gap-3 p-5 sm:p-6"
               >
-                <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                   {t.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">{t.body}</p>
@@ -428,19 +381,19 @@ export default async function RoadworthyPage() {
       </section>
 
       {/* Process */}
-      <section className="bg-ink-2 py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="What to expect"
             heading="A clear four-step inspection process."
           />
-          <ol className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {process.map((p) => (
-              <li key={p.step} className="flex flex-col gap-3 bg-ink p-8">
-                <span className="font-display text-3xl font-extrabold text-accent">
+              <li key={p.step} className="card flex flex-col gap-3 p-5 sm:p-6">
+                <span className="step-num">
                   {p.step}
                 </span>
-                <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                   {p.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">{p.body}</p>
@@ -451,8 +404,8 @@ export default async function RoadworthyPage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-ink py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-4">
             <SectionHeader
               eyebrow="FAQ"
@@ -484,10 +437,10 @@ export default async function RoadworthyPage() {
             </div>
           </div>
           <div className="lg:col-span-8">
-            <ul className="divide-y divide-line-soft">
+            <ul className="list-group">
               {faqs.map((f) => (
-                <li key={f.question} className="py-7 first:pt-0 last:pb-0">
-                  <h3 className="font-display text-lg font-bold text-bone sm:text-xl">
+                <li key={f.question} className="list-row flex-col gap-1 py-4">
+                  <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
                     {f.question}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-mute sm:text-base">

@@ -17,7 +17,6 @@ import { PageHero } from "@/components/PageHero";
 import { CTASection } from "@/components/CTASection";
 import { FeatureSection } from "@/components/FeatureSection";
 import { SectionHeader } from "@/components/SectionHeader";
-import { TrustBar } from "@/components/TrustBar";
 import { Button } from "@/components/Button";
 import { whyChooseArrow } from "@/data/features";
 import { site } from "@/data/site";
@@ -28,13 +27,6 @@ export const metadata: Metadata = pageMetadata({
     "Custom tipper bodies, dog trailers and semi trailers designed, built and serviced at our Campbellfield workshop — 25+ years backing operators Australia-wide.",
   path: "/about",
 });
-
-const aboutTrustItems = [
-  "25+ years experience",
-  "Built in Australia",
-  "VicRoads licensed",
-  "Built for heavy-duty use",
-] as const;
 
 const stats = [
   { value: "25+", label: "Years experience" },
@@ -101,21 +93,19 @@ export default function AboutPage() {
         }
       />
 
-      <TrustBar items={aboutTrustItems} />
-
       {/* Stats */}
-      <section className="bg-ink py-20 lg:py-24">
+      <section className="section">
         <Container>
-          <ul className="grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((s) => (
               <li
                 key={s.label}
-                className="flex flex-col gap-2 bg-ink-2 p-8 text-center"
+                className="card flex flex-col gap-1 p-5 text-center sm:p-6"
               >
-                <span className="font-display text-3xl font-extrabold text-bone sm:text-4xl">
+                <span className="font-display text-2xl font-semibold text-bone sm:text-[1.75rem]">
                   {s.value}
                 </span>
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
+                <span className="label">
                   {s.label}
                 </span>
               </li>
@@ -125,14 +115,14 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story */}
-      <section className="bg-ink-2 py-20 lg:py-28">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Our story"
               heading="Built for operators. Built to suit the job."
             />
-            <div className="mt-6 space-y-4 text-base leading-relaxed text-mute sm:text-lg">
+            <div className="mt-6 space-y-4 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
               <p>
                 Arrow Industries started as a fabrication workshop in
                 Campbellfield, building tipper bodies for operators who needed
@@ -154,7 +144,7 @@ export default function AboutPage() {
                 team, supporting operators across Australia.
               </p>
 
-              <ul className="!my-6 space-y-2 border-l-2 border-accent pl-5 text-base text-bone">
+              <ul className="!my-5 space-y-1 border-l-2 border-accent pl-4 text-[0.9375rem] text-bone">
                 <li className="font-semibold">Built for operators.</li>
                 <li className="font-semibold">Designed to suit the job.</li>
                 <li className="font-semibold">Custom-built for real conditions.</li>
@@ -173,10 +163,10 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="lg:col-span-7">
-            <div className="relative aspect-[4/3] overflow-hidden border border-line-soft bg-ink">
+            <div className="relative aspect-[4/3] card overflow-hidden">
               <Image
-                src="/images/about/workshop-fabrication.jpg"
-                alt="Arrow Industries fabrication workshop in Campbellfield"
+                src="/images/builds/build-3.jpg"
+                alt="Rear view of an Arrow Industries tipper body"
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
@@ -187,10 +177,10 @@ export default function AboutPage() {
       </section>
 
       {/* What we build */}
-      <section className="bg-ink pt-28 pb-20 lg:pt-32 lg:pb-24">
+      <section className="section">
         <Container>
           <SectionHeader eyebrow="Capability" heading="What we build" />
-          <ul className="mt-12 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-5">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {[
               {
                 title: "4x2 tipper bodies",
@@ -215,15 +205,15 @@ export default function AboutPage() {
             ].map((item) => (
               <li
                 key={item.title}
-                className="flex flex-col gap-3 bg-ink-2 p-6"
+                className="card flex flex-col gap-3 p-5 sm:p-6"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                  <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                     {item.title}
                   </h3>
                   <span
                     aria-hidden
-                    className="mt-2 h-2 w-2 shrink-0 bg-accent"
+                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
                   />
                 </div>
                 <p className="text-sm leading-relaxed text-mute">
@@ -236,19 +226,19 @@ export default function AboutPage() {
       </section>
 
       {/* Milestones */}
-      <section className="bg-ink py-20 lg:py-24">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Experience"
             heading="Built on experience. Focused on what matters today."
           />
-          <ol className="mt-12 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {milestones.map((m) => (
-              <li key={m.title} className="flex flex-col gap-3 bg-ink-2 p-6">
-                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
+              <li key={m.title} className="card flex flex-col gap-3 p-5 sm:p-6">
+                <span className="eyebrow">
                   {m.year}
                 </span>
-                <h3 className="text-base font-bold text-bone">{m.title}</h3>
+                <h3 className="text-base font-semibold text-bone">{m.title}</h3>
                 <p className="text-sm leading-relaxed text-mute">{m.body}</p>
               </li>
             ))}
@@ -257,8 +247,8 @@ export default function AboutPage() {
       </section>
 
       {/* Section 1 — Built for Australian conditions */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Why Arrow"
@@ -273,8 +263,8 @@ export default function AboutPage() {
       </section>
 
       {/* Section 2 — Built for operators across Australia */}
-      <section className="bg-ink py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Industries"
@@ -283,13 +273,13 @@ export default function AboutPage() {
             />
           </div>
           <div className="lg:col-span-7">
-            <ul className="divide-y divide-line-soft">
+            <ul className="list-group">
               {industries.map((i) => {
                 const Icon = i.icon;
                 return (
                   <li
                     key={i.label}
-                    className="flex items-center gap-5 py-5 first:pt-0 last:pb-0"
+                    className="list-row items-center"
                   >
                     <Icon
                       className="h-5 w-5 shrink-0 text-accent"
@@ -308,16 +298,16 @@ export default function AboutPage() {
       </section>
 
       {/* Section 3 — Sized for the job in front of it */}
-      <section className="bg-ink-2 py-24 lg:py-32">
+      <section className="section">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
+            <p className="eyebrow">
               Custom-built
             </p>
-            <h2 className="mt-5 font-display text-3xl font-extrabold leading-[1.08] text-bone sm:text-4xl lg:text-[2.75rem]">
+            <h2 className="mt-5 font-display text-[1.75rem] font-semibold leading-[1.12] text-bone sm:text-[2rem] lg:text-[2.25rem]">
               Sized for the job in front of it.
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
+            <p className="mx-auto mt-6 max-w-2xl text-[0.9375rem] leading-relaxed text-mute sm:text-base">
               Every Arrow build starts with the chassis, payload, route and
               operating conditions. No catalogue sizes. No compromises. Just a
               unit engineered to do the work it&rsquo;s asked to do, year after
@@ -328,7 +318,7 @@ export default function AboutPage() {
       </section>
 
       {/* Recent builds */}
-      <section className="bg-ink-2 py-20 lg:py-24">
+      <section className="section">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <SectionHeader eyebrow="Recent work" heading="Recent builds" />
@@ -336,30 +326,27 @@ export default function AboutPage() {
               View gallery →
             </Button>
           </div>
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                src: "/images/about/builds/build-1.jpg",
-                alt: "Recent Arrow Industries tipper body build",
+                src: "/images/builds/build-1.jpg",
+                alt: "Arrow Industries tipper body on a white cab-over truck, side view",
                 label: "Tipper body",
-                location: "VIC",
               },
               {
-                src: "/images/about/builds/build-2.jpg",
-                alt: "Recent Arrow Industries dog trailer build",
-                label: "Dog trailer",
-                location: "AUSTRALIA",
+                src: "/images/builds/build-2.jpg",
+                alt: "Arrow Industries tipper body with a graphite finish, side view",
+                label: "Tipper body",
               },
               {
-                src: "/images/about/builds/build-3.jpg",
-                alt: "Recent Arrow Industries semi trailer build",
-                label: "Semi trailer",
-                location: "AUSTRALIA",
+                src: "/images/builds/build-3.jpg",
+                alt: "Rear three-quarter view of an Arrow Industries tipper body",
+                label: "Tipper body",
               },
             ].map((b) => (
               <li
                 key={b.src}
-                className="group relative aspect-[4/3] overflow-hidden bg-ink"
+                className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
               >
                 <Image
                   src={b.src}
@@ -368,14 +355,9 @@ export default function AboutPage() {
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 />
-                <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-ink via-ink/80 to-transparent px-5 pt-10 pb-5">
-                  <span className="font-display text-base font-bold text-bone">
-                    {b.label}
-                  </span>
-                  <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent-text">
-                    {b.location}
-                  </span>
-                </div>
+                <span className="material absolute bottom-2.5 left-2.5 rounded-full px-2.5 py-1 text-xs font-medium text-bone">
+                  {b.label}
+                </span>
               </li>
             ))}
           </ul>
@@ -383,7 +365,7 @@ export default function AboutPage() {
       </section>
 
       {/* Trust line */}
-      <section className="bg-ink py-8">
+      <section className="section">
         <Container>
           <p className="text-center text-sm text-mute sm:text-base">
             Supporting transport, construction and haulage operators across

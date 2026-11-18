@@ -13,29 +13,19 @@ export function TrustedBy() {
   const loopItems = [...customers, ...customers];
 
   return (
-    <section className="relative overflow-hidden bg-ink pt-12 pb-6 lg:pt-16 lg:pb-8">
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(225,6,0,0.12),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(225,6,0,0.08),transparent_60%)]"
-      />
-      <Container className="relative">
+    <section className="section">
+      <Container>
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-accent-text">
+          <p className="eyebrow">
             Customers
           </p>
-          <h2 className="mt-3 font-display text-lg font-extrabold leading-[1.15] text-bone sm:text-xl">
+          <h2 className="mt-3 font-display text-lg font-semibold leading-snug text-bone sm:text-xl">
             Trusted by operators and dealer networks nationwide
           </h2>
         </div>
 
         <div
-          className="group relative mt-10 overflow-hidden"
-          style={{
-            maskImage:
-              "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)",
-            WebkitMaskImage:
-              "linear-gradient(to right, transparent, #000 8%, #000 92%, transparent)",
-          }}
+          className="marquee-mask group relative mt-5 overflow-hidden"
         >
           <ul
             className="logo-marquee-track flex w-max items-center gap-12 py-3 group-hover:[animation-play-state:paused] sm:gap-16"
@@ -58,7 +48,7 @@ export function TrustedBy() {
                     className="block h-12 w-32 object-contain sm:h-14 sm:w-40"
                   />
                 ) : (
-                  <span className="block whitespace-nowrap text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute/60 opacity-90 grayscale transition-all duration-300 hover:text-mute hover:opacity-100 hover:grayscale-0 sm:text-xs">
+                  <span className="block whitespace-nowrap label/60 opacity-90 grayscale transition-all duration-300 hover:text-mute hover:opacity-100 hover:grayscale-0 sm:text-xs">
                     {c.name}
                   </span>
                 )}

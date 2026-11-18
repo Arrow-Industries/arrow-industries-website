@@ -106,14 +106,11 @@ const availabilityOptions = [
 
 const WHY_HIRE_MAX = 250;
 
-const inputBase =
-  "w-full rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone placeholder:text-mute focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
+const inputBase = "field";
 
-const labelBase =
-  "block text-xs font-semibold uppercase tracking-[0.16em] text-mute";
+const labelBase = "field-label";
 
-const subHeadingBase =
-  "text-xs font-semibold uppercase tracking-[0.22em] text-accent-text";
+const subHeadingBase = "form-legend";
 
 export function CareersForm() {
   const [state, formAction, isPending] = useActionState(
@@ -202,12 +199,12 @@ export function CareersForm() {
 
   if (state?.ok) {
     return (
-      <div className="border border-line-soft bg-ink-2 p-8 text-center sm:p-10">
+      <div className="card p-8 text-center sm:p-10">
         <CheckCircle2
           className="mx-auto h-9 w-9 text-accent"
           strokeWidth={1.5}
         />
-        <h2 className="mt-5 font-display text-2xl font-extrabold text-bone">
+        <h2 className="mt-5 font-display text-2xl font-semibold text-bone">
           Thanks — your application has been sent.
         </h2>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-mute sm:text-base">
@@ -239,7 +236,7 @@ export function CareersForm() {
   }
 
   return (
-    <form ref={formRef} action={formAction} className="grid gap-8" noValidate>
+    <form ref={formRef} action={formAction} className="grid gap-3" noValidate>
       {/* Honeypot — must remain empty. Hidden from real users + assistive tech. */}
       <div
         aria-hidden="true"
@@ -256,7 +253,7 @@ export function CareersForm() {
       </div>
 
       {/* ---------- Personal Details ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>Personal Details</legend>
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="First Name" name="firstName" required>
@@ -344,7 +341,7 @@ export function CareersForm() {
       </fieldset>
 
       {/* ---------- Role Information ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>Role Information</legend>
 
         <Field
@@ -390,7 +387,7 @@ export function CareersForm() {
       </fieldset>
 
       {/* ---------- Qualifications & Tickets ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>Qualifications &amp; Tickets</legend>
 
         <div className="grid gap-5 sm:grid-cols-2">
@@ -461,7 +458,7 @@ export function CareersForm() {
       </fieldset>
 
       {/* ---------- Availability ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>Availability</legend>
         <Field label="Availability / Start Date" name="availability" required>
           <SelectField
@@ -475,7 +472,7 @@ export function CareersForm() {
       </fieldset>
 
       {/* ---------- Screening ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>A quick question</legend>
         <Field label="Why should we hire you?" name="whyHire" required>
           <textarea
@@ -500,7 +497,7 @@ export function CareersForm() {
       </fieldset>
 
       {/* ---------- Resume ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>Resume</legend>
         <Field
           label="Attach your resume"
@@ -569,7 +566,7 @@ export function CareersForm() {
       </fieldset>
 
       {/* ---------- Additional Notes ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>Additional Notes</legend>
         <Field label="Message / Additional Information" name="message">
           <textarea
@@ -587,7 +584,7 @@ export function CareersForm() {
           ref={errorRef}
           tabIndex={-1}
           role="alert"
-          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
+          className="rounded-sm border border-accent/50 bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
         >
           {state.error}
         </p>

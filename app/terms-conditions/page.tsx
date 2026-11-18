@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
+import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { site } from "@/data/site";
 import { getPublishedTerms, parseTerms, boldRuns, type TermsBlock } from "@/lib/terms-of-supply";
-import Link from "next/link";
 
 export const metadata: Metadata = pageMetadata({
   title: "Terms & Conditions for the Supply of Goods and Services",
@@ -40,13 +40,13 @@ export default async function TermsPage() {
         ]}
       />
 
-      <section className="bg-ink py-16 lg:py-20">
+      <section className="section">
         <Container>
-          <div className="mx-auto max-w-3xl text-base leading-relaxed text-mute">
+          <div className="max-w-3xl text-base leading-relaxed text-mute">
 
             {/* Issuer block */}
-            <div className="mb-12 border border-line bg-ink-2 p-6 text-sm">
-              <p className="font-display text-base font-bold text-bone">
+            <div className="card mb-3 p-5 text-sm sm:p-6">
+              <p className="font-display text-base font-semibold text-bone">
                 {site.tradingName}
               </p>
               <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-5 gap-y-1.5 text-sm">
@@ -82,20 +82,17 @@ export default async function TermsPage() {
               issuer block rather than in the clauses: an offer inside the
               terms would read as part of them.
             */}
-            <div className="mb-12 border border-accent/40 bg-ink-2 p-6">
-              <p className="font-display text-base font-bold text-bone">
+            <div className="card mb-10 p-5 sm:p-6">
+              <p className="font-display text-base font-semibold text-bone">
                 Want an account with us?
               </p>
               <p className="mt-2 text-sm leading-relaxed text-mute">
                 Trade customers can apply for a credit account online. It takes about five
                 minutes and we come back to you within two business days.
               </p>
-              <Link
-                href="/credit"
-                className="mt-4 inline-block border border-accent px-5 py-2.5 text-sm font-semibold text-bone hover:bg-accent hover:text-white"
-              >
+              <Button href="/credit" variant="secondary" className="mt-4">
                 Apply for a credit account
-              </Link>
+              </Button>
             </div>
 
             <div className="text-sm leading-relaxed sm:text-base">
@@ -136,13 +133,13 @@ const indent: Record<1 | 2 | 3, string> = { 1: "", 2: "pl-8", 3: "pl-16" };
 function Block({ b }: { b: TermsBlock }) {
   if (b.kind === "clause")
     return (
-      <h2 id={b.id} className="mt-12 first:mt-0 mb-4 scroll-mt-24 font-display text-xl font-extrabold text-bone sm:text-2xl">
-        <span className="text-accent">{b.number}.</span> {b.heading}
+      <h2 id={b.id} className="mt-12 first:mt-0 mb-4 scroll-mt-24 font-display text-xl font-semibold text-bone sm:text-[1.375rem]">
+        <span className="text-accent-text">{b.number}.</span> {b.heading}
       </h2>
     );
   if (b.kind === "subclause")
     return (
-      <h3 id={b.id} className="mt-6 mb-3 scroll-mt-24 font-display text-base font-bold text-bone sm:text-lg">
+      <h3 id={b.id} className="mt-6 mb-3 scroll-mt-24 font-display text-base font-semibold text-bone sm:text-lg">
         <span className="text-accent-text/80">{b.number}</span>{" "}
         <span className="ml-1">{b.heading}</span>
       </h3>

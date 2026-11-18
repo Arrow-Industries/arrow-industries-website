@@ -3,7 +3,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   Check,
-  ChevronRight,
   Instagram,
   Phone,
 } from "lucide-react";
@@ -12,6 +11,8 @@ import { CTASection } from "@/components/CTASection";
 import { Container } from "@/components/Container";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { JsonLd } from "@/components/JsonLd";
+import { LocalNav } from "@/components/LocalNav";
+import { ProductHero } from "@/components/ProductHero";
 import { SectionHeader } from "@/components/SectionHeader";
 import type { Service } from "@/data/services";
 import type { ServiceContent } from "@/data/serviceContent";
@@ -192,95 +193,47 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       />
 
       {/* 1 — HERO */}
-      <section className="relative isolate overflow-hidden border-b border-line bg-ink">
-        <div aria-hidden className="absolute inset-0 -z-10">
-          <Image
-            src="/images/builds/build-1.jpg"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover opacity-50"
-          />
-        </div>
-        <div
-          aria-hidden
-          className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(10,10,10,0.92)_0%,rgba(10,10,10,0.7)_55%,rgba(10,10,10,0.45)_100%)]"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,rgba(225,6,0,0.18),transparent_55%)]"
-        />
-
-        <Container className="relative pt-12 pb-16 lg:pt-20 lg:pb-24">
-          <nav aria-label="Breadcrumb" className="mb-8 text-xs text-mute">
-            <ol className="flex flex-wrap items-center gap-1.5">
-              {crumbs.map((c, i) => {
-                const last = i === crumbs.length - 1;
-                return (
-                  <li key={c.label} className="flex items-center gap-1.5">
-                    {c.href && !last ? (
-                      <Link href={c.href} className="hover:text-bone">
-                        {c.label}
-                      </Link>
-                    ) : (
-                      <span className={last ? "text-bone" : undefined}>
-                        {c.label}
-                      </span>
-                    )}
-                    {!last && (
-                      <ChevronRight className="h-3 w-3 text-line" aria-hidden />
-                    )}
-                  </li>
-                );
-              })}
-            </ol>
-          </nav>
-
-          <p className="mb-5 inline-flex items-center gap-2 border border-line-soft/60 bg-ink-2/40 px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-mute backdrop-blur-sm">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-            {hero.badge}
-          </p>
-          <h1 className="max-w-4xl font-display text-4xl font-extrabold leading-[1.02] text-bone sm:text-5xl lg:text-[4.5rem]">
-            Built to work{" "}
-            <span className="text-accent">with the truck.</span>
-          </h1>
-          <p className="mt-7 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
-            {hero.subtext}
-          </p>
-          <div className="mt-10 flex flex-wrap items-center gap-3">
+      <ProductHero
+        crumbs={crumbs}
+        badge={hero.badge}
+        heading={
+          <>
+            Built to work <span className="text-accent">with the truck.</span>
+          </>
+        }
+        body={hero.subtext}
+        image="/images/builds/build-1.jpg"
+        note="Built for civil, quarry and fleet applications"
+        facts={hero.capability}
+        actions={
+          <>
             <Button href="/request-a-quote" size="lg">
-              Get a Quote
+              Get a quote
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
-              <Phone className="h-4 w-4 text-accent" aria-hidden />
+              <Phone className="h-4 w-4 text-accent-text" aria-hidden />
               Speak to the team
             </Button>
-          </div>
-          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.18em] text-mute">
-            Built for civil, quarry and fleet applications
-          </p>
-          {hero.capability.length > 0 && (
-            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-bone/70">
-              {hero.capability.map((c, i) => (
-                <span key={c} className="flex items-center gap-3">
-                  {i > 0 && (
-                    <span aria-hidden className="text-line">
-                      •
-                    </span>
-                  )}
-                  {c}
-                </span>
-              ))}
-            </div>
-          )}
-        </Container>
-      </section>
+          </>
+        }
+      />
+
+      <LocalNav
+        label={`${service.shortTitle} sections`}
+        items={[
+          { id: "overview", label: "Overview" },
+          { id: "builds", label: "Builds" },
+          { id: "setup", label: "Setup" },
+          { id: "options", label: "Options" },
+          { id: "process", label: "Process" },
+          { id: "faq", label: "FAQ" },
+        ]}
+      />
 
       {/* 2 — NOT JUST A TRAILER */}
-      <section className="bg-ink-2 py-20 lg:py-28">
-        <Container className="grid gap-10 lg:grid-cols-12 lg:gap-20">
+      <section id="overview" className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Full setup thinking"
@@ -288,13 +241,13 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
             />
           </div>
           <div className="lg:col-span-7">
-            <p className="text-base leading-relaxed text-mute sm:text-lg">
+            <p className="text-[0.9375rem] leading-relaxed text-mute sm:text-base">
               A trailer only performs as well as how it works with the truck.
               Every Arrow trailer is designed to match the towing setup
               &mdash; from the tow connection through to hydraulics, braking
               and electrical systems.
             </p>
-            <p className="mt-5 text-base leading-relaxed text-mute sm:text-lg">
+            <p className="mt-5 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
               The result is a combination that works properly on-site, not
               just on paper.
             </p>
@@ -303,7 +256,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 3 — RECENT BUILDS */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section id="builds" className="section">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <SectionHeader
@@ -315,11 +268,11 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
               View gallery →
             </Button>
           </div>
-          <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {recentBuilds.map((b) => (
               <li
                 key={b.title}
-                className="group flex flex-col overflow-hidden bg-ink-2"
+                className="card group flex flex-col overflow-hidden"
               >
                 <div className="relative aspect-[5/4] overflow-hidden">
                   <Image
@@ -332,10 +285,10 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
                 </div>
                 <div className="flex flex-1 flex-col gap-4 p-6">
                   <div className="flex items-baseline justify-between gap-3">
-                    <h3 className="font-display text-lg font-bold text-bone sm:text-xl">
+                    <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
                       {b.title}
                     </h3>
-                    <span className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent-text">
+                    <span className="eyebrow">
                       {b.application}
                     </span>
                   </div>
@@ -343,7 +296,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
                     {b.specs.map((s, i) => (
                       <li key={s} className="flex items-center gap-3">
                         {i > 0 && (
-                          <span aria-hidden className="text-line">
+                          <span aria-hidden className="text-mute/50">
                             •
                           </span>
                         )}
@@ -359,17 +312,17 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 4 — BUILT FOR */}
-      <section className="bg-ink-2 py-20 lg:py-24">
+      <section className="section">
         <Container>
           <SectionHeader eyebrow="Built for" heading="Who we build for." />
-          <ul className="mt-12 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {builtFor.map((item) => (
               <li
                 key={item}
-                className="flex items-center gap-3 bg-ink px-7 py-8"
+                className="card flex items-center gap-3 p-5"
               >
-                <span className="h-2 w-2 shrink-0 bg-accent" aria-hidden />
-                <span className="font-display text-base font-bold text-bone sm:text-lg">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
+                <span className="font-display text-base font-semibold text-bone sm:text-lg">
                   {item}
                 </span>
               </li>
@@ -379,8 +332,8 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 5 — TRAILER TYPE */}
-      <section className="bg-ink py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow={trailerType.label}
@@ -388,11 +341,11 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
             />
           </div>
           <div className="lg:col-span-7">
-            <ul className="divide-y divide-line-soft">
+            <ul className="list-group">
               {trailerType.bullets.map((b) => (
                 <li
                   key={b}
-                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+                  className="list-row"
                 >
                   <Check
                     className="mt-1 h-4 w-4 shrink-0 text-accent"
@@ -410,10 +363,11 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* Mid-page CTA */}
-      <section className="bg-ink-2 py-14">
-        <Container className="flex flex-wrap items-center justify-between gap-6">
+      <section className="section">
+        <Container>
+          <div className="card flex flex-wrap items-center justify-between gap-5 p-5 sm:p-6">
           <div>
-            <p className="font-display text-xl font-bold text-bone sm:text-2xl">
+            <p className="font-display text-lg font-semibold text-bone sm:text-xl">
               {midPageCta.headline}
             </p>
             <p className="mt-1 text-sm text-mute">{midPageCta.body}</p>
@@ -428,30 +382,31 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
               {site.phone}
             </Button>
           </div>
+          </div>
         </Container>
       </section>
 
       {/* 6 — DESIGNED TO WORK TOGETHER (complete setup, critical) */}
-      <section className="bg-ink py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section id="setup" className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Complete working setup"
               heading="Designed to work together."
             />
-            <p className="mt-6 text-base leading-relaxed text-mute sm:text-lg">
+            <p className="mt-6 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
               Every trailer is built to integrate with the truck &mdash; not
               added on after. The full combination is engineered to perform
               under load and on-site.
             </p>
-            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
+            <p className="mt-6 eyebrow">
               The result
             </p>
-            <ul className="mt-4 divide-y divide-line-soft">
+            <ul className="mt-4 list-group">
               {completeSetup.outcomes.map((o) => (
                 <li
                   key={o}
-                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+                  className="list-row"
                 >
                   <Check
                     className="mt-1 h-4 w-4 shrink-0 text-accent"
@@ -466,15 +421,15 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
             </ul>
           </div>
           <div className="lg:col-span-7">
-            <ul className="grid gap-px overflow-hidden bg-line-soft">
+            <ul className="grid gap-3">
               {completeSetup.bullets.map((b) => (
                 <li
                   key={b}
-                  className="flex items-start gap-4 bg-ink-2 p-7"
+                  className="card flex items-start gap-4 p-5 sm:p-6"
                 >
                   <span
                     aria-hidden
-                    className="mt-2 h-1.5 w-1.5 shrink-0 bg-accent"
+                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
                   />
                   <p className="text-sm leading-relaxed text-bone sm:text-base">
                     {b}
@@ -487,16 +442,16 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 7 — ENGINEERING & STRUCTURE */}
-      <section className="bg-ink-2 py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Engineering & structure"
             heading="Specified for heavy work. Built to survive it."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2">
             {engineering.map((e) => (
-              <li key={e.title} className="flex flex-col gap-3 bg-ink p-8">
-                <h3 className="font-display text-lg font-bold text-bone sm:text-xl">
+              <li key={e.title} className="card flex flex-col gap-3 p-5 sm:p-6">
+                <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
                   {e.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">{e.body}</p>
@@ -507,17 +462,17 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 8 — FEATURES & OPTIONS */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section id="options" className="section">
         <Container>
           <SectionHeader
             eyebrow="Features & options"
             heading="Configure the trailer to suit the work."
           />
-          <ul className="mt-14 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f) => (
               <li
                 key={f}
-                className="flex items-start gap-4 bg-ink-2 p-7"
+                className="card flex items-start gap-4 p-5 sm:p-6"
               >
                 <Check
                   className="mt-1 h-4 w-4 shrink-0 text-accent"
@@ -534,8 +489,8 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 9 — RUNNING GEAR & SYSTEMS */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Running gear & systems"
@@ -544,11 +499,11 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
             />
           </div>
           <div className="lg:col-span-7">
-            <ul className="divide-y divide-line-soft">
+            <ul className="list-group">
               {runningGear.map((r) => (
                 <li
                   key={r}
-                  className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
+                  className="list-row"
                 >
                   <Check
                     className="mt-1 h-4 w-4 shrink-0 text-accent"
@@ -566,16 +521,16 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 10 — WHY ARROW */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Why Arrow"
             heading="Built as part of a setup, not a standalone trailer."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-5">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {whyArrow.map((w) => (
-              <li key={w.title} className="flex flex-col gap-3 bg-ink-2 p-7">
-                <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+              <li key={w.title} className="card flex flex-col gap-3 p-5 sm:p-6">
+                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                   {w.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">{w.body}</p>
@@ -586,7 +541,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 11 — REAL BUILDS (expanded gallery, IG) */}
-      <section className="bg-ink-2 py-24 lg:py-32">
+      <section className="section">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <SectionHeader
@@ -616,11 +571,11 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
             </Button>
           </div>
           {usingIg ? (
-            <ul className="mt-12 grid grid-cols-2 gap-1 md:grid-cols-3 lg:gap-2">
+            <ul className="mt-12 grid grid-cols-2 gap-2 md:grid-cols-3 lg:gap-3">
               {posts.map((p) => (
                 <li
                   key={p.id}
-                  className="aspect-square overflow-hidden bg-ink"
+                  className="aspect-square overflow-hidden rounded-xl bg-ink-2"
                 >
                   <a
                     href={p.permalink}
@@ -641,13 +596,13 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
               ))}
             </ul>
           ) : (
-            <ul className="mt-12 grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
               {fallbackBuilds.map((b, i) => (
                 <li key={`fallback-${i}`}>
                   <Link
                     href="/gallery"
                     aria-label="View gallery"
-                    className="group relative block aspect-[5/4] overflow-hidden bg-ink"
+                    className="group relative block aspect-[5/4] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
                   >
                     <Image
                       src={b.src}
@@ -665,19 +620,19 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* 12 — PROCESS */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section id="process" className="section">
         <Container>
           <SectionHeader
             eyebrow="The build process"
             heading="From first call to delivery — four steps."
           />
-          <ol className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {process.map((p) => (
-              <li key={p.step} className="flex flex-col gap-3 bg-ink-2 p-8">
-                <span className="font-display text-3xl font-extrabold text-accent">
+              <li key={p.step} className="card flex flex-col gap-3 p-5 sm:p-6">
+                <span className="step-num">
                   {p.step}
                 </span>
-                <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                   {p.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">{p.body}</p>
@@ -688,13 +643,13 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       </section>
 
       {/* FAQ — kept for SEO */}
-      <section className="bg-ink-2 py-24 lg:py-32">
+      <section id="faq" className="section">
         <Container>
           <SectionHeader
             eyebrow="FAQ"
             heading="Common questions, answered."
           />
-          <div className="mt-12">
+          <div className="mt-6">
             <FAQAccordion items={faqs} />
           </div>
         </Container>

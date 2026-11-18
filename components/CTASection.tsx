@@ -21,27 +21,19 @@ export function CTASection({
   footnote,
 }: CTASectionProps) {
   return (
-    <section className="relative overflow-hidden bg-ink">
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(225,6,0,0.16),transparent_55%)]"
-      />
-      <Container className="relative pt-24 pb-32 lg:pt-32 lg:pb-44">
-        <div className="mx-auto max-w-3xl text-center">
-          {eyebrow && (
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.24em] text-accent-text">
-              {eyebrow}
-            </p>
-          )}
-          <h2 className="font-display text-3xl font-extrabold leading-[1.05] text-bone sm:text-4xl lg:text-[3.25rem]">
+    <section className="section pb-14 lg:pb-20">
+      <Container>
+        <div className="panel px-6 py-12 text-center sm:px-10 lg:py-16">
+          {eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}
+          <h2 className="mx-auto max-w-2xl font-display text-[1.75rem] font-semibold leading-[1.1] text-bone sm:text-4xl lg:text-[2.75rem]">
             {heading}
           </h2>
           {body && (
-            <p className="mx-auto mt-7 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
+            <p className="mx-auto mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-mute sm:text-lg">
               {body}
             </p>
           )}
-          <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
             <Button href={primaryCta.href} size="lg">
               {primaryCta.label}
             </Button>
@@ -56,11 +48,7 @@ export function CTASection({
               </Button>
             )}
           </div>
-          {footnote && (
-            <p className="mt-8 text-xs font-semibold uppercase tracking-[0.22em] text-mute">
-              {footnote}
-            </p>
-          )}
+          {footnote && <p className="label mt-6">{footnote}</p>}
         </div>
       </Container>
     </section>

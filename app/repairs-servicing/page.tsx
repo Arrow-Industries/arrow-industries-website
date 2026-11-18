@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import {
   CalendarCheck,
-  CheckCircle2,
   ClipboardList,
   Cog,
   FileSignature,
@@ -183,15 +182,15 @@ export default function RepairsPage() {
       />
 
       {/* Overview */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Overview"
               heading="Heavy vehicle repairs, done by the same team that builds tippers and trailers."
             />
           </div>
-          <div className="lg:col-span-7 space-y-5 text-base leading-relaxed text-mute sm:text-lg">
+          <div className="lg:col-span-7 space-y-5 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
             <p>
               From damaged tipper bins and tailgates to structural repairs and
               hydraulic faults, we get heavy vehicles and trailers back on the
@@ -206,22 +205,22 @@ export default function RepairsPage() {
       </section>
 
       {/* Key features */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Capability"
             heading="What we repair, rebuild and service."
             body="One workshop, full repair scope — from cracked rails to hydraulic rebuilds."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((f) => {
               const Icon = f.icon;
               return (
-                <li key={f.title} className="flex flex-col gap-3 bg-ink-2 p-8">
-                  <span className="flex h-12 w-12 items-center justify-center bg-accent/10 text-accent">
+                <li key={f.title} className="card flex flex-col gap-3 p-5 sm:p-6">
+                  <span className="icon-tile">
                     <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
                   </span>
-                  <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                  <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                     {f.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-mute">{f.body}</p>
@@ -233,8 +232,8 @@ export default function RepairsPage() {
       </section>
 
       {/* Common work */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Use cases"
@@ -243,15 +242,15 @@ export default function RepairsPage() {
             />
           </div>
           <div className="lg:col-span-7">
-            <ul className="grid grid-cols-1 gap-px overflow-hidden bg-line-soft sm:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {useCases.map((u) => {
                 const Icon = u.icon;
                 return (
                   <li
                     key={u.label}
-                    className="flex items-center gap-4 bg-ink p-5"
+                    className="card flex items-center gap-4 p-5 sm:p-6"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-accent/10 text-accent">
+                    <span className="icon-tile">
                       <Icon
                         className="h-[1.125rem] w-[1.125rem]"
                         strokeWidth={1.5}
@@ -270,20 +269,20 @@ export default function RepairsPage() {
       </section>
 
       {/* Repair options */}
-      <section className="bg-ink py-24 lg:py-32">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Service options"
             heading="Repair and service options."
             body="Pick the path that suits the job. Every option starts with a written diagnostic and quote."
           />
-          <ul className="mt-16 grid gap-px overflow-hidden bg-line-soft sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {repairOptions.map((r) => (
               <li
                 key={r.title}
-                className="flex flex-col gap-3 bg-ink-2 p-8"
+                className="card flex flex-col gap-3 p-5 sm:p-6"
               >
-                <h3 className="font-display text-base font-bold text-bone sm:text-lg">
+                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
                   {r.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-mute">{r.body}</p>
@@ -294,8 +293,8 @@ export default function RepairsPage() {
       </section>
 
       {/* Compliance / why us */}
-      <section className="bg-ink-2 py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Why Arrow"
@@ -303,9 +302,9 @@ export default function RepairsPage() {
             />
           </div>
           <div className="lg:col-span-7">
-            <ul className="divide-y divide-line-soft">
+            <ul className="list-group">
               {compliance.map((c) => (
-                <li key={c} className="flex items-start gap-4 py-5 first:pt-0 last:pb-0">
+                <li key={c} className="list-row">
                   <ClipboardList
                     className="mt-0.5 h-5 w-5 shrink-0 text-accent"
                     strokeWidth={1.5}
@@ -322,8 +321,8 @@ export default function RepairsPage() {
       </section>
 
       {/* FAQ */}
-      <section className="bg-ink py-24 lg:py-32">
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-20">
+      <section className="section">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-4">
             <SectionHeader
               eyebrow="FAQ"
@@ -344,10 +343,10 @@ export default function RepairsPage() {
             </div>
           </div>
           <div className="lg:col-span-8">
-            <ul className="divide-y divide-line-soft">
+            <ul className="list-group">
               {faqs.map((f) => (
-                <li key={f.question} className="py-7 first:pt-0 last:pb-0">
-                  <h3 className="font-display text-lg font-bold text-bone sm:text-xl">
+                <li key={f.question} className="list-row flex-col gap-1 py-4">
+                  <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
                     {f.question}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-mute sm:text-base">

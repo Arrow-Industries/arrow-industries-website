@@ -13,17 +13,15 @@ interface TrustBarProps {
 export function TrustBar({ items }: TrustBarProps = {}) {
   const badges = items ?? trustBadges;
   return (
-    <div className="border-y border-line-soft bg-ink-2/60">
-      <Container className="py-3.5">
-        <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-mute sm:gap-x-10">
-          {badges.map((b) => (
-            <li key={b} className="inline-flex items-center gap-2">
-              <Check className="h-3.5 w-3.5 text-accent" aria-hidden />
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
-      </Container>
-    </div>
+    <Container>
+      <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[0.8125rem] font-medium text-mute sm:gap-x-8">
+        {badges.map((b) => (
+          <li key={b} className="inline-flex items-center gap-1.5">
+            <Check className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} aria-hidden />
+            <span>{b}</span>
+          </li>
+        ))}
+      </ul>
+    </Container>
   );
 }

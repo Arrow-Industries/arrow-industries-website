@@ -75,14 +75,11 @@ const yearsTradingOptions = [
 
 const tradeInOptions = ["Yes", "No"] as const;
 
-const inputBase =
-  "w-full rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone placeholder:text-mute focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
+const inputBase = "field";
 
-const labelBase =
-  "block text-xs font-semibold uppercase tracking-[0.16em] text-mute";
+const labelBase = "field-label";
 
-const subHeadingBase =
-  "text-xs font-semibold uppercase tracking-[0.22em] text-accent-text";
+const subHeadingBase = "form-legend";
 
 export function FinanceForm() {
   const [state, formAction, isPending] = useActionState(
@@ -132,12 +129,12 @@ export function FinanceForm() {
 
   if (state?.ok) {
     return (
-      <div className="border border-line-soft bg-ink-2 p-8 text-center sm:p-10">
+      <div className="card p-8 text-center sm:p-10">
         <CheckCircle2
           className="mx-auto h-9 w-9 text-accent"
           strokeWidth={1.5}
         />
-        <h2 className="mt-5 font-display text-2xl font-extrabold text-bone">
+        <h2 className="mt-5 font-display text-2xl font-semibold text-bone">
           Thanks — your finance enquiry has been sent.
         </h2>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-mute sm:text-base">
@@ -166,7 +163,7 @@ export function FinanceForm() {
   }
 
   return (
-    <form ref={formRef} action={formAction} className="grid gap-8" noValidate>
+    <form ref={formRef} action={formAction} className="grid gap-3" noValidate>
       {/* Honeypot — must remain empty. Hidden from real users + assistive tech. */}
       <div
         aria-hidden="true"
@@ -183,7 +180,7 @@ export function FinanceForm() {
       </div>
 
       {/* ---------- Your details ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>Your details</legend>
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Name" name="fullName" required>
@@ -264,7 +261,7 @@ export function FinanceForm() {
       </fieldset>
 
       {/* ---------- What you'd like to finance ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>What you&rsquo;d like to finance</legend>
         <div className="grid gap-5 sm:grid-cols-2">
           <Select
@@ -309,7 +306,7 @@ export function FinanceForm() {
       </fieldset>
 
       {/* ---------- About your business ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>
           About your business{" "}
           <span className="font-normal lowercase tracking-normal text-mute">
@@ -348,7 +345,7 @@ export function FinanceForm() {
       </fieldset>
 
       {/* ---------- Attachments + notes ---------- */}
-      <fieldset className="grid gap-5">
+      <fieldset className="form-section">
         <legend className={subHeadingBase}>Anything else</legend>
 
         <Field
@@ -430,7 +427,7 @@ export function FinanceForm() {
       {/* ---------- Consent ---------- */}
       <label
         htmlFor="consent"
-        className="flex items-start gap-3 border border-line bg-ink-2 p-4 text-sm leading-relaxed text-mute"
+        className="card flex items-start gap-3 p-4 text-sm leading-relaxed text-mute"
       >
         <input
           id="consent"
@@ -452,7 +449,7 @@ export function FinanceForm() {
           ref={errorRef}
           tabIndex={-1}
           role="alert"
-          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
+          className="rounded-sm border border-accent/50 bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
         >
           {state.error}
         </p>

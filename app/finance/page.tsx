@@ -178,41 +178,41 @@ export default function FinancePage() {
       />
 
       {/* Trust strip */}
-      <div className="border-b border-line bg-ink-2">
-        <Container className="py-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
+      <Container className="pb-2">
+        <div className="card px-5 py-3.5">
+          <p className="eyebrow">
             Asset finance since 1999.{" "}
             <span className="text-bone">
               Panel of 50+ lenders. Fast approvals.
             </span>
           </p>
-        </Container>
-      </div>
+        </div>
+      </Container>
 
       {/* Why finance */}
-      <section className="border-b border-line bg-ink-2 py-16 lg:py-20">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Why finance"
             heading="Get the gear working without the up-front hit."
             body="Your equipment earns its keep from day one. Financing lets you put it to work now and pay for it as it pays you back."
           />
-          <ul className="mt-10 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {benefits.map((item) => {
               const Icon = item.icon;
               return (
                 <li
                   key={item.title}
-                  className="flex flex-col gap-4 bg-ink-2 p-7"
+                  className="card flex flex-col gap-4 p-5 sm:p-6"
                 >
-                  <span className="flex h-12 w-12 items-center justify-center border border-accent/40 bg-accent/10">
+                  <span className="icon-tile">
                     <Icon
                       className="h-5 w-5 text-accent"
                       strokeWidth={1.5}
                       aria-hidden
                     />
                   </span>
-                  <h3 className="text-base font-bold text-bone">
+                  <h3 className="text-base font-semibold text-bone">
                     {item.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-mute">
@@ -226,7 +226,7 @@ export default function FinancePage() {
       </section>
 
       {/* Finance partner — Linx */}
-      <section className="border-b border-line bg-ink py-16 lg:py-20">
+      <section className="section">
         <Container className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
             <SectionHeader
@@ -257,7 +257,7 @@ export default function FinancePage() {
           </div>
 
           <div className="lg:col-span-5">
-            <div className="flex flex-col items-center gap-6 border border-line bg-ink-2 p-8 text-center sm:p-10">
+            <div className="flex flex-col items-center gap-6 card p-8 text-center sm:p-10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/customers/linx.png"
@@ -277,7 +277,7 @@ export default function FinancePage() {
       </section>
 
       {/* What you can finance */}
-      <section className="border-b border-line bg-ink-2 py-16 lg:py-20">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="What you can finance"
@@ -289,14 +289,14 @@ export default function FinancePage() {
               return (
                 <li
                   key={item.title}
-                  className="flex flex-col gap-3 border border-line bg-ink p-6 transition-colors hover:border-accent/50"
+                  className="card flex flex-col gap-3 p-5 sm:p-6"
                 >
                   <Icon
                     className="h-6 w-6 text-accent"
                     strokeWidth={1.5}
                     aria-hidden
                   />
-                  <h3 className="text-base font-bold text-bone">
+                  <h3 className="text-base font-semibold text-bone">
                     {item.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-mute">
@@ -310,7 +310,7 @@ export default function FinancePage() {
       </section>
 
       {/* Finance options */}
-      <section className="border-b border-line bg-ink py-16 lg:py-20">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Finance options"
@@ -321,9 +321,9 @@ export default function FinancePage() {
             {financeOptions.map((opt) => (
               <li
                 key={opt.title}
-                className="border border-line bg-ink-2 p-6"
+                className="card p-6"
               >
-                <h3 className="text-base font-bold text-bone">{opt.title}</h3>
+                <h3 className="text-base font-semibold text-bone">{opt.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-mute">
                   {opt.body}
                 </p>
@@ -339,7 +339,7 @@ export default function FinancePage() {
       </section>
 
       {/* How it works */}
-      <section className="border-b border-line bg-ink-2 py-16 lg:py-20">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="How it works"
@@ -349,12 +349,12 @@ export default function FinancePage() {
             {steps.map((step, i) => (
               <li
                 key={step.title}
-                className="flex flex-col gap-3 border border-line bg-ink p-6"
+                className="card flex flex-col gap-3 p-5 sm:p-6"
               >
-                <span className="font-display text-3xl font-extrabold text-accent">
+                <span className="step-num">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h3 className="text-base font-bold text-bone">{step.title}</h3>
+                <h3 className="text-base font-semibold text-bone">{step.title}</h3>
                 <p className="text-sm leading-relaxed text-mute">{step.body}</p>
               </li>
             ))}
@@ -365,9 +365,9 @@ export default function FinancePage() {
       {/* Application form */}
       <section
         id="apply"
-        className="scroll-mt-24 border-b border-line bg-ink py-16 lg:py-20"
+        className="section"
       >
-        <Container className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
             <SectionHeader
               eyebrow="Apply"
@@ -379,9 +379,9 @@ export default function FinancePage() {
           </div>
 
           <aside className="lg:col-span-5">
-            <div className="sticky top-24 flex flex-col gap-6">
-              <div className="border border-line bg-ink-2 p-6">
-                <h2 className="text-base font-bold text-bone">
+            <div className="sticky top-20 flex flex-col gap-6">
+              <div className="card p-6">
+                <h2 className="text-base font-semibold text-bone">
                   Prefer to talk it through?
                 </h2>
                 <p className="mt-2 text-sm text-mute">
@@ -390,7 +390,7 @@ export default function FinancePage() {
                 </p>
                 <a
                   href={site.phoneHref}
-                  className="mt-4 inline-flex items-center gap-2 text-lg font-bold text-accent-text hover:underline"
+                  className="mt-4 inline-flex items-center gap-2 text-lg font-semibold text-accent-text hover:underline"
                 >
                   <PhoneCall className="h-5 w-5" aria-hidden />
                   {site.phone}
@@ -404,8 +404,8 @@ export default function FinancePage() {
                 </a>
               </div>
 
-              <div className="flex flex-col items-center gap-4 border border-line bg-ink-2 p-6 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
+              <div className="flex flex-col items-center gap-4 card p-6 text-center">
+                <p className="label">
                   Finance arranged by
                 </p>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -431,7 +431,7 @@ export default function FinancePage() {
       </section>
 
       {/* FAQ */}
-      <section className="border-b border-line bg-ink-2 py-16 lg:py-20">
+      <section className="section">
         <Container className="max-w-3xl">
           <SectionHeader
             eyebrow="FAQ"

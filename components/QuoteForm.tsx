@@ -31,11 +31,9 @@ const enquiryTypes = [
   "General Enquiry",
 ] as const;
 
-const inputBase =
-  "w-full rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone placeholder:text-mute focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
+const inputBase = "field";
 
-const labelBase =
-  "block text-xs font-semibold uppercase tracking-[0.16em] text-mute";
+const labelBase = "field-label";
 
 export function QuoteForm() {
   const [state, formAction, isPending] = useActionState(submitQuoteForm, null);
@@ -88,12 +86,12 @@ export function QuoteForm() {
 
   if (state?.ok) {
     return (
-      <div className="border border-line-soft bg-ink-2 p-8 text-center sm:p-10">
+      <div className="card p-8 text-center sm:p-10">
         <CheckCircle2
           className="mx-auto h-9 w-9 text-accent"
           strokeWidth={1.5}
         />
-        <h2 className="mt-5 font-display text-2xl font-extrabold text-bone">
+        <h2 className="mt-5 font-display text-2xl font-semibold text-bone">
           Thanks — your enquiry has been sent.
         </h2>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-mute sm:text-base">
@@ -382,7 +380,7 @@ export function QuoteForm() {
           ref={errorRef}
           tabIndex={-1}
           role="alert"
-          className="border border-accent bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
+          className="rounded-sm border border-accent/50 bg-accent/10 px-4 py-3 text-sm text-accent-text focus:outline-none"
         >
           {state.error}
         </p>

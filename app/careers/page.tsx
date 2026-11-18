@@ -186,38 +186,38 @@ export default function CareersPage() {
       />
 
       {/* Trust strip */}
-      <div className="border-b border-line bg-ink-2">
-        <Container className="py-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
+      <Container className="pb-2">
+        <div className="card px-5 py-3.5">
+          <p className="eyebrow">
             Family-owned workshop.{" "}
             <span className="text-bone">Steady work. Real builds.</span>
           </p>
-        </Container>
-      </div>
+        </div>
+      </Container>
 
       {/* Why work with Arrow */}
-      <section className="border-b border-line bg-ink-2 py-16 lg:py-20">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Why Arrow"
             heading="A workshop worth turning up to."
           />
-          <ul className="mt-10 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-3">
+          <ul className="mt-10 grid gap-3 sm:grid-cols-3">
             {whyArrow.map((item) => {
               const Icon = item.icon;
               return (
                 <li
                   key={item.title}
-                  className="flex flex-col gap-4 bg-ink-2 p-7"
+                  className="card flex flex-col gap-4 p-5 sm:p-6"
                 >
-                  <span className="flex h-12 w-12 items-center justify-center border border-accent/40 bg-accent/10">
+                  <span className="icon-tile">
                     <Icon
                       className="h-5 w-5 text-accent"
                       strokeWidth={1.5}
                       aria-hidden
                     />
                   </span>
-                  <h3 className="text-base font-bold text-bone">
+                  <h3 className="text-base font-semibold text-bone">
                     {item.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-mute">
@@ -231,7 +231,7 @@ export default function CareersPage() {
       </section>
 
       {/* What we look for */}
-      <section className="border-b border-line bg-ink py-16 lg:py-20">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="What we look for"
@@ -241,7 +241,7 @@ export default function CareersPage() {
             {lookFor.map((item) => (
               <li
                 key={item}
-                className="flex items-start gap-3 border border-line bg-ink-2 p-5"
+                className="flex items-start gap-3 card p-5"
               >
                 <CheckCircle2
                   className="mt-0.5 h-5 w-5 shrink-0 text-accent"
@@ -258,7 +258,7 @@ export default function CareersPage() {
       </section>
 
       {/* Roles we hire for */}
-      <section className="border-b border-line bg-ink-2 py-16 lg:py-20">
+      <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Roles we hire for"
@@ -270,14 +270,14 @@ export default function CareersPage() {
               return (
                 <li
                   key={role.title}
-                  className="flex flex-col gap-3 border border-line bg-ink p-6 transition-colors hover:border-accent/50"
+                  className="card flex flex-col gap-3 p-5 sm:p-6"
                 >
                   <Icon
                     className="h-6 w-6 text-accent"
                     strokeWidth={1.5}
                     aria-hidden
                   />
-                  <h3 className="text-base font-bold text-bone">
+                  <h3 className="text-base font-semibold text-bone">
                     {role.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-mute">
@@ -293,7 +293,7 @@ export default function CareersPage() {
       {/* Application form */}
       <section
         id="apply"
-        className="scroll-mt-24 border-b border-line bg-ink py-16 lg:py-20"
+        className="section"
       >
         <Container>
           <SectionHeader
@@ -302,16 +302,16 @@ export default function CareersPage() {
             body="No updated resume? Apply anyway. The more detail you give us, the easier it is to match you to the right role."
             className="mb-10"
           />
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-7">
               <CareersForm />
             </div>
 
             <aside className="lg:col-span-5">
-              <div className="sticky top-24 flex flex-col gap-6">
+              <div className="sticky top-20 flex flex-col gap-6">
                 {/* Email card */}
-                <div className="border border-line bg-ink-2 p-6">
-                  <h2 className="text-base font-bold text-bone">
+                <div className="card p-6">
+                  <h2 className="text-base font-semibold text-bone">
                     Prefer to email?
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed text-mute">
@@ -319,7 +319,7 @@ export default function CareersPage() {
                   </p>
                   <a
                     href={site.emailHref}
-                    className="mt-4 inline-flex items-center gap-2 break-all text-base font-bold text-accent-text hover:underline"
+                    className="mt-4 inline-flex items-center gap-2 break-all text-base font-semibold text-accent-text hover:underline"
                   >
                     <Mail className="h-5 w-5 shrink-0" aria-hidden />
                     {site.email}
@@ -327,10 +327,10 @@ export default function CareersPage() {
                 </div>
 
                 {/* Workshop card */}
-                <div className="border border-line bg-ink-2 p-6">
-                  <h2 className="text-base font-bold text-bone">Workshop</h2>
+                <div className="card p-6">
+                  <h2 className="text-base font-semibold text-bone">Workshop</h2>
                   <div className="mt-4 flex items-start gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
+                    <span className="icon-tile">
                       <MapPin
                         className="h-[1.125rem] w-[1.125rem] text-accent"
                         strokeWidth={1.5}
@@ -350,7 +350,7 @@ export default function CareersPage() {
                     </a>
                   </div>
                   <div className="mt-5 flex items-start gap-3 border-t border-line-soft pt-5">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-accent/40 bg-accent/10">
+                    <span className="icon-tile">
                       <Clock
                         className="h-[1.125rem] w-[1.125rem] text-accent"
                         strokeWidth={1.5}
@@ -358,7 +358,7 @@ export default function CareersPage() {
                       />
                     </span>
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-mute">
+                      <p className="label">
                         Hours
                       </p>
                       <p className="mt-1.5 text-sm font-medium leading-relaxed text-bone">
@@ -376,7 +376,7 @@ export default function CareersPage() {
       </section>
 
       {/* FAQ */}
-      <section className="border-b border-line bg-ink-2 py-16 lg:py-20">
+      <section className="section">
         <Container className="max-w-3xl">
           <SectionHeader
             eyebrow="FAQ"

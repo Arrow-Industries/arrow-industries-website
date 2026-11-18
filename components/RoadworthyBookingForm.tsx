@@ -14,9 +14,8 @@ import { getRwcSlots, type RwcSlotResult } from "@/lib/roadworthy-slots";
 import type { RwcVehicleType } from "@/lib/roadworthy";
 import { site } from "@/data/site";
 
-const inputBase =
-  "w-full rounded-sm border border-line bg-ink-2 px-4 py-3 text-sm text-bone placeholder:text-mute focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
-const labelBase = "text-sm font-semibold text-bone";
+const inputBase = "field";
+const labelBase = "field-label";
 
 // This form worked the Vercel limit out first and capped itself; the shared
 // module now carries those numbers so the other forms can't disagree.
@@ -338,9 +337,9 @@ export function RoadworthyBookingForm({
 
   if (state?.ok) {
     return (
-      <div className="border border-line-soft bg-ink-2 p-8 text-center sm:p-10">
+      <div className="card p-8 text-center sm:p-10">
         <CheckCircle2 className="mx-auto h-9 w-9 text-accent" strokeWidth={1.5} />
-        <h3 className="mt-5 font-display text-2xl font-extrabold text-bone">
+        <h3 className="mt-5 font-display text-2xl font-semibold text-bone">
           Booking request received.
         </h3>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-mute sm:text-base">
@@ -373,7 +372,7 @@ export function RoadworthyBookingForm({
 
       <input type="hidden" name="service" value={service} />
       <fieldset>
-        <legend className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-mute">What do you need?</legend>
+        <legend className="field-label mb-2">What do you need?</legend>
         <div className="grid gap-3 sm:grid-cols-2">
           {(
             [
@@ -386,7 +385,7 @@ export function RoadworthyBookingForm({
               type="button"
               onClick={() => setService(value)}
               aria-pressed={service === value}
-              className={`border px-4 py-3 text-left transition-colors ${
+              className={`rounded-xl border px-4 py-3 text-left transition-colors ${
                 service === value
                   ? "border-accent bg-accent/10"
                   : "border-line-soft bg-ink-2 hover:border-line"
@@ -402,7 +401,7 @@ export function RoadworthyBookingForm({
       <input type="hidden" name="inspectionRound" value={inspectionRound} />
       {service === "rwc" && (
         <fieldset>
-          <legend className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-mute">Is this a re-inspection?</legend>
+          <legend className="field-label mb-2">Is this a re-inspection?</legend>
           <div className="grid gap-3 sm:grid-cols-2">
             {(
               [
@@ -415,7 +414,7 @@ export function RoadworthyBookingForm({
                 type="button"
                 onClick={() => setInspectionRound(value)}
                 aria-pressed={inspectionRound === value}
-                className={`border px-4 py-3 text-left transition-colors ${
+                className={`rounded-xl border px-4 py-3 text-left transition-colors ${
                   inspectionRound === value ? "border-accent bg-accent/10" : "border-line-soft bg-ink-2 hover:border-line"
                 }`}
               >
@@ -659,7 +658,7 @@ export function RoadworthyBookingForm({
               setDragging(false);
               void addFiles(e.dataTransfer.files);
             }}
-            className={`flex w-full flex-col items-center gap-2 rounded-sm border border-dashed px-4 py-6 text-sm transition-colors ${
+            className={`flex w-full flex-col items-center gap-2 rounded-xl border border-dashed px-4 py-6 text-sm transition-colors ${
               dragging
                 ? "border-accent bg-accent/10 text-bone"
                 : "border-line bg-ink-2 text-bone hover:border-bone"
@@ -720,13 +719,13 @@ export function RoadworthyBookingForm({
       </Field>
 
       {state && !state.ok && (
-        <p ref={errorRef} tabIndex={-1} role="alert" className="border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <p ref={errorRef} tabIndex={-1} role="alert" className="rounded-sm border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           {state.error}
         </p>
       )}
 
       {complete && service === "defect" && defectPrice != null && (
-        <div className="border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
+        <div className="rounded-sm border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
           Defect clearance certificate: <strong>${defectPrice} + GST</strong> per certificate · allow {durationMins} minutes on the day.
           <span className="mt-1 block text-xs text-mute">
             Pricing is confirmed when we confirm your booking and inspect the vehicle.
@@ -734,7 +733,7 @@ export function RoadworthyBookingForm({
         </div>
       )}
       {complete && service === "rwc" && axlePrices && axles && axlePrices[axles] != null && (
-        <div className="border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
+        <div className="rounded-sm border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
           Estimated inspection price: <strong>${axlePrices[axles]} + GST</strong> · allow {durationMins} minutes on the day.
           <span className="mt-1 block text-xs text-mute">
             Pricing is confirmed when we confirm your booking and inspect the vehicle.

@@ -18,6 +18,7 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
@@ -56,9 +57,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
+  themeColor: "#0b0b0d",
+  colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
+  // Lets the floating dock sit clear of the iPhone home indicator.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -66,7 +70,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-AU" className={inter.variable}>
-      <body className="min-h-dvh pb-20 antialiased lg:pb-0">
+      <body className="min-h-dvh antialiased">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"

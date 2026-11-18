@@ -1,6 +1,5 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
-import { ChevronRight } from "lucide-react";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Container } from "@/components/Container";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, type BreadcrumbCrumb } from "@/lib/schema";
@@ -16,56 +15,34 @@ interface PageHeroProps {
 
 export function PageHero({ eyebrow, heading, body, crumbs, compact, actions }: PageHeroProps) {
   return (
-    <section className="relative isolate overflow-hidden bg-ink">
-      {crumbs && crumbs.length > 0 && (
-        <JsonLd data={breadcrumbSchema(crumbs)} />
-      )}
+    <section className="relative isolate overflow-hidden">
+      {crumbs && crumbs.length > 0 && <JsonLd data={breadcrumbSchema(crumbs)} />}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,rgba(225,6,0,0.16),transparent_55%)]"
+        className="absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(60%_100%_at_20%_0%,rgb(225_6_0/0.13),transparent_70%)]"
       />
-      <Container className={`relative ${compact ? "py-10 lg:py-14" : "py-16 lg:py-24"}`}>
-        {crumbs && crumbs.length > 0 && (
-          <nav aria-label="Breadcrumb" className="mb-6 text-xs text-mute">
-            <ol className="flex flex-wrap items-center gap-1.5">
-              {crumbs.map((c, i) => {
-                const last = i === crumbs.length - 1;
-                return (
-                  <li key={c.label} className="flex items-center gap-1.5">
-                    {c.href && !last ? (
-                      <Link href={c.href} className="hover:text-bone">
-                        {c.label}
-                      </Link>
-                    ) : (
-                      <span className={last ? "text-bone" : undefined}>
-                        {c.label}
-                      </span>
-                    )}
-                    {!last && (
-                      <ChevronRight className="h-3 w-3 text-line" aria-hidden />
-                    )}
-                  </li>
-                );
-              })}
-            </ol>
-          </nav>
-        )}
-        {eyebrow && (
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-accent-text">
-            {eyebrow}
-          </p>
-        )}
-        <h1 className="max-w-4xl font-display text-4xl font-extrabold leading-[1.05] text-bone sm:text-5xl lg:text-[3.75rem]">
-          {heading}
-        </h1>
-        {body && (
-          <p className="mt-6 max-w-3xl text-base leading-relaxed text-mute sm:text-lg">
-            {body}
-          </p>
-        )}
-        {actions && (
-          <div className="mt-8 flex flex-wrap items-center gap-3">{actions}</div>
-        )}
+      <Container className={compact ? "pt-6 pb-4 lg:pt-8 lg:pb-6" : "pt-6 pb-6 lg:pt-8 lg:pb-10"}>
+        {crumbs && <Breadcrumbs crumbs={crumbs} />}
+        <div className={compact ? "mt-8 lg:mt-10" : "mt-10 lg:mt-14"}>
+          {eyebrow && <p className="eyebrow mb-3">{eyebrow}</p>}
+          <h1
+            className={
+              compact
+                ? "max-w-3xl font-display text-[2rem] font-semibold leading-[1.08] text-bone sm:text-[2.5rem] lg:text-5xl"
+                : "max-w-4xl font-display text-[2.25rem] font-semibold leading-[1.05] text-bone sm:text-5xl lg:text-[3.5rem]"
+            }
+          >
+            {heading}
+          </h1>
+          {body && (
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
+              {body}
+            </p>
+          )}
+          {actions && (
+            <div className="mt-7 flex flex-wrap items-center gap-2.5">{actions}</div>
+          )}
+        </div>
       </Container>
     </section>
   );

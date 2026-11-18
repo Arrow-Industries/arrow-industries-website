@@ -52,7 +52,7 @@ export default function GalleryPage() {
                       target="_blank"
                       rel="noreferrer"
                       aria-label={`Arrow Industries on ${s.label}`}
-                      className="inline-flex h-11 w-11 items-center justify-center border border-line bg-ink-2 text-bone transition-colors hover:border-accent hover:bg-accent hover:text-white"
+                      className="icon-btn"
                     >
                       <Icon className="h-4 w-4" aria-hidden />
                     </a>

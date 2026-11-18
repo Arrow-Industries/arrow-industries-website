@@ -26,13 +26,13 @@ export default function WarrantyPage() {
         ]}
       />
 
-      <section className="bg-ink py-20 lg:py-28">
+      <section className="section">
         <Container>
-          <div className="mx-auto max-w-3xl text-base leading-relaxed text-mute">
+          <div className="max-w-3xl text-base leading-relaxed text-mute">
 
             {/* Issuer / intro block */}
-            <div className="mb-12 border border-line-soft bg-ink-2 p-6 text-sm">
-              <p className="font-display text-base font-bold text-bone">
+            <div className="card mb-10 p-5 text-sm sm:p-6">
+              <p className="font-display text-base font-semibold text-bone">
                 {site.tradingName}
               </p>
               <p className="mt-3 text-sm leading-relaxed">
@@ -108,8 +108,8 @@ function Section({
 }) {
   return (
     <div className="mt-12 scroll-mt-24" id={`clause-${number}`}>
-      <h2 className="font-display text-xl font-extrabold text-bone sm:text-2xl">
-        <span className="text-accent">{number}.</span> {heading}
+      <h2 className="font-display text-xl font-semibold text-bone sm:text-2xl">
+        <span className="text-accent-text">{number}.</span> {heading}
       </h2>
       <div className="mt-4 space-y-4 text-sm leading-relaxed sm:text-base">
         {children}

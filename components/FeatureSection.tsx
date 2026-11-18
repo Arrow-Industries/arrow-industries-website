@@ -6,22 +6,19 @@ interface FeatureSectionProps {
 
 export function FeatureSection({ features }: FeatureSectionProps) {
   return (
-    <ul className="divide-y divide-line-soft">
+    <ul className="list-group">
       {features.map((f) => {
         const Icon = f.icon;
         return (
-          <li key={f.title} className="flex gap-6 py-7 first:pt-0 last:pb-0">
-            <span
-              aria-hidden
-              className="flex h-12 w-12 shrink-0 items-center justify-center bg-accent/10 text-accent"
-            >
-              <Icon className="h-5 w-5" strokeWidth={1.5} />
+          <li key={f.title} className="list-row gap-4 py-4">
+            <span aria-hidden className="icon-tile">
+              <Icon className="h-5 w-5" strokeWidth={1.75} />
             </span>
             <div>
-              <h3 className="font-display text-lg font-bold text-bone">
+              <h3 className="font-display text-base font-semibold text-bone">
                 {f.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-mute sm:text-base">
+              <p className="mt-0.5 text-sm leading-relaxed text-mute">
                 {f.description}
               </p>
             </div>
