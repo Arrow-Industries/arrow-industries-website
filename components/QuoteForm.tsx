@@ -20,22 +20,24 @@ import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
 import { site } from "@/data/site";
 import { formatBytes, prepareFiles, LIMIT_HINT } from "@/lib/upload-limits";
-
-const enquiryTypes = [
-  "Tipper Truck Body",
-  "Dog Trailer",
-  "Semi Trailer",
-  "Repairs & Servicing",
-  "Roadworthy / LVT",
-  "Parts & Components",
-  "General Enquiry",
-] as const;
+import { FALLBACK_PRODUCTS, SERVICE_ENQUIRIES } from "@/data/enquiry-types";
+import { NO_TRUCK, TruckPicker, type TruckChoice } from "@/components/TruckPicker";
+import type { BuildCategory } from "@/lib/build-options";
 
 const inputBase = "field";
 
 const labelBase = "field-label";
 
-export function QuoteForm() {
+export function QuoteForm({ products }: { products: BuildCategory[] }) {
+  const productNames = products.length
+    ? products.map((p) => p.name)
+    : [...FALLBACK_PRODUCTS];
+  const enquiryTypes = [...productNames, ...SERVICE_ENQUIRIES];
+  const [enquiry, setEnquiry] = useState("");
+  const [buildType, setBuildType] = useState("");
+  const [truck, setTruck] = useState<TruckChoice>(NO_TRUCK);
+  const buildTypes = products.find((p) => p.name === enquiry)?.types ?? [];
+
   const [state, formAction, isPending] = useActionState(submitQuoteForm, null);
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,23 +45,45 @@ export function QuoteForm() {
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
   const [fromConfigurator, setFromConfigurator] = useState(false);
+  const [configuration, setConfiguration] = useState("");
 
   // Arriving from the configurator: carry the chosen build into the form.
   useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
+    if (new URLSearchParams(window.location.search).get("from") !== "configure") return;
     const form = formRef.current;
-    const build = q.get("build");
-    if (!form || !build) return;
+    if (!form) return;
+    let build: {
+      enquiry?: string;
+      work?: string;
+      reference?: string;
+      buildType?: string;
+      truck?: TruckChoice;
+      summary?: string;
+      configuration?: unknown;
+    } | null = null;
+    try {
+      build = JSON.parse(window.sessionStorage.getItem("arrow.configured-build") ?? "null");
+    } catch {
+      build = null;
+    }
+    if (!build?.summary) return;
     const set = (name: string, value: string) => {
       const field = form.elements.namedItem(name);
-      if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement) {
+      if (
+        field instanceof HTMLInputElement ||
+        field instanceof HTMLTextAreaElement ||
+        field instanceof HTMLSelectElement
+      ) {
         field.value = value;
       }
     };
-    const enquiry = q.get("enquiry") ?? "";
-    if ((enquiryTypes as readonly string[]).includes(enquiry)) set("enquiryType", enquiry);
-    set("payloadDetails", (q.get("work") ?? "").slice(0, 120));
-    set("description", build.slice(0, 800));
+    setEnquiry(build.enquiry ?? "");
+    setBuildType(build.buildType ?? "");
+    if (build.truck) setTruck(build.truck);
+    set("payloadDetails", build.work ?? "");
+    set("customerReference", build.reference ?? "");
+    set("description", build.summary.slice(0, 6000));
+    setConfiguration(JSON.stringify(build.configuration ?? null));
     setFromConfigurator(true);
   }, []);
 
@@ -165,6 +189,8 @@ export function QuoteForm() {
         </p>
       )}
 
+      {configuration && <input type="hidden" name="buildConfiguration" value={configuration} />}
+
       <fieldset className="form-section">
         <legend>Your build or job</legend>
       <Field label="Enquiry type" name="enquiryType" required>
@@ -173,7 +199,11 @@ export function QuoteForm() {
             id="enquiryType"
             name="enquiryType"
             required
-            defaultValue=""
+            value={enquiry}
+            onChange={(e) => {
+              setEnquiry(e.target.value);
+              setBuildType("");
+            }}
             className={cn(
               inputBase,
               "appearance-none pr-10",
@@ -184,11 +214,21 @@ export function QuoteForm() {
             <option value="" disabled className="text-mute">
               Select an option…
             </option>
-            {enquiryTypes.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
+            {enquiry && !enquiryTypes.includes(enquiry) && <option value={enquiry}>{enquiry}</option>}
+            <optgroup label="New builds">
+              {productNames.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Services and other">
+              {SERVICE_ENQUIRIES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </optgroup>
           </select>
           <ChevronDown
             aria-hidden
@@ -197,27 +237,32 @@ export function QuoteForm() {
         </div>
       </Field>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Vehicle (make)" name="vehicleMake">
-          <input
-            id="vehicleMake"
-            name="vehicleMake"
-            type="text"
-            placeholder="e.g. Kenworth, Isuzu, Volvo"
-            className={inputBase}
-          />
+      {buildTypes.length > 0 && (
+        <Field label="Build type" name="buildType">
+          <div className="relative">
+            <select
+              id="buildType"
+              name="buildType"
+              value={buildType}
+              onChange={(e) => setBuildType(e.target.value)}
+              className={cn(inputBase, "appearance-none pr-10", "[&>option]:bg-ink-2 [&>option]:text-bone")}
+            >
+              <option value="">Select a build type…</option>
+              {buildTypes.map((t) => (
+                <option key={t.id} value={t.name}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              aria-hidden
+              className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-mute"
+            />
+          </div>
         </Field>
+      )}
 
-        <Field label="Model" name="vehicleModel">
-          <input
-            id="vehicleModel"
-            name="vehicleModel"
-            type="text"
-            placeholder="e.g. T410, FVZ 8x4"
-            className={inputBase}
-          />
-        </Field>
-      </div>
+      <TruckPicker value={truck} onChange={setTruck} />
 
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Vehicle year" name="vehicleYear">
@@ -260,6 +305,21 @@ export function QuoteForm() {
         />
       </Field>
 
+      <Field
+        label="Your reference"
+        name="customerReference"
+        hint="A job number, rego or site, if you have one."
+      >
+        <input
+          id="customerReference"
+          name="customerReference"
+          type="text"
+          maxLength={80}
+          autoComplete="off"
+          className={inputBase}
+        />
+      </Field>
+
       <Field label="Preferred timeframe" name="timeframe">
         <input
           id="timeframe"
@@ -274,7 +334,7 @@ export function QuoteForm() {
         <textarea
           id="description"
           name="description"
-          rows={6}
+          rows={fromConfigurator ? 14 : 6}
           placeholder="Tell us what you need — drawings, photos, repair issue, preferred build type, access requirements or any other details."
           className={cn(inputBase, "resize-y")}
         />

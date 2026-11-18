@@ -1,4 +1,4 @@
-import type { ProductId } from "@/data/configurator";
+export type ProductId = "tipper" | "dog" | "semi";
 
 interface TruckDrawingProps {
   product: ProductId;

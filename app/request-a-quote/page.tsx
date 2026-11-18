@@ -6,6 +6,7 @@ import { PageHero } from "@/components/PageHero";
 import { QuoteForm } from "@/components/QuoteForm";
 import { ContactInfoBlock } from "@/components/ContactInfoBlock";
 import { site } from "@/data/site";
+import { getBuildConfig } from "@/lib/build-options";
 
 export const metadata: Metadata = pageMetadata({
   title: "Request a Quote — Tipper, Trailer, Repair or Roadworthy",
@@ -39,7 +40,12 @@ const reassurance = [
   },
 ];
 
-export default function RequestAQuotePage() {
+// Products come from the dashboard; changes appear here within five minutes.
+export const revalidate = 300;
+
+export default async function RequestAQuotePage() {
+  const config = await getBuildConfig();
+
   return (
     <>
       <PageHero
@@ -55,7 +61,7 @@ export default function RequestAQuotePage() {
       <section className="section">
         <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
-            <QuoteForm />
+            <QuoteForm products={config?.categories ?? []} />
           </div>
 
           <aside className="lg:col-span-5">

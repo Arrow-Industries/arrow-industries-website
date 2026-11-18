@@ -2,6 +2,8 @@
 
 import { sendMail, bufferAttachments, isMailerConfigured } from "@/lib/mailer";
 import { saveLead } from "@/lib/leads";
+import { getBuildConfig } from "@/lib/build-options";
+import { FALLBACK_PRODUCTS, SERVICE_ENQUIRIES } from "@/data/enquiry-types";
 import { uploadLeadAttachments } from "@/lib/lead-attachments";
 import { getEmailSetting } from "@/lib/email-config";
 import {
@@ -15,17 +17,20 @@ import {
 
 // Internal-only consts/types. A `"use server"` module is restricted to
 // exporting async functions, so these stay private to this file.
-const enquiryTypes = [
-  "Tipper Truck Body",
-  "Dog Trailer",
-  "Semi Trailer",
-  "Repairs & Servicing",
-  "Roadworthy / LVT",
-  "Parts & Components",
-  "General Enquiry",
-] as const;
+const staticEnquiries: readonly string[] = [...FALLBACK_PRODUCTS, ...SERVICE_ENQUIRIES];
 
-type EnquiryType = (typeof enquiryTypes)[number];
+/**
+ * Build products are named in the dashboard, so they're checked against it.
+ * Anything that reads as a build is let through if the dashboard can't be
+ * reached, because a real enquiry must never bounce over a lookup.
+ */
+async function isEnquiryType(value: string) {
+  if (staticEnquiries.includes(value)) return true;
+  if (!/^[\p{L}\p{N} &/.,()'-]{1,80}$/u.test(value)) return false;
+  if (/tipper|trailer|truck body/i.test(value)) return true;
+  const config = await getBuildConfig();
+  return Boolean(config?.categories.some((c) => c.name === value));
+}
 
 type SubmitResult =
   | { ok: true }
@@ -48,6 +53,17 @@ const checkRateLimit = createRateLimiter("quote");
 
 /* ---------- Server action ---------- */
 
+/** The configurator's selections, kept with the lead for the dashboard. */
+function parseBuildConfiguration(value: FormDataEntryValue | null): unknown {
+  if (typeof value !== "string" || !value || value.length > 12000) return null;
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function submitQuoteForm(
   _prevState: SubmitResult | null,
   formData: FormData,
@@ -69,7 +85,19 @@ export async function submitQuoteForm(
   const vin = String(formData.get("vinNumber") ?? "").trim();
   const payload = String(formData.get("payloadDetails") ?? "").trim();
   const timeframe = String(formData.get("timeframe") ?? "").trim();
-  const message = String(formData.get("description") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const customerReference = String(formData.get("customerReference") ?? "").trim().slice(0, 80);
+  const buildType = String(formData.get("buildType") ?? "").trim().slice(0, 60);
+  const message = [
+    buildType && !description.includes(buildType) ? `Build type: ${buildType}` : "",
+    customerReference && !description.includes(customerReference)
+      ? `Customer reference: ${customerReference}`
+      : "",
+    description,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+  const buildConfiguration = parseBuildConfiguration(formData.get("buildConfiguration"));
 
   // Validation
   if (!name) {
@@ -96,7 +124,7 @@ export async function submitQuoteForm(
       field: "phone",
     };
   }
-  if (!enquiryTypes.includes(enquiryTypeRaw as EnquiryType)) {
+  if (!(await isEnquiryType(enquiryTypeRaw))) {
     return {
       ok: false,
       error: "Please select an enquiry type.",
@@ -137,7 +165,7 @@ export async function submitQuoteForm(
   const attachments = att.attachments;
 
   // Build the email
-  const enquiryType = enquiryTypeRaw as EnquiryType;
+  const enquiryType = enquiryTypeRaw;
   const subject = `New Arrow Quote Request — ${enquiryType}`;
   const attachmentNames = attachments.map((a) => a.filename);
   const fields: EmailFields = {
@@ -182,6 +210,9 @@ export async function submitQuoteForm(
       vehicleYear,
       vin,
       payload,
+      ...(buildType ? { buildType } : {}),
+      ...(customerReference ? { customerReference } : {}),
+      ...(buildConfiguration ? { buildConfiguration } : {}),
     },
   });
 
@@ -225,7 +256,7 @@ interface EmailFields {
   email: string;
   phone: string;
   location: string;
-  enquiryType: EnquiryType;
+  enquiryType: string;
   vehicleMake: string;
   vehicleModel: string;
   vehicleYear: string;
