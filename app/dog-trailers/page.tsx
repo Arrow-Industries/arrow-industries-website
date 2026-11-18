@@ -48,22 +48,16 @@ const recentBuilds = [
     src: media.dogWhite.src,
     alt: media.dogWhite.alt,
     title: "3-Axle Dog Trailer",
-    application: "Civil application",
-    specs: ["Matched to lead tipper", "2-way tailgate"],
   },
   {
     src: media.dogSide.src,
     alt: media.dogSide.alt,
     title: "4-Axle Dog Trailer",
-    application: "Quarry application",
-    specs: ["High-payload PBS", "Heavy-duty drawbar"],
   },
   {
     src: media.truckAndDogDusk.src,
     alt: media.truckAndDogDusk.alt,
     title: "Truck & Dog Combination",
-    application: "Fleet setup",
-    specs: ["Matched truck and dog", "Integrated hydraulics"],
   },
 ];
 
@@ -114,8 +108,7 @@ export default function Page() {
         meta,
         hero: {
           badge: "Dog Trailers",
-          subtext:
-            "Dog trailers designed to integrate properly with your tipper setup — built for durability, balance and real-world performance on-site.",
+          subtext: "Dog trailers matched to your tipper, built for balance and real-world work.",
           capability: ["3-axle", "4-axle"],
           image: media.truckAndDogDusk.src,
           imagePosition: "62% 50%",

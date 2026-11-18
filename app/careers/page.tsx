@@ -6,9 +6,10 @@ import { ProductHero } from "@/components/ProductHero";
 import {
   CheckGrid,
   InfoGrid,
+  Pills,
   WorkshopStrip,
 } from "@/components/ProductParts";
-import { SpecTabs } from "@/components/SpecTabs";
+import { DetailAccordion } from "@/components/DetailAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { CareersForm } from "@/components/CareersForm";
 import { FAQAccordion } from "@/components/FAQAccordion";
@@ -118,17 +119,20 @@ const workshop = [
   {
     photo: media.paintBooth,
     title: "Prep and paint",
-    body: "Preparation, priming and painting of truck bodies, trailers and fabricated components.",
+    body: "Preparation, priming and painting.",
+    detail: "Preparation, priming and painting of truck bodies, trailers and fabricated components.",
   },
   {
     photo: media.welding,
     title: "Fabrication",
-    body: "Welds laid by qualified fabricators, inspected before paint.",
+    body: "Inspected before paint.",
+    detail: "Welds laid by qualified fabricators, inspected before paint.",
   },
   {
     photo: media.workshop,
     title: "Campbellfield workshop",
-    body: "One workshop, one hands-on team. Monday to Friday, 7:00 AM to 4:00 PM.",
+    body: "One workshop, one hands-on team.",
+    detail: "One workshop, one hands-on team. Monday to Friday, 7:00 AM to 4:00 PM.",
   },
 ];
 
@@ -170,7 +174,7 @@ export default function CareersPage() {
         crumbs={crumbs}
         badge="Careers"
         heading="Build heavy gear with a Melbourne workshop that backs its trades."
-        body="Arrow Industries builds custom tipper bodies, trailers and heavy vehicle equipment from our Campbellfield workshop. We're always looking for reliable tradespeople and apprentices who take pride in their work."
+        body="We're always looking for reliable tradespeople and apprentices who take pride in their work."
         image={media.bodyPainted.src}
         imagePosition="50% 22%"
         actions={
@@ -191,7 +195,6 @@ export default function CareersPage() {
           <SectionHeader
             eyebrow="Why Arrow"
             heading="A workshop worth turning up to."
-            body="Family-owned workshop. Steady work. Real builds."
           />
           <ul className="mt-6 grid gap-3 sm:grid-cols-3">
             {whyArrow.map((item) => {
@@ -199,9 +202,9 @@ export default function CareersPage() {
               return (
                 <li
                   key={item.title}
-                  className="card flex flex-col gap-4 p-5 sm:p-6"
+                  className="card flex items-center gap-4 p-4 sm:flex-col sm:items-start sm:p-6"
                 >
-                  <span className="icon-tile">
+                  <span className="icon-tile shrink-0">
                     <Icon
                       className="h-5 w-5 text-accent"
                       strokeWidth={1.5}
@@ -211,45 +214,10 @@ export default function CareersPage() {
                   <h3 className="text-base font-semibold text-bone">
                     {item.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-mute">
-                    {item.body}
-                  </p>
                 </li>
               );
             })}
           </ul>
-
-          <div className="mt-8">
-            <SpecTabs
-              label="Roles and what we look for"
-              tabs={[
-                {
-                  id: "roles",
-                  label: "Roles we hire for",
-                  content: (
-                    <>
-                      <p className="mb-4 font-display text-lg font-semibold text-bone">
-                        The roles that build an Arrow unit.
-                      </p>
-                      <InfoGrid items={roles} />
-                    </>
-                  ),
-                },
-                {
-                  id: "look-for",
-                  label: "What we look for",
-                  content: (
-                    <>
-                      <p className="mb-4 font-display text-lg font-semibold text-bone">
-                        The people who fit in here.
-                      </p>
-                      <CheckGrid items={lookFor} />
-                    </>
-                  ),
-                },
-              ]}
-            />
-          </div>
         </Container>
       </section>
 
@@ -264,7 +232,79 @@ export default function CareersPage() {
         </Container>
       </section>
 
-      {/* 4 — Application form */}
+      {/* 4 — Roles and the detail behind them */}
+      <section className="section">
+        <Container>
+          <SectionHeader
+            eyebrow="Roles we hire for"
+            heading="The roles that build an Arrow unit."
+            className="mb-5"
+          />
+          <Pills items={roles.map((role) => role.title)} />
+          <div className="mt-6">
+            <DetailAccordion
+              items={[
+                {
+                  id: "roles",
+                  title: "Role descriptions",
+                  content: <InfoGrid items={roles} />,
+                },
+                {
+                  id: "look-for",
+                  title: "What we look for",
+                  content: (
+                    <div className="grid gap-3">
+                      <p className="font-display text-lg font-semibold text-bone">
+                        The people who fit in here.
+                      </p>
+                      <CheckGrid items={lookFor} />
+                      <p className="text-sm leading-relaxed text-mute">
+                        The more detail you give us, the easier it is to match
+                        you to the right role. Send your details through and
+                        we&rsquo;ll be in touch if your experience matches a
+                        current or upcoming opportunity.
+                      </p>
+                    </div>
+                  ),
+                },
+                {
+                  id: "why-arrow",
+                  title: "Why work at Arrow",
+                  content: (
+                    <div className="grid gap-3">
+                      <p className="text-sm leading-relaxed text-mute">
+                        Family-owned workshop. Steady work. Real builds. Arrow
+                        Industries builds custom tipper bodies, trailers and
+                        heavy vehicle equipment from our Campbellfield workshop.
+                      </p>
+                      <InfoGrid
+                        items={whyArrow.map((item) => ({
+                          title: item.title,
+                          body: item.body,
+                        }))}
+                      />
+                    </div>
+                  ),
+                },
+                {
+                  id: "workshop",
+                  title: "Inside the workshop",
+                  content: (
+                    <InfoGrid
+                      items={workshop.map((item) => ({
+                        title: item.title,
+                        body: item.detail,
+                      }))}
+                    />
+                  ),
+                },
+              ]}
+            />
+          </div>
+        </Container>
+      </section>
+
+      {/* 5 — Application form */}
       <section
         id="apply"
         className="section"
@@ -273,7 +313,7 @@ export default function CareersPage() {
           <SectionHeader
             eyebrow="Apply"
             heading="Apply in under 2 minutes."
-            body="No updated resume? Apply anyway. The more detail you give us, the easier it is to match you to the right role."
+            body="No updated resume? Apply anyway."
             className="mb-10"
           />
           <div className="grid gap-6 lg:grid-cols-12 lg:gap-12">
@@ -349,7 +389,7 @@ export default function CareersPage() {
         </Container>
       </section>
 
-      {/* 5 — FAQ and call to action */}
+      {/* 6 — FAQ and call to action */}
       <section className="section">
         <Container className="max-w-3xl">
           <SectionHeader
@@ -367,7 +407,7 @@ export default function CareersPage() {
       <CTASection
         eyebrow="Get in touch"
         heading="Reckon you'd be a good fit?"
-        body="Send your details through and we'll be in touch if your experience matches a current or upcoming opportunity."
+        body="Send your details through and we'll be in touch."
         primaryCta={{ label: "Apply now", href: "#apply" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />

@@ -93,8 +93,7 @@ export default function Page() {
         meta,
         hero: {
           badge: "Semi Trailers",
-          subtext:
-            "Semi trailers designed to integrate properly with your prime mover — built for durability, balance and real-world performance on-site.",
+          subtext: "Semi trailers matched to your prime mover, built for long-term heavy work.",
           capability: ["2-axle", "3-axle"],
           image: media.bodyPainted.src,
           imagePosition: "50% 45%",

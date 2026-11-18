@@ -9,7 +9,7 @@ import {
   Pills,
   ProcessSteps,
 } from "@/components/ProductParts";
-import { SpecTabs } from "@/components/SpecTabs";
+import { DetailAccordion } from "@/components/DetailAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { FinanceForm } from "@/components/FinanceForm";
 import { FAQAccordion } from "@/components/FAQAccordion";
@@ -134,6 +134,8 @@ const crumbs = [
   { label: "Finance", href: "/finance" },
 ];
 
+const panelLead = "mb-4 max-w-2xl text-sm leading-relaxed text-mute";
+
 const financeFAQs: FAQ[] = [
   {
     question: "Who provides the finance?",
@@ -180,7 +182,7 @@ export default function FinancePage() {
             Finance your next <span className="text-accent">Arrow build.</span>
           </>
         }
-        body="Spread the cost of a custom tipper body, trailer or complete truck-and-body package. Competitive asset finance, arranged through our partner Linx Australia Group."
+        body="Competitive asset finance, arranged through our partner Linx Australia Group."
         image={media.scaniaGraphite.src}
         imagePosition="62% 50%"
         actions={
@@ -196,22 +198,18 @@ export default function FinancePage() {
         }
       />
 
-      {/* Why finance */}
+      {/* Why finance: titles here, the descriptions in the detail below */}
       <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Why finance"
             heading="Get the gear working without the up-front hit."
-            body="Your equipment earns its keep from day one. Financing lets you put it to work now and pay for it as it pays you back."
           />
-          <div className="mt-4">
-            <Pills items={trustPoints} />
-          </div>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {benefits.map((item) => {
               const Icon = item.icon;
               return (
-                <li key={item.title} className="card flex flex-col gap-3 p-5">
+                <li key={item.title} className="card flex min-w-0 flex-col gap-3 p-4 sm:p-5">
                   <span className="icon-tile">
                     <Icon
                       className="h-5 w-5 text-accent"
@@ -219,12 +217,9 @@ export default function FinancePage() {
                       aria-hidden
                     />
                   </span>
-                  <h3 className="font-display text-base font-semibold text-bone">
+                  <h3 className="font-display text-base font-semibold leading-snug text-bone">
                     {item.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-mute">
-                    {item.body}
-                  </p>
                 </li>
               );
             })}
@@ -239,7 +234,7 @@ export default function FinancePage() {
             <SectionHeader
               eyebrow="Apply"
               heading="Apply for finance."
-              body="Send your details and our finance partner Linx Australia Group will be in touch — usually within one business day — to talk through your options. No obligation."
+              body="Linx will be in touch, usually within one business day. No obligation."
               className="mb-6"
             />
             <FinanceForm />
@@ -252,8 +247,7 @@ export default function FinancePage() {
                   Prefer to talk it through?
                 </h2>
                 <p className="mt-2 text-sm text-mute">
-                  Call the Arrow team during workshop hours and we&rsquo;ll
-                  point you in the right direction.
+                  Call the Arrow team during workshop hours.
                 </p>
                 <a
                   href={site.phoneHref}
@@ -302,14 +296,15 @@ export default function FinancePage() {
             <SectionHeader
               eyebrow="Our finance partner"
               heading="Backed by Linx Australia Group."
-              body="Arrow builds the gear. Linx sorts the finance. They're an independent asset finance broker who've been at it since 1999, with a panel of around 50 lenders and deep experience in transport, trucks, trailers and heavy equipment."
-              className="mb-6"
+              body="Arrow builds the gear. Linx sorts the finance."
             />
-            <CheckList items={linxPoints} />
+            <div className="mt-4">
+              <Pills items={trustPoints} />
+            </div>
           </div>
 
           <div className="min-w-0 lg:col-span-5">
-            <div className="card flex flex-col items-center gap-6 p-8 text-center sm:p-10">
+            <div className="card flex items-center justify-center p-8 sm:p-10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/customers/linx.png"
@@ -319,29 +314,37 @@ export default function FinancePage() {
                 loading="lazy"
                 className="h-auto w-56 max-w-full object-contain"
               />
-              <p className="text-sm leading-relaxed text-mute">
-                Asset, equipment and transport finance specialists. Established
-                1999.
-              </p>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* How it works, what you can finance and the finance options */}
+      {/* The full wording, closed until someone wants it */}
       <section className="section">
         <Container>
           <SectionHeader
             eyebrow="How it works"
-            heading="Structured to suit your business."
+            heading="The detail, when you need it."
             className="mb-6"
           />
-          <SpecTabs
-            label="How finance works"
-            tabs={[
+          <DetailAccordion
+            items={[
+              {
+                id: "benefits",
+                title: "Why finance",
+                content: (
+                  <>
+                    <p className={panelLead}>
+                      Your equipment earns its keep from day one. Financing lets you put it to
+                      work now and pay for it as it pays you back.
+                    </p>
+                    <InfoGrid items={benefits} />
+                  </>
+                ),
+              },
               {
                 id: "steps",
-                label: "How it works",
+                title: "How it works",
                 content: (
                   <div className="[&>ol]:mt-0">
                     <p className="mb-4 font-display text-lg font-semibold text-bone">
@@ -353,11 +356,15 @@ export default function FinancePage() {
               },
               {
                 id: "financeable",
-                label: "What you can finance",
+                title: "What you can finance",
                 content: (
                   <>
-                    <p className="mb-4 font-display text-lg font-semibold text-bone">
+                    <p className="mb-2 font-display text-lg font-semibold text-bone">
                       From a single body to the whole rig.
+                    </p>
+                    <p className={panelLead}>
+                      Spread the cost of a custom tipper body, trailer or complete
+                      truck-and-body package.
                     </p>
                     <InfoGrid items={financeable} />
                   </>
@@ -365,15 +372,34 @@ export default function FinancePage() {
               },
               {
                 id: "options",
-                label: "Finance options",
+                title: "Finance options",
                 content: (
                   <>
-                    <p className="mb-4 max-w-2xl text-[0.9375rem] leading-relaxed text-mute sm:text-base">
+                    <p className="mb-2 font-display text-lg font-semibold text-bone">
+                      Structured to suit your business.
+                    </p>
+                    <p className={panelLead}>
                       Linx can arrange any of the following. Not sure which
                       fits? Pick “recommend an option” on the form and
                       they&rsquo;ll talk it through with you.
                     </p>
                     <InfoGrid items={financeOptions} />
+                  </>
+                ),
+              },
+              {
+                id: "linx",
+                title: "About Linx Australia Group",
+                content: (
+                  <>
+                    <p className={panelLead}>
+                      Arrow builds the gear. Linx sorts the finance. They&rsquo;re an independent
+                      asset finance broker who&rsquo;ve been at it since 1999, with a panel of
+                      around 50 lenders and deep experience in transport, trucks, trailers and
+                      heavy equipment. Asset, equipment and transport finance specialists.
+                      Established 1999.
+                    </p>
+                    <CheckList items={linxPoints} />
                   </>
                 ),
               },
@@ -400,7 +426,6 @@ export default function FinancePage() {
       <CTASection
         eyebrow="Finance"
         heading="Get the gear working sooner."
-        body="Apply online and our finance partner will sort the rest while we build your unit."
         primaryCta={{ label: "Apply for finance", href: "#apply" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />

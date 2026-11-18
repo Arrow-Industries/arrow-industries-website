@@ -4,7 +4,6 @@ import { ListChecks, Phone, ShieldCheck, Wrench } from "lucide-react";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { QuoteForm } from "@/components/QuoteForm";
-import { ContactInfoBlock } from "@/components/ContactInfoBlock";
 import { site } from "@/data/site";
 import { getBuildConfig } from "@/lib/build-options";
 
@@ -23,21 +22,9 @@ export const metadata: Metadata = pageMetadata({
 export const maxDuration = 60;
 
 const reassurance = [
-  {
-    icon: ListChecks,
-    title: "Clear next steps",
-    body: "Send through your details and we'll come back with the best next step for your build, repair or inspection.",
-  },
-  {
-    icon: Wrench,
-    title: "Engineered to spec",
-    body: "Send your chassis, payload and application — we'll spec the build around your job.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "No obligation",
-    body: "Quotes are written, itemised and free. No deposits, no commitments.",
-  },
+  { icon: ListChecks, title: "Clear next steps" },
+  { icon: Wrench, title: "Engineered to spec" },
+  { icon: ShieldCheck, title: "Free written quotes, no obligation" },
 ];
 
 // Products come from the dashboard; changes appear here within five minutes.
@@ -51,7 +38,7 @@ export default async function RequestAQuotePage() {
       <PageHero
         eyebrow="Request a quote"
         heading="Tell us what you need built, repaired or certified."
-        body="The more you tell us up front — chassis, payload, application, target lead time — the faster we can come back with a build proposal and price."
+        body="Share your chassis, payload, application and target lead time for a faster proposal and price."
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Request a quote", href: "/request-a-quote" },
@@ -71,8 +58,7 @@ export default async function RequestAQuotePage() {
                   Or call us directly
                 </h2>
                 <p className="mt-2 text-sm text-mute">
-                  Got a job that's better explained on the phone? Talk to us
-                  during workshop hours.
+                  Talk to us during workshop hours.
                 </p>
                 <a
                   href={site.phoneHref}
@@ -87,25 +73,13 @@ export default async function RequestAQuotePage() {
                 {reassurance.map((r) => {
                   const Icon = r.icon;
                   return (
-                    <li
-                      key={r.title}
-                      className="flex gap-3.5 p-4"
-                    >
-                      <span className="icon-tile">
-                        <Icon className="h-[1.125rem] w-[1.125rem] text-accent" strokeWidth={1.5} />
-                      </span>
-                      <div>
-                        <h3 className="text-sm font-semibold text-bone">
-                          {r.title}
-                        </h3>
-                        <p className="mt-1 text-xs text-mute">{r.body}</p>
-                      </div>
+                    <li key={r.title} className="list-row items-center">
+                      <Icon className="h-[1.125rem] w-[1.125rem] shrink-0 text-accent" strokeWidth={1.5} aria-hidden />
+                      <span className="text-sm font-semibold text-bone">{r.title}</span>
                     </li>
                   );
                 })}
               </ul>
-
-              <ContactInfoBlock />
             </div>
           </aside>
         </Container>

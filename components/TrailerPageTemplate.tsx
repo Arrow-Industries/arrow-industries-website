@@ -11,12 +11,15 @@ import {
   CheckGrid,
   CheckList,
   InfoGrid,
+  PhotoBand,
   Pills,
   ProcessSteps,
+  StatTiles,
   ViewBuildsLink,
   type BuildCard,
 } from "@/components/ProductParts";
-import { SpecTabs } from "@/components/SpecTabs";
+import { DetailAccordion } from "@/components/DetailAccordion";
+import { media } from "@/data/media";
 import { SectionHeader } from "@/components/SectionHeader";
 import type { Service } from "@/data/services";
 import type { ServiceContent } from "@/data/serviceContent";
@@ -191,8 +194,6 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         body={hero.subtext}
         image={hero.image}
         imagePosition={hero.imagePosition}
-        note="Built for civil, quarry and fleet applications"
-        facts={hero.capability}
         actions={
           <>
             <Button href="/request-a-quote" size="lg">
@@ -210,117 +211,96 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       <LocalNav
         label={`${service.shortTitle} sections`}
         items={[
-          { id: "overview", label: "Overview" },
           ...(recentBuilds.length > 0 ? [{ id: "builds", label: "Builds" }] : []),
-          { id: "setup", label: "Setup" },
-          { id: "specs", label: "Specs" },
-          { id: "process", label: "Process" },
+          { id: "specs", label: "Specifications" },
           { id: "faq", label: "FAQ" },
         ]}
       />
 
-      <section id="overview" className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-6">
-            <SectionHeader
-              eyebrow={trailerType.label}
-              heading="Built as part of the system."
-            />
-            <p className="mt-4 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
-              A trailer only performs as well as how it works with the truck.
-              Every Arrow trailer is designed to match the towing setup &mdash;
-              from the tow connection through to hydraulics, braking and
-              electrical systems. The result is a combination that works
-              properly on-site, not just on paper.
-            </p>
-            <div className="mt-5">
-              <Pills items={builtFor} />
-            </div>
-          </div>
-          <div className="lg:col-span-6">
-            <h3 className="mb-3 font-display text-lg font-semibold text-bone">
-              {trailerType.headline}
-            </h3>
-            <CheckList items={trailerType.bullets} />
-          </div>
-        </Container>
-      </section>
-
-      {recentBuilds.length > 0 && (
-      <section id="builds" className="section">
+      <section className="section">
         <Container>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeader
-              eyebrow="Recent builds"
-              heading="Real trailers. Real combinations."
-              body="A snapshot of recent trailer builds off the workshop floor."
-            />
-            <ViewBuildsLink />
-          </div>
-          <BuildCards builds={recentBuilds} />
-        </Container>
-      </section>
-      )}
-
-      <section id="setup" className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Complete working setup"
-              heading="Designed to work together."
-              body="Every trailer is built to integrate with the truck, not added on after. The full combination is engineered to perform under load and on-site."
-            />
-            <p className="eyebrow mb-2 mt-5">The result</p>
-            <CheckList items={completeSetup.outcomes} />
-          </div>
-          <div className="lg:col-span-7">
-            <CheckList items={completeSetup.bullets} />
-          </div>
-        </Container>
-      </section>
-
-      <section id="specs" className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Specifications"
-            heading="Configure the trailer to suit the work."
-            className="mb-6"
-          />
-          <SpecTabs
-            label={`${service.shortTitle} specifications`}
-            tabs={[
+          <StatTiles
+            items={[
               {
-                id: "options",
-                label: "Features & options",
-                content: <CheckGrid items={features} />,
+                value: hero.capability.map((c) => c.replace("-axle", "")).join(" or "),
+                label: "Axles",
               },
-              {
-                id: "engineering",
-                label: "Engineering",
-                content: <InfoGrid items={engineering} />,
-              },
-              {
-                id: "running-gear",
-                label: "Running gear",
-                content: <CheckGrid items={runningGear} />,
-              },
-              {
-                id: "why-arrow",
-                label: "Why Arrow",
-                content: <InfoGrid items={whyArrow} />,
-              },
+              { value: "Matched", label: "To your truck" },
+              { value: "2-pack", label: "Paint to your colour" },
+              { value: "In-house", label: "Fabrication" },
             ]}
           />
         </Container>
       </section>
 
-      <section id="process" className="section">
+      {recentBuilds.length > 0 && (
+        <section id="builds" className="section">
+          <Container>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <SectionHeader eyebrow="Recent builds" heading="Real trailers. Real combinations." />
+              <ViewBuildsLink />
+            </div>
+            <BuildCards builds={recentBuilds} />
+          </Container>
+        </section>
+      )}
+
+      <section className="section">
         <Container>
-          <SectionHeader
-            eyebrow="The build process"
-            heading="From first call to delivery — four steps."
+          <PhotoBand
+            photo={config.slug === "dog-trailers" ? media.truckAndDog : media.welding}
+            eyebrow="Complete working setup"
+            heading="Designed to work together."
+            body={trailerType.headline}
+          >
+            <Button
+              href={`/configure?product=${config.slug === "dog-trailers" ? "dog" : "semi"}`}
+              size="lg"
+            >
+              Configure your build
+            </Button>
+          </PhotoBand>
+        </Container>
+      </section>
+
+      <section id="specs" className="section">
+        <Container>
+          <SectionHeader eyebrow="Specifications" heading="The detail, when you need it." className="mb-6" />
+          <DetailAccordion
+            items={[
+              { id: "options", title: "Features & options", content: <CheckGrid items={features} /> },
+              {
+                id: "setup",
+                title: "Complete working setup",
+                content: (
+                  <div className="grid gap-3">
+                    <p className="text-sm leading-relaxed text-mute">
+                      A trailer only performs as well as how it works with the truck. Every Arrow
+                      trailer is designed to match the towing setup &mdash; from the tow connection
+                      through to hydraulics, braking and electrical systems. The result is a
+                      combination that works properly on-site, not just on paper.
+                    </p>
+                    <CheckList
+                      items={[
+                        ...trailerType.bullets,
+                        ...completeSetup.bullets,
+                        ...completeSetup.outcomes,
+                      ]}
+                    />
+                  </div>
+                ),
+              },
+              { id: "engineering", title: "Engineering", content: <InfoGrid items={engineering} /> },
+              { id: "running-gear", title: "Running gear", content: <CheckGrid items={runningGear} /> },
+              {
+                id: "built-for",
+                title: "Who we build for",
+                content: <Pills items={builtFor} />,
+              },
+              { id: "why-arrow", title: "Why Arrow", content: <InfoGrid items={whyArrow} /> },
+              { id: "process", title: "The build process", content: <ProcessSteps steps={process} /> },
+            ]}
           />
-          <ProcessSteps steps={process} />
         </Container>
       </section>
 
@@ -336,11 +316,12 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       <CTASection
         eyebrow="Request a quote"
         heading="Get the setup right from the start."
-        body="Send us your truck, job and target payload — we'll come back with a build proposal, lead time and pricing."
         primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
-        secondaryCta={{ label: "Configure your build", href: `/configure?product=${config.slug === "dog-trailers" ? "dog" : "semi"}` }}
+        secondaryCta={{
+          label: "Configure your build",
+          href: `/configure?product=${config.slug === "dog-trailers" ? "dog" : "semi"}`,
+        }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
-        footnote="Built in Melbourne. Backed by the team that built it."
       />
     </>
   );

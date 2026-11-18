@@ -13,12 +13,15 @@ import {
   BuildCards,
   CheckGrid,
   CheckList,
+  ChoiceTiles,
   InfoGrid,
+  PhotoBand,
   Pills,
   ProcessSteps,
+  StatTiles,
   ViewBuildsLink,
 } from "@/components/ProductParts";
-import { SpecTabs } from "@/components/SpecTabs";
+import { DetailAccordion } from "@/components/DetailAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { media } from "@/data/media";
 import { getServiceBySlug } from "@/data/services";
@@ -130,27 +133,23 @@ const chassisConfigs = [
 ];
 
 const recentBuilds = [
-  {
-    src: "/images/builds/build-1.jpg",
-    alt: "Arrow Industries 8x4 tipper body — civil application",
-    title: "8x4 Tipper Build",
-    application: "Civil application",
-    specs: ["6.5m body", "2-way tailgate", "Retractable tarp"],
-  },
-  {
-    src: "/images/builds/build-2.jpg",
-    alt: "Arrow Industries 6x4 tipper body — quarry application",
-    title: "6x4 Tipper Build",
-    application: "Quarry application",
-    specs: ["Heavy-duty floor", "Twin-ram hoist", "Wear-rated lining"],
-  },
-  {
-    src: "/images/builds/build-3.jpg",
-    alt: "Arrow Industries 10x4 tipper body — fleet setup",
-    title: "10x4 Tipper Build",
-    application: "Fleet setup",
-    specs: ["Custom body length", "Full LED kit", "On-site ready"],
-  },
+  { src: media.tipperGraphite.src, alt: media.tipperGraphite.alt, title: "Graphite tipper body" },
+  { src: media.scania.src, alt: media.scania.alt, title: "Scania tipper body" },
+  { src: media.sitrak.src, alt: media.sitrak.alt, title: "SITRAK tipper body" },
+];
+
+const stats = [
+  { value: "4x2–10x4", label: "Chassis" },
+  { value: "Custom", label: "Body sizing" },
+  { value: "2-pack", label: "Paint to your colour" },
+  { value: "In-house", label: "Fabrication" },
+];
+
+const chassisChoices = [
+  { title: "4x2", body: "Urban supply and tight-access sites" },
+  { title: "6x4", body: "Civil and contractor fleet work" },
+  { title: "8x4", body: "Heavy civil, demolition and quarry" },
+  { title: "10x4", body: "Maximum payload and bulk haulage" },
 ];
 
 const completeSetup = {
@@ -282,11 +281,9 @@ export default function Page() {
             <span className="text-accent">serious work.</span>
           </>
         }
-        body="Built in Melbourne for civil, quarry, demolition, construction and fleet operators who need durable, cleanly finished equipment that performs on site."
+        body="Durable, cleanly finished bodies, built in Melbourne for the work ahead."
         image={media.tipperGraphiteRear.src}
         imagePosition="64% 50%"
-        note="Custom-built for 4x2, 6x4, 8x4 and 10x4 chassis."
-        facts={credibilityPoints}
         actions={
           <>
             <Button href="/request-a-quote" size="lg">
@@ -304,46 +301,23 @@ export default function Page() {
       <LocalNav
         label="Tipper truck body sections"
         items={[
-          { id: "overview", label: "Overview" },
           { id: "builds", label: "Builds" },
           { id: "chassis", label: "Chassis" },
-          { id: "setup", label: "Setup" },
-          { id: "specs", label: "Specs" },
-          { id: "process", label: "Process" },
+          { id: "specs", label: "Specifications" },
           { id: "faq", label: "FAQ" },
         ]}
       />
 
-      <section id="overview" className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="No catalogue builds"
-              heading="Built around the job — not the template."
-            />
-          </div>
-          <div className="lg:col-span-7">
-            <p className="text-[0.9375rem] leading-relaxed text-mute sm:text-base">
-              Every Arrow tipper is engineered around the application, the
-              payload and the chassis it&rsquo;s running on &mdash; sized
-              correctly, balanced for the truck, and finished for the work it
-              needs to do.
-            </p>
-            <div className="mt-5">
-              <Pills items={applications} />
-            </div>
-          </div>
+      <section className="section">
+        <Container>
+          <StatTiles items={stats} />
         </Container>
       </section>
 
       <section id="builds" className="section">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeader
-              eyebrow="Recent builds"
-              heading="Real trucks. Real jobs."
-              body="A snapshot of recent units off the workshop floor."
-            />
+            <SectionHeader eyebrow="Recent builds" heading="Real trucks. Real jobs." />
             <ViewBuildsLink />
           </div>
           <BuildCards builds={recentBuilds} />
@@ -352,79 +326,72 @@ export default function Page() {
 
       <section id="chassis" className="section">
         <Container>
-          <SectionHeader
-            eyebrow="Configurations"
-            heading="4x2, 6x4, 8x4 and 10x4 — built to the chassis."
-            body="Custom-built for the chassis you run and the work the unit will actually do."
-          />
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {chassisConfigs.map((c) => (
-              <li key={c.title} className="card flex flex-col gap-2 p-5">
-                <h3 className="font-display text-[1.0625rem] font-semibold text-bone">
-                  {c.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-mute">{c.use}</p>
-              </li>
-            ))}
-          </ul>
+          <SectionHeader eyebrow="Configurations" heading="Built to your chassis." />
+          <ChoiceTiles items={chassisChoices} />
         </Container>
       </section>
 
-      <section id="setup" className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Complete working setup"
-              heading="Built as a complete working setup."
-              body="A tipper body is only one part of the system. Every Arrow build is designed as a complete working setup — from the body and subframe through to hydraulics, hoist configuration, and trailer connections where required."
-            />
-            <p className="eyebrow mb-2 mt-5">The result</p>
-            <CheckList items={completeSetup.outcomes} />
-          </div>
-          <div className="lg:col-span-7">
-            <CheckList items={completeSetup.features} />
-          </div>
+      <section className="section">
+        <Container>
+          <PhotoBand
+            photo={media.tipperWhite}
+            eyebrow="Complete working setup"
+            heading="Built as one working system."
+            body="Body, subframe, hydraulics and hoist, designed together."
+          >
+            <Button href="/configure?product=tipper" size="lg">
+              Configure your build
+            </Button>
+          </PhotoBand>
         </Container>
       </section>
 
       <section id="specs" className="section">
         <Container>
-          <SectionHeader
-            eyebrow="Specifications"
-            heading="Configure the unit to suit the work."
-            body="Practical options operators actually ask for — specified up front, integrated into the build, supported after delivery."
-            className="mb-6"
-          />
-          <SpecTabs
-            label="Tipper body specifications"
-            tabs={[
+          <SectionHeader eyebrow="Specifications" heading="The detail, when you need it." className="mb-6" />
+          <DetailAccordion
+            items={[
+              { id: "options", title: "Build options", content: <CheckGrid items={buildOptions} /> },
+              { id: "materials", title: "Materials & engineering", content: <InfoGrid items={materials} /> },
               {
-                id: "options",
-                label: "Build options",
-                content: <CheckGrid items={buildOptions} />,
+                id: "setup",
+                title: "Complete working setup",
+                content: (
+                  <div className="grid gap-3">
+                    <p className="text-sm leading-relaxed text-mute">
+                      A tipper body is only one part of the system. Every Arrow build is designed
+                      as a complete working setup &mdash; from the body and subframe through to
+                      hydraulics, hoist configuration, and trailer connections where required.
+                    </p>
+                    <CheckList items={[...completeSetup.features, ...completeSetup.outcomes]} />
+                  </div>
+                ),
               },
               {
-                id: "materials",
-                label: "Materials & engineering",
-                content: <InfoGrid items={materials} />,
+                id: "chassis-guide",
+                title: "Chassis guide",
+                content: (
+                  <InfoGrid items={chassisConfigs.map((c) => ({ title: c.title, body: c.use }))} />
+                ),
               },
               {
-                id: "why-arrow",
-                label: "Why Arrow",
-                content: <InfoGrid items={whyArrow} />,
+                id: "applications",
+                title: "Applications",
+                content: (
+                  <div className="grid gap-3">
+                    <p className="text-sm leading-relaxed text-mute">
+                      Every Arrow tipper is engineered around the application, the payload and the
+                      chassis it&rsquo;s running on &mdash; sized correctly, balanced for the truck,
+                      and finished for the work it needs to do.
+                    </p>
+                    <Pills items={[...applications, ...credibilityPoints]} />
+                  </div>
+                ),
               },
+              { id: "why-arrow", title: "Why Arrow", content: <InfoGrid items={whyArrow} /> },
+              { id: "process", title: "The build process", content: <ProcessSteps steps={process} /> },
             ]}
           />
-        </Container>
-      </section>
-
-      <section id="process" className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="The build process"
-            heading="From first call to delivery — five steps."
-          />
-          <ProcessSteps steps={process} />
         </Container>
       </section>
 
@@ -440,11 +407,9 @@ export default function Page() {
       <CTASection
         eyebrow="Request a quote"
         heading={tipperContent.ctaHeading}
-        body={tipperContent.ctaBody}
         primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
         secondaryCta={{ label: "Configure your build", href: "/configure?product=tipper" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
-        footnote="Built in Melbourne. Backed by the team that built it."
       />
     </>
   );

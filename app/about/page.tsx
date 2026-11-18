@@ -8,10 +8,13 @@ import { ProductHero } from "@/components/ProductHero";
 import {
   CheckGrid,
   InfoGrid,
+  PhotoBand,
+  Pills,
+  StatTiles,
   ViewBuildsLink,
   WorkshopStrip,
 } from "@/components/ProductParts";
-import { SpecTabs } from "@/components/SpecTabs";
+import { DetailAccordion } from "@/components/DetailAccordion";
 import { Testimonials } from "@/components/Testimonials";
 import { CTASection } from "@/components/CTASection";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -45,17 +48,20 @@ const workshop = [
   {
     photo: media.paintPrep,
     title: "Prep and paint",
-    body: "Preparation, priming and painting of truck bodies, trailers and fabricated components.",
+    body: "Preparation, priming and painting.",
+    detail: "Preparation, priming and painting of truck bodies, trailers and fabricated components.",
   },
   {
     photo: media.bodyPainted,
     title: "2-pack paint",
-    body: "Finished to any 2-pack colour code you specify.",
+    body: "Any colour code you specify.",
+    detail: "Finished to any 2-pack colour code you specify.",
   },
   {
     photo: media.onSite,
     title: "Built for real site conditions",
-    body: "Engineered around continuous on-site work: quarries, tip sites and unsealed roads.",
+    body: "Quarries, tip sites and unsealed roads.",
+    detail: "Engineered around continuous on-site work: quarries, tip sites and unsealed roads.",
   },
 ];
 
@@ -150,7 +156,7 @@ export default function AboutPage() {
         crumbs={crumbs}
         badge="About"
         heading="Custom truck bodies and trailers built to handle demanding conditions."
-        body="Designed, fabricated and serviced from our Campbellfield workshop — supporting operators across construction, quarry, transport and waste across Australia."
+        body="Designed, fabricated and serviced from our Campbellfield workshop, supporting operators across Australia."
         image={media.truckAndDogDusk.src}
         imagePosition="70% 55%"
         actions={
@@ -169,83 +175,72 @@ export default function AboutPage() {
       {/* 2 — Stats and our story */}
       <section className="section">
         <Container>
-          <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            {stats.map((s) => (
-              <li
-                key={s.label}
-                className="card flex flex-col gap-1 p-4 text-center sm:p-6"
-              >
-                <span className="font-display text-xl font-semibold text-bone sm:text-[1.75rem]">
-                  {s.value}
-                </span>
-                <span className="label">{s.label}</span>
-              </li>
-            ))}
-          </ul>
+          <StatTiles items={stats} />
 
-          <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-12 lg:gap-12">
-            <div className="lg:col-span-7">
-              <SectionHeader
-                eyebrow="Our story"
-                heading="Built for operators. Built to suit the job."
-              />
-              <div className="mt-6 space-y-4 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
-                <p>
-                  Arrow Industries started as a fabrication workshop in
-                  Campbellfield, building tipper bodies for operators who needed
-                  stronger, more practical equipment.
-                </p>
-                <p>
-                  The business was founded by Kon, who worked directly in the
-                  civil industry operating his own trucks and trailers on site —
-                  understanding firsthand what equipment needs to handle.
-                </p>
-                <p>
-                  That experience is backed by engineering insight, with Aaron
-                  bringing a background in civil engineering across major
-                  projects in Victoria, with a deep understanding of site
-                  requirements, compliance and real-world operating conditions.
-                </p>
-                <p>
-                  Today, we operate the same way — one workshop, one hands-on
-                  team, supporting operators across Australia.
-                </p>
+          <div className="mt-10 lg:mt-14">
+            <PhotoBand
+              photo={media.welding}
+              eyebrow="Our story"
+              heading="Built for operators. Built to suit the job."
+              body="Arrow Industries was founded by Kon, who worked in the civil industry operating his own trucks and trailers, understanding firsthand what equipment needs to handle. Aaron brings a background in civil engineering across major projects in Victoria. Today, we operate as one workshop, one hands-on team, supporting operators across Australia."
+            />
+          </div>
 
-                <ul className="!my-5 space-y-1 border-l-2 border-accent pl-4 text-[0.9375rem] text-bone">
-                  <li className="font-semibold">Built for operators.</li>
-                  <li className="font-semibold">Designed to suit the job.</li>
-                  <li className="font-semibold">Custom-built for real conditions.</li>
-                </ul>
-
-                <p>
-                  Each build is designed around the chassis, load, route and
-                  operating conditions — practical, compliant and built for
-                  long-term use.
-                </p>
-                <p>
-                  When a unit comes back for servicing, repairs or
-                  modifications, it&rsquo;s supported by the same team that
-                  built it.
-                </p>
-                <p>
-                  Supporting transport, construction and haulage operators
-                  across Australia for{" "}
-                  <span className="font-semibold text-bone">over 25 years</span>.
-                </p>
-              </div>
-            </div>
-            <div className="lg:col-span-5 lg:self-start lg:sticky lg:top-24">
-              <div className="card relative aspect-[4/5] overflow-hidden">
-                <Image
-                  src={media.welding.src}
-                  alt={media.welding.alt}
-                  fill
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="object-cover"
-                  style={{ objectPosition: "50% 30%" }}
-                />
-              </div>
-            </div>
+          <div className="mt-3">
+            <DetailAccordion
+              items={[
+                {
+                  id: "full-story",
+                  title: "Read our full story",
+                  content: (
+                    <div className="space-y-4 text-sm leading-relaxed text-mute sm:text-[0.9375rem]">
+                      <p>
+                        Arrow Industries started as a fabrication workshop in
+                        Campbellfield, building tipper bodies for operators who
+                        needed stronger, more practical equipment.
+                      </p>
+                      <p>
+                        The business was founded by Kon, who worked directly in
+                        the civil industry operating his own trucks and trailers
+                        on site — understanding firsthand what equipment needs
+                        to handle.
+                      </p>
+                      <p>
+                        That experience is backed by engineering insight, with
+                        Aaron bringing a background in civil engineering across
+                        major projects in Victoria, with a deep understanding of
+                        site requirements, compliance and real-world operating
+                        conditions.
+                      </p>
+                      <p>
+                        Today, we operate the same way — one workshop, one
+                        hands-on team, supporting operators across Australia.
+                      </p>
+                      <ul className="space-y-1 border-l-2 border-accent pl-4 text-bone">
+                        <li className="font-semibold">Built for operators.</li>
+                        <li className="font-semibold">Designed to suit the job.</li>
+                        <li className="font-semibold">Custom-built for real conditions.</li>
+                      </ul>
+                      <p>
+                        Each build is designed around the chassis, load, route
+                        and operating conditions — practical, compliant and
+                        built for long-term use.
+                      </p>
+                      <p>
+                        When a unit comes back for servicing, repairs or
+                        modifications, it&rsquo;s supported by the same team
+                        that built it.
+                      </p>
+                      <p>
+                        Supporting transport, construction and haulage operators
+                        across Australia for{" "}
+                        <span className="font-semibold text-bone">over 25 years</span>.
+                      </p>
+                    </div>
+                  ),
+                },
+              ]}
+            />
           </div>
         </Container>
       </section>
@@ -280,7 +275,6 @@ export default function AboutPage() {
                 />
                 <span className="eyebrow">{m.year}</span>
                 <h3 className="text-base font-semibold text-bone">{m.title}</h3>
-                <p className="text-sm leading-relaxed text-mute">{m.body}</p>
               </li>
             ))}
           </ol>
@@ -293,48 +287,83 @@ export default function AboutPage() {
           <SectionHeader
             eyebrow="Custom-built"
             heading="Sized for the job in front of it."
-            body="Every Arrow build starts with the chassis, payload, route and operating conditions. No catalogue sizes. No compromises. Just a unit engineered to do the work it’s asked to do, year after year."
-            className="mb-6"
+            body="Every Arrow build starts with the chassis, payload, route and operating conditions."
+            className="mb-5"
           />
-          <SpecTabs
-            label="About Arrow Industries"
-            tabs={[
-              {
-                id: "build",
-                label: "What we build",
-                content: <InfoGrid items={whatWeBuild} />,
-              },
-              {
-                id: "why-arrow",
-                label: "Why Arrow",
-                content: (
-                  <TabIntro
-                    heading="Built for Australian conditions."
-                    body="Decades of fabrication experience, real workshop capability and a refusal to cut corners on steel, welds or hydraulics."
-                  >
+          <Pills items={whatWeBuild.map((b) => b.title)} />
+          <div className="mt-6">
+            <DetailAccordion
+              items={[
+                {
+                  id: "build",
+                  title: "What we build",
+                  content: (
+                    <div className="grid gap-3">
+                      <p className="text-sm leading-relaxed text-mute">
+                        No catalogue sizes. No compromises. Just a unit
+                        engineered to do the work it&rsquo;s asked to do, year
+                        after year.
+                      </p>
+                      <InfoGrid items={whatWeBuild} />
+                    </div>
+                  ),
+                },
+                {
+                  id: "why-arrow",
+                  title: "Why Arrow",
+                  content: (
+                    <TabIntro
+                      heading="Built for Australian conditions."
+                      body="Decades of fabrication experience, real workshop capability and a refusal to cut corners on steel, welds or hydraulics."
+                    >
+                      <InfoGrid
+                        items={whyChooseArrow.map((f) => ({
+                          title: f.title,
+                          body: f.description,
+                        }))}
+                      />
+                    </TabIntro>
+                  ),
+                },
+                {
+                  id: "industries",
+                  title: "Industries",
+                  content: (
+                    <TabIntro
+                      heading="Built for operators across Australia."
+                      body="Working with operators who rely on equipment that performs — across construction, quarry, transport, waste and fleet operations."
+                    >
+                      <CheckGrid items={industries} />
+                    </TabIntro>
+                  ),
+                },
+                {
+                  id: "experience",
+                  title: "Our experience",
+                  content: (
                     <InfoGrid
-                      items={whyChooseArrow.map((f) => ({
-                        title: f.title,
-                        body: f.description,
+                      items={milestones.map((m) => ({
+                        title: m.title,
+                        body: m.body,
                       }))}
                     />
-                  </TabIntro>
-                ),
-              },
-              {
-                id: "industries",
-                label: "Industries",
-                content: (
-                  <TabIntro
-                    heading="Built for operators across Australia."
-                    body="Working with operators who rely on equipment that performs — across construction, quarry, transport, waste and fleet operations."
-                  >
-                    <CheckGrid items={industries} />
-                  </TabIntro>
-                ),
-              },
-            ]}
-          />
+                  ),
+                },
+                {
+                  id: "workshop",
+                  title: "Inside the workshop",
+                  content: (
+                    <InfoGrid
+                      items={workshop.map((w) => ({
+                        title: w.title,
+                        body: w.detail,
+                      }))}
+                    />
+                  ),
+                },
+              ]}
+            />
+          </div>
         </Container>
       </section>
 
@@ -373,7 +402,6 @@ export default function AboutPage() {
       <CTASection
         eyebrow="Talk to us"
         heading="Get a quote for your next build or repair"
-        body="Speak with the Arrow team to get a quote or next steps."
         primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />

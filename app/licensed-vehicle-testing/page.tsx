@@ -6,8 +6,8 @@ import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { CTASection } from "@/components/CTASection";
 import { FAQAccordion } from "@/components/FAQAccordion";
-import { CheckGrid, InfoGrid, ProcessSteps } from "@/components/ProductParts";
-import { SpecTabs } from "@/components/SpecTabs";
+import { CheckGrid, CheckList, InfoGrid, ProcessSteps, StatTiles } from "@/components/ProductParts";
+import { DetailAccordion } from "@/components/DetailAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
@@ -135,7 +135,26 @@ const faqs = [
   },
 ];
 
-const tabLead = "mb-4 max-w-2xl text-sm leading-relaxed text-mute sm:text-[0.9375rem]";
+const keyPoints = [
+  "Most done in 60–90 minutes",
+  "Defects documented in writing",
+  "VicRoads-recognised certificate on a pass",
+];
+
+const bookingNotes = [
+  "Most inspections completed in 60–90 minutes",
+  "Any defects documented in writing on the spot",
+  "VicRoads-recognised certificate issued on a pass",
+];
+
+const stats = [
+  { value: "EX 12409", label: "Licensed Vehicle Tester" },
+  { value: "60–90 min", label: "Most inspections" },
+  { value: "25+ years", label: "Building tippers and trailers" },
+  { value: "Statewide", label: "Accepted certificates" },
+];
+
+const panelLead = "mb-4 max-w-2xl text-sm leading-relaxed text-mute";
 
 export default async function RoadworthyPage() {
   // Roadworthy inspections toggled offline — show the unavailable notice at the
@@ -179,7 +198,7 @@ export default async function RoadworthyPage() {
       <PageHero
         eyebrow="Roadworthy / LVT · EX 12409"
         heading="VicRoads-licensed heavy vehicle and trailer inspections."
-        body="Licensed Vehicle Tester EX 12409. Prime movers, rigid trucks, trailers and fleet vehicles tested and certified from our Campbellfield workshop."
+        body="Prime movers, rigid trucks, trailers and fleet vehicles tested and certified in Campbellfield."
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Roadworthy", href: "/licensed-vehicle-testing" },
@@ -206,14 +225,9 @@ export default async function RoadworthyPage() {
               <SectionHeader
                 eyebrow="Request a booking"
                 heading="Pick a day — we'll confirm your time."
-                body="Tell us about the vehicle and when suits. The workshop checks the schedule and confirms every booking by email or phone, usually the same business day."
               />
               <ul className="mt-6 grid gap-3">
-                {[
-                  "Most inspections completed in 60–90 minutes",
-                  "Any defects documented in writing on the spot",
-                  "VicRoads-recognised certificate issued on a pass",
-                ].map((point) => (
+                {keyPoints.map((point) => (
                   <li key={point} className="flex items-center gap-3 text-sm text-bone sm:text-base">
                     <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" strokeWidth={2} aria-hidden />
                     {point}
@@ -277,55 +291,76 @@ export default async function RoadworthyPage() {
                     unoptimized
                   />
                 </div>
-                <div className="min-w-0">
-                  <p className="eyebrow">Scan to book</p>
-                  <p className="mt-1 text-sm leading-relaxed text-mute">
-                    Open the booking form on your phone.
-                  </p>
-                </div>
+                <p className="eyebrow min-w-0">Scan to book</p>
               </div>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* What's covered, inspection types and who it's for */}
+      <section className="section">
+        <Container>
+          <StatTiles items={stats} />
+        </Container>
+      </section>
+
+      {/* What's covered, inspection types, who it's for and the process */}
       <section id="inspections" className="section">
         <Container>
           <SectionHeader
-            eyebrow="What's covered"
-            heading="Heavy vehicle and trailer inspections."
-            body="Full inspection scope — backed by 25+ years of experience building tippers and trailers ourselves."
+            eyebrow="Inspection details"
+            heading="The detail, when you need it."
             className="mb-6"
           />
-          <SpecTabs
-            label="Roadworthy inspection details"
-            tabs={[
+          <DetailAccordion
+            items={[
               {
                 id: "covered",
-                label: "What's covered",
-                content: <InfoGrid items={covered} />,
+                title: "What's covered",
+                content: (
+                  <>
+                    <p className={panelLead}>
+                      Full inspection scope &mdash; backed by 25+ years of experience building
+                      tippers and trailers ourselves.
+                    </p>
+                    <InfoGrid items={covered} />
+                  </>
+                ),
               },
               {
                 id: "types",
-                label: "Inspection types",
+                title: "Inspection types",
                 content: (
                   <>
-                    <p className={tabLead}>Pick the inspection that suits the job.</p>
+                    <p className={panelLead}>Pick the inspection that suits the job.</p>
                     <InfoGrid items={inspectionTypes} />
                   </>
                 ),
               },
               {
                 id: "who",
-                label: "Who it's for",
+                title: "Who it's for",
                 content: (
                   <>
-                    <p className={tabLead}>
+                    <p className={panelLead}>
                       If your truck, trailer or fleet vehicle needs a roadworthy certificate, we can help.
                     </p>
                     <CheckGrid items={useCases} />
                   </>
+                ),
+              },
+              {
+                id: "process",
+                title: "The four-step inspection process",
+                content: (
+                  <div className="grid gap-4 [&>ol]:mt-0">
+                    <p className="max-w-2xl text-sm leading-relaxed text-mute">
+                      Tell us about the vehicle and when suits. The workshop checks the schedule
+                      and confirms every booking by email or phone, usually the same business day.
+                    </p>
+                    <ProcessSteps steps={process} />
+                    <CheckList items={bookingNotes} />
+                  </div>
                 ),
               },
             ]}
@@ -333,25 +368,10 @@ export default async function RoadworthyPage() {
         </Container>
       </section>
 
-      {/* Process */}
-      <section id="process" className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="What to expect"
-            heading="A clear four-step inspection process."
-          />
-          <ProcessSteps steps={process} />
-        </Container>
-      </section>
-
       {/* FAQ */}
       <section id="faq" className="section">
         <Container>
-          <SectionHeader
-            eyebrow="FAQ"
-            heading="Common questions, answered."
-            body="Still have a question? Call the workshop or send us an enquiry."
-          />
+          <SectionHeader eyebrow="FAQ" heading="Common questions, answered." />
           <div className="mt-6">
             <FAQAccordion items={faqs} />
           </div>
@@ -361,7 +381,6 @@ export default async function RoadworthyPage() {
       <CTASection
         eyebrow="Roadworthy"
         heading="Book your heavy vehicle or trailer inspection today."
-        body="VicRoads-licensed inspections from our Campbellfield workshop."
         primaryCta={{
           label: "Book an inspection",
           href: "#book",

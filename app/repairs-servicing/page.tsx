@@ -18,7 +18,7 @@ import { ProductHero } from "@/components/ProductHero";
 import { CTASection } from "@/components/CTASection";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { CheckList, InfoGrid, PhotoBand } from "@/components/ProductParts";
-import { SpecTabs } from "@/components/SpecTabs";
+import { DetailAccordion } from "@/components/DetailAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
@@ -46,7 +46,7 @@ const crumbs = [
   { label: "Repairs & Servicing", href: "/repairs-servicing" },
 ];
 
-const tabLead = "mb-4 max-w-2xl text-sm leading-relaxed text-mute sm:text-[0.9375rem]";
+const panelLead = "mb-4 max-w-2xl text-sm leading-relaxed text-mute";
 
 const features = [
   {
@@ -196,46 +196,24 @@ export default function RepairsPage() {
         }
       />
 
-      {/* Overview and capability */}
+      {/* What we repair: icons and titles, with the descriptions in the detail below */}
       <section id="overview" className="section">
         <Container>
-          <div className="grid gap-4 lg:grid-cols-12 lg:gap-12">
-            <div className="min-w-0 lg:col-span-5">
-              <SectionHeader
-                eyebrow="Overview"
-                heading="Heavy vehicle repairs, done by the same team that builds tippers and trailers."
-              />
-            </div>
-            <p className="min-w-0 text-[0.9375rem] leading-relaxed text-mute sm:text-base lg:col-span-7 lg:self-end">
-              From damaged tipper bins and tailgates to structural repairs and
-              hydraulic faults, we get heavy vehicles and trailers back on the
-              road quickly.
-            </p>
-          </div>
-
-          <div className="mt-8 lg:mt-10">
-            <p className="eyebrow mb-2">Capability</p>
-            <h3 className="font-display text-xl font-semibold text-bone">
-              What we repair, rebuild and service.
-            </h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-mute sm:text-[0.9375rem]">
-              One workshop, full repair scope — from cracked rails to hydraulic rebuilds.
-            </p>
-          </div>
-          <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <SectionHeader
+            eyebrow="Capability"
+            heading="What we repair, rebuild and service."
+          />
+          <ul className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
             {features.map((f) => {
               const Icon = f.icon;
               return (
-                <li key={f.title} className="card flex gap-3.5 p-4 sm:p-5 lg:flex-col">
+                <li key={f.title} className="card flex min-w-0 flex-col gap-3 p-4 sm:p-5">
                   <span className="icon-tile">
                     <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
                   </span>
-                  <div className="min-w-0">
-                    <h4 className="font-display text-base font-semibold text-bone">
-                      {f.title}
-                    </h4>
-                    <p className="mt-1 text-sm leading-relaxed text-mute">{f.body}</p>
-                  </div>
+                  <h3 className="font-display text-base font-semibold leading-snug text-bone">
+                    {f.title}
+                  </h3>
                 </li>
               );
             })}
@@ -243,24 +221,49 @@ export default function RepairsPage() {
         </Container>
       </section>
 
-      {/* Common work and service options */}
+      <section id="why-arrow" className="section">
+        <Container>
+          <PhotoBand
+            photo={media.welding}
+            eyebrow="Why Arrow"
+            heading="Done by the same team that builds tippers and trailers."
+            body="Insurance repairs, fabrication work and ongoing servicing, all from one workshop."
+          />
+        </Container>
+      </section>
+
+      {/* The full wording, closed until someone wants it */}
       <section id="services" className="section">
         <Container>
           <SectionHeader
             eyebrow="Service options"
-            heading="Repair and service options."
+            heading="The detail, when you need it."
             className="mb-6"
           />
-          <SpecTabs
-            label="Repair and service options"
-            tabs={[
+          <DetailAccordion
+            items={[
               {
-                id: "common",
-                label: "Common work",
+                id: "capability",
+                title: "What each repair covers",
                 content: (
                   <>
-                    <p className={tabLead}>
-                      Most jobs land in one of these categories — but if you&rsquo;re not sure, book a diagnostic inspection.
+                    <p className={panelLead}>
+                      From damaged tipper bins and tailgates to structural repairs and
+                      hydraulic faults, we get heavy vehicles and trailers back on the
+                      road quickly. One workshop, full repair scope &mdash; from cracked
+                      rails to hydraulic rebuilds.
+                    </p>
+                    <InfoGrid items={features} />
+                  </>
+                ),
+              },
+              {
+                id: "common",
+                title: "Common work",
+                content: (
+                  <>
+                    <p className={panelLead}>
+                      Most jobs land in one of these categories &mdash; but if you&rsquo;re not sure, book a diagnostic inspection.
                     </p>
                     <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                       {useCases.map((u) => {
@@ -280,13 +283,26 @@ export default function RepairsPage() {
               },
               {
                 id: "options",
-                label: "Service options",
+                title: "Service options",
                 content: (
                   <>
-                    <p className={tabLead}>
+                    <p className={panelLead}>
                       Pick the path that suits the job. Every option starts with a written diagnostic and quote.
                     </p>
                     <InfoGrid items={repairOptions} />
+                  </>
+                ),
+              },
+              {
+                id: "credentials",
+                title: "Workshop credentials",
+                content: (
+                  <>
+                    <p className={panelLead}>
+                      We handle insurance repairs, fabrication work and ongoing servicing
+                      &mdash; all from the same workshop that builds our bodies.
+                    </p>
+                    <CheckList items={compliance} />
                   </>
                 ),
               },
@@ -295,28 +311,10 @@ export default function RepairsPage() {
         </Container>
       </section>
 
-      {/* Compliance / why us */}
-      <section id="why-arrow" className="section">
-        <Container>
-          <PhotoBand
-            photo={media.welding}
-            eyebrow="Why Arrow"
-            heading="Workshop credentials that hold up under load."
-            body="We handle insurance repairs, fabrication work and ongoing servicing — all from the same workshop that builds our bodies."
-          >
-            <CheckList items={compliance} />
-          </PhotoBand>
-        </Container>
-      </section>
-
       {/* FAQ */}
       <section id="faq" className="section">
         <Container>
-          <SectionHeader
-            eyebrow="FAQ"
-            heading="Common questions, answered."
-            body="Still have a question? Call the workshop or book an inspection."
-          />
+          <SectionHeader eyebrow="FAQ" heading="Common questions, answered." />
           <div className="mt-6">
             <FAQAccordion items={faqs} />
           </div>
@@ -326,7 +324,6 @@ export default function RepairsPage() {
       <CTASection
         eyebrow="Repairs & Servicing"
         heading="Need a tipper or trailer repaired?"
-        body="Book an inspection, get a clear quote and have the work completed from our Campbellfield workshop."
         primaryCta={{
           label: "Book an inspection",
           href: bookingUrl,

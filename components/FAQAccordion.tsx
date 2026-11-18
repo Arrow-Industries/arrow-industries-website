@@ -10,7 +10,7 @@ interface FAQAccordionProps {
 }
 
 export function FAQAccordion({ items }: FAQAccordionProps) {
-  const [open, setOpen] = useState<number | null>(0);
+  const [open, setOpen] = useState<number | null>(null);
   const baseId = useId();
 
   return (
