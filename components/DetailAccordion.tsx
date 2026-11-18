@@ -19,7 +19,7 @@ export function DetailAccordion({ items }: { items: DetailItem[] }) {
   const baseId = useId();
 
   return (
-    <ul className="list-group">
+    <ul className="rule-list">
       {items.map((item) => {
         const isOpen = open === item.id;
         const panelId = `${baseId}-${item.id}`;
@@ -32,16 +32,16 @@ export function DetailAccordion({ items }: { items: DetailItem[] }) {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpen(isOpen ? null : item.id)}
-                className="flex min-h-14 w-full items-center justify-between gap-4 px-[1.125rem] py-3.5 text-left transition-colors hover:bg-white/[0.03]"
+                className="group flex min-h-18 w-full items-center justify-between gap-4 py-3 text-left"
               >
-                <span className="text-[0.9375rem] font-medium tracking-normal text-bone sm:text-base">
+                <span className="display display-sm transition-colors group-hover:text-accent-text">
                   {item.title}
                 </span>
                 <ChevronDown
                   aria-hidden
                   className={cn(
-                    "h-4 w-4 shrink-0 text-mute transition-transform duration-300 ease-[var(--ease-mac)]",
-                    isOpen && "rotate-180",
+                    "h-6 w-6 shrink-0 text-mute transition-transform duration-300 ease-[var(--ease-mac)]",
+                    isOpen && "rotate-180 text-accent-text",
                   )}
                 />
               </button>
@@ -57,7 +57,7 @@ export function DetailAccordion({ items }: { items: DetailItem[] }) {
               )}
             >
               <div className="overflow-hidden">
-                <div className="px-[1.125rem] pb-5">{item.content}</div>
+                <div className="pb-7 pt-1">{item.content}</div>
               </div>
             </div>
           </li>

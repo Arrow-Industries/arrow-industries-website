@@ -96,6 +96,7 @@ export default function Page() {
           subtext: "Semi trailers matched to your prime mover, built for long-term heavy work.",
           capability: ["2-axle", "3-axle"],
           image: media.bodyPainted.src,
+          imageAlt: media.bodyPainted.alt,
           imagePosition: "50% 45%",
         },
         recentBuilds,

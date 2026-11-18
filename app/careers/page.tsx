@@ -173,10 +173,11 @@ export default function CareersPage() {
       <ProductHero
         crumbs={crumbs}
         badge="Careers"
-        heading="Build heavy gear with a Melbourne workshop that backs its trades."
+        heading="Build heavy gear with us."
         body="We're always looking for reliable tradespeople and apprentices who take pride in their work."
-        image={media.bodyPainted.src}
-        imagePosition="50% 22%"
+        image={media.welding.src}
+        imageAlt={media.welding.alt}
+        imagePosition="50% 30%"
         actions={
           <>
             <Button href="#apply" size="lg">
@@ -211,7 +212,7 @@ export default function CareersPage() {
                       aria-hidden
                     />
                   </span>
-                  <h3 className="text-base font-semibold text-bone">
+                  <h3 className="text-[1.75rem] text-bone">
                     {item.title}
                   </h3>
                 </li>
@@ -254,7 +255,7 @@ export default function CareersPage() {
                   title: "What we look for",
                   content: (
                     <div className="grid gap-3">
-                      <p className="font-display text-lg font-semibold text-bone">
+                      <p className="display text-[1.75rem] text-bone">
                         The people who fit in here.
                       </p>
                       <CheckGrid items={lookFor} />
@@ -407,9 +408,7 @@ export default function CareersPage() {
       <CTASection
         eyebrow="Get in touch"
         heading="Reckon you'd be a good fit?"
-        body="Send your details through and we'll be in touch."
         primaryCta={{ label: "Apply now", href: "#apply" }}
-        phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />
     </>
   );

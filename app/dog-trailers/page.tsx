@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { TrailerPageTemplate } from "@/components/TrailerPageTemplate";
 import { media } from "@/data/media";
 import { getServiceBySlug } from "@/data/services";
+import { dogWalk } from "@/data/truck-parts";
 
 const slug = "dog-trailers";
 
@@ -111,8 +112,10 @@ export default function Page() {
           subtext: "Dog trailers matched to your tipper, built for balance and real-world work.",
           capability: ["3-axle", "4-axle"],
           image: media.truckAndDogDusk.src,
+          imageAlt: media.truckAndDogDusk.alt,
           imagePosition: "62% 50%",
         },
+        walk: dogWalk,
         recentBuilds,
         trailerType,
         completeSetup,

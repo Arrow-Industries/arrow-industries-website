@@ -70,7 +70,7 @@ export function BuildsGallery({ builds }: { builds: BuildItem[] }) {
             aria-pressed={f.id === active.id}
             onClick={() => setFilterId(f.id)}
             className={cn(
-              "h-11 shrink-0 rounded-full px-4 text-[0.8125rem] font-medium transition-colors lg:h-9 lg:px-3.5",
+              "h-11 shrink-0 px-4 text-sm font-medium transition-colors",
               f.id === active.id
                 ? "bg-bone text-ink"
                 : "bg-white/[0.08] text-bone/80 hover:bg-white/[0.14] hover:text-bone",
@@ -85,7 +85,7 @@ export function BuildsGallery({ builds }: { builds: BuildItem[] }) {
         Showing {visible.length} {visible.length === 1 ? "build" : "builds"}
       </p>
 
-      <ul className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-3">
+      <ul className="mt-4 grid grid-cols-2 gap-1 md:grid-cols-3 lg:grid-cols-4">
         {visible.map((build, i) => (
           <li
             key={build.id}
@@ -327,7 +327,7 @@ function BuildDialog({
               <X className="h-5 w-5" aria-hidden />
             </button>
           </div>
-          <h2 className="mt-1 font-display text-xl font-semibold leading-snug text-bone sm:text-2xl">
+          <h2 className="display-sm mt-2 text-bone">
             {build.title}
           </h2>
           {build.description && (

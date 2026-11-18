@@ -1,5 +1,3 @@
-import type { LucideIcon } from "lucide-react";
-import { ClipboardCheck, Landmark, ShoppingBag, Wrench } from "lucide-react";
 import { flags } from "@/data/flags";
 import { media } from "@/data/media";
 import { site } from "@/data/site";
@@ -12,28 +10,26 @@ export interface NavChild {
   /** Photo shown in a photo menu. */
   image?: string;
   imagePosition?: string;
-  icon?: LucideIcon;
-  /** Short call to action shown beside the item. */
-  badge?: string;
 }
 
 export interface NavItem {
   label: string;
   href?: string;
   children?: NavChild[];
+  /** Plain links shown beside the photos in a photo menu. */
+  links?: NavChild[];
   external?: boolean;
   /** `photos` lays the drop-down out as large photo tiles. */
   menu?: "photos";
 }
 
 export const primaryNav: NavItem[] = [
-  { label: "Home", href: "/" },
   {
-    label: "Products",
+    label: "Build",
     menu: "photos",
     children: [
       {
-        label: "Tipper Truck Bodies",
+        label: "Tipper Bodies",
         href: "/tipper-truck-bodies",
         description: "4x2, 6x4, 8x4 and 10x4",
         image: media.tipperGraphiteRear.src,
@@ -54,41 +50,65 @@ export const primaryNav: NavItem[] = [
         imagePosition: "45% 50%",
       },
     ],
+    links: [
+      { label: "Configure your build", href: "/configure" },
+      { label: "Recent builds", href: "/builds" },
+      { label: "Finance", href: "/finance" },
+      { label: "Request a quote", href: "/request-a-quote" },
+    ],
   },
-  { label: "Builds", href: "/builds" },
   {
-    label: "Services",
+    label: "Roadworthy",
     children: [
       {
-        label: "Roadworthy Inspections",
-        href: "/licensed-vehicle-testing",
-        description: "VicRoads-licensed heavy vehicle testing.",
-        icon: ClipboardCheck,
-        badge: "Book",
+        label: "Book an inspection",
+        href: "/licensed-vehicle-testing#book",
+        description: "Pick a day and we'll confirm your time.",
       },
       {
-        label: "Repairs & Servicing",
-        href: "/repairs-servicing",
-        description: "Workshop repairs, maintenance and modifications.",
-        icon: Wrench,
+        label: "What we inspect",
+        href: "/licensed-vehicle-testing#inspect",
+        description: "Trucks, trailers and fleets.",
       },
       {
-        label: "Parts Shop",
-        href: site.shop.parts,
-        description: "Parts and components, online.",
-        icon: ShoppingBag,
-        external: true,
+        label: "How it works",
+        href: "/licensed-vehicle-testing#how",
+        description: "Four steps, start to finish.",
       },
       {
-        label: "Finance",
-        href: "/finance",
-        description: "Finance your build through Linx Australia Group.",
-        icon: Landmark,
+        label: "Common questions",
+        href: "/licensed-vehicle-testing#faq",
+        description: "Timing, cost and what happens next.",
       },
     ],
   },
-  // A main part of the business, so it has its own place in the toolbar.
-  { label: "Roadworthy", href: "/licensed-vehicle-testing" },
+  {
+    label: "Repairs",
+    children: [
+      {
+        label: "Repairs & servicing",
+        href: "/repairs-servicing",
+        description: "Bodies, trailers and heavy vehicle components.",
+      },
+      {
+        label: "What we repair",
+        href: "/repairs-servicing#overview",
+        description: "From tailgates to hydraulics.",
+      },
+      {
+        label: "Insurance & fleet work",
+        href: "/repairs-servicing#services",
+        description: "Service options for every job.",
+      },
+      {
+        label: "Common questions",
+        href: "/repairs-servicing#faq",
+        description: "Lead times, insurers and more.",
+      },
+    ],
+  },
+  // The online store, which lives on its own site.
+  { label: "Shop", href: site.shop.parts, external: true },
   {
     label: "Company",
     children: [
@@ -106,11 +126,12 @@ export const footerLinks = {
     { label: "Semi Trailers", href: "/semi-trailers" },
     { label: "Builds", href: "/builds" },
     { label: "Configure your build", href: "/configure" },
+    { label: "Finance", href: "/finance" },
   ],
   services: [
     { label: "Roadworthy Inspections", href: "/licensed-vehicle-testing" },
     { label: "Repairs & Servicing", href: "/repairs-servicing" },
-    { label: "Finance", href: "/finance" },
+    { label: "Shop", href: site.shop.parts },
   ],
   company: [
     { label: "About", href: "/about" },

@@ -1,4 +1,4 @@
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/Button";
 import { CTASection } from "@/components/CTASection";
 import { Container } from "@/components/Container";
@@ -14,17 +14,17 @@ import {
   PhotoBand,
   Pills,
   ProcessSteps,
-  StatTiles,
   ViewBuildsLink,
   type BuildCard,
 } from "@/components/ProductParts";
 import { DetailAccordion } from "@/components/DetailAccordion";
 import { media } from "@/data/media";
 import { SectionHeader } from "@/components/SectionHeader";
+import { TapTheTruck } from "@/components/TapTheTruck";
+import type { TruckWalk } from "@/data/truck-parts";
 import type { Service } from "@/data/services";
 import type { ServiceContent } from "@/data/serviceContent";
 import type { FAQ } from "@/data/faqs";
-import { site } from "@/data/site";
 import {
   breadcrumbSchema,
   faqPageSchema,
@@ -48,8 +48,11 @@ export interface TrailerPageConfig {
     subtext: string;
     capability: string[];
     image: string;
+    imageAlt?: string;
     imagePosition?: string;
   };
+  /** Tappable points on a real photo of this product. */
+  walk?: TruckWalk;
   recentBuilds: TrailerRecentBuild[];
   trailerType: TrailerTypeBlock;
   /** Per-page copy for the "Designed to work together" section. */
@@ -147,11 +150,13 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
     completeSetup,
     features,
     faqs,
+    walk,
   } = config;
+  const product = config.slug === "dog-trailers" ? "dog" : "semi";
 
   const crumbs = [
     { label: "Home", href: "/" },
-    { label: "Products" },
+    { label: "Build" },
     { label: service.shortTitle, href: service.href },
   ];
 
@@ -182,27 +187,26 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         ]}
       />
 
-      {/* 1 — HERO */}
       <ProductHero
         crumbs={crumbs}
         badge={hero.badge}
         heading={
           <>
-            Built to work <span className="text-accent">with the truck.</span>
+            {hero.badge} <span className="text-accent">built to match.</span>
           </>
         }
         body={hero.subtext}
         image={hero.image}
+        imageAlt={hero.imageAlt}
         imagePosition={hero.imagePosition}
         actions={
           <>
-            <Button href="/request-a-quote" size="lg">
-              Request a quote
+            <Button href={`/configure?product=${product}`} size="lg">
+              Configure yours
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Button>
-            <Button href={site.phoneHref} size="lg" variant="secondary">
-              <Phone className="h-4 w-4 text-accent-text" aria-hidden />
-              Call {site.phone}
+            <Button href="/request-a-quote" size="lg" variant="secondary">
+              Request a quote
             </Button>
           </>
         }
@@ -211,61 +215,55 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       <LocalNav
         label={`${service.shortTitle} sections`}
         items={[
+          { id: "setups", label: "Setups" },
+          ...(walk ? [{ id: "tap", label: "The trailer" }] : []),
           ...(recentBuilds.length > 0 ? [{ id: "builds", label: "Builds" }] : []),
           { id: "specs", label: "Specifications" },
           { id: "faq", label: "FAQ" },
         ]}
       />
 
-      <section className="section">
+      <section id="setups" className="band scroll-mt-28">
         <Container>
-          <StatTiles
-            items={[
-              {
-                value: hero.capability.map((c) => c.replace("-axle", "")).join(" or "),
-                label: "Axles",
-              },
-              { value: "Matched", label: "To your truck" },
-              { value: "2-pack", label: "Paint to your colour" },
-              { value: "In-house", label: "Fabrication" },
-            ]}
-          />
+          <p className="eyebrow">Configurations</p>
+          <ul className="display display-lg mt-4 flex flex-wrap gap-x-[0.45em] gap-y-1">
+            {hero.capability.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+          <p className="mt-6 max-w-2xl border-t border-line pt-5 text-xl leading-snug text-mute">
+            {trailerType.headline}
+          </p>
         </Container>
       </section>
 
+      {walk && <TapTheTruck walk={walk} />}
+
       {recentBuilds.length > 0 && (
-        <section id="builds" className="section">
-          <Container>
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <SectionHeader eyebrow="Recent builds" heading="Real trailers. Real combinations." />
-              <ViewBuildsLink />
-            </div>
-            <BuildCards builds={recentBuilds} />
+        <section id="builds" className="scroll-mt-28 pt-16 lg:pt-24">
+          <Container className="flex flex-wrap items-end justify-between gap-4 pb-7 lg:pb-11">
+            <SectionHeader eyebrow="Recent builds" heading="Real trailers. Real combinations." />
+            <ViewBuildsLink />
           </Container>
+          <BuildCards builds={recentBuilds} />
         </section>
       )}
 
-      <section className="section">
-        <Container>
-          <PhotoBand
-            photo={config.slug === "dog-trailers" ? media.truckAndDog : media.welding}
-            eyebrow="Complete working setup"
-            heading="Designed to work together."
-            body={trailerType.headline}
-          >
-            <Button
-              href={`/configure?product=${config.slug === "dog-trailers" ? "dog" : "semi"}`}
-              size="lg"
-            >
-              Configure your build
-            </Button>
-          </PhotoBand>
-        </Container>
+      <section className="pt-16 lg:pt-24">
+        <PhotoBand
+          photo={config.slug === "dog-trailers" ? media.truckAndDog : media.welding}
+          eyebrow="Complete working setup"
+          heading="Designed to work together."
+        >
+          <Button href={`/configure?product=${product}`} size="lg">
+            Configure your build
+          </Button>
+        </PhotoBand>
       </section>
 
-      <section id="specs" className="section">
+      <section id="specs" className="band scroll-mt-28">
         <Container>
-          <SectionHeader eyebrow="Specifications" heading="The detail, when you need it." className="mb-6" />
+          <SectionHeader eyebrow="Specifications" heading="The full spec." className="mb-7 lg:mb-11" />
           <DetailAccordion
             items={[
               { id: "options", title: "Features & options", content: <CheckGrid items={features} /> },
@@ -273,8 +271,8 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
                 id: "setup",
                 title: "Complete working setup",
                 content: (
-                  <div className="grid gap-3">
-                    <p className="text-sm leading-relaxed text-mute">
+                  <div className="grid gap-5">
+                    <p className="max-w-3xl text-[1.0625rem] leading-relaxed text-mute">
                       A trailer only performs as well as how it works with the truck. Every Arrow
                       trailer is designed to match the towing setup &mdash; from the tow connection
                       through to hydraulics, braking and electrical systems. The result is a
@@ -304,24 +302,17 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         </Container>
       </section>
 
-      <section id="faq" className="section">
+      <section id="faq" className="band scroll-mt-28 pt-0 lg:pt-0">
         <Container>
-          <SectionHeader eyebrow="FAQ" heading="Common questions, answered." />
-          <div className="mt-6">
-            <FAQAccordion items={faqs} />
-          </div>
+          <SectionHeader eyebrow="FAQ" heading="Common questions." className="mb-7 lg:mb-11" />
+          <FAQAccordion items={faqs} />
         </Container>
       </section>
 
       <CTASection
         eyebrow="Request a quote"
         heading="Get the setup right from the start."
-        primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
-        secondaryCta={{
-          label: "Configure your build",
-          href: `/configure?product=${config.slug === "dog-trailers" ? "dog" : "semi"}`,
-        }}
-        phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
+        secondaryCta={{ label: "Configure your build", href: `/configure?product=${product}` }}
       />
     </>
   );

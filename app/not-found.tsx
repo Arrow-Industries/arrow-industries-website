@@ -8,7 +8,7 @@ export default function NotFound() {
         <p className="eyebrow">
           404 — Page not found
         </p>
-        <h1 className="mt-4 font-display text-4xl font-semibold text-bone sm:text-5xl">
+        <h1 className="display-lg mt-4 text-bone">
           That page took a wrong turn.
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base text-mute sm:text-lg">

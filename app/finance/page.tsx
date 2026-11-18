@@ -179,11 +179,12 @@ export default function FinancePage() {
         badge="Finance"
         heading={
           <>
-            Finance your next <span className="text-accent">Arrow build.</span>
+            Finance your <span className="text-accent">Arrow build.</span>
           </>
         }
         body="Competitive asset finance, arranged through our partner Linx Australia Group."
         image={media.scaniaGraphite.src}
+        imageAlt={media.scaniaGraphite.alt}
         imagePosition="62% 50%"
         actions={
           <>
@@ -191,7 +192,6 @@ export default function FinancePage() {
               Apply for finance
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
-              <Phone className="h-4 w-4 text-accent-text" aria-hidden />
               Call {site.phone}
             </Button>
           </>
@@ -217,7 +217,7 @@ export default function FinancePage() {
                       aria-hidden
                     />
                   </span>
-                  <h3 className="font-display text-base font-semibold leading-snug text-bone">
+                  <h3 className="text-[1.75rem] text-bone">
                     {item.title}
                   </h3>
                 </li>
@@ -347,7 +347,7 @@ export default function FinancePage() {
                 title: "How it works",
                 content: (
                   <div className="[&>ol]:mt-0">
-                    <p className="mb-4 font-display text-lg font-semibold text-bone">
+                    <p className="mb-4 display text-[1.75rem] text-bone">
                       Four steps to finance.
                     </p>
                     <ProcessSteps steps={steps} />
@@ -359,7 +359,7 @@ export default function FinancePage() {
                 title: "What you can finance",
                 content: (
                   <>
-                    <p className="mb-2 font-display text-lg font-semibold text-bone">
+                    <p className="mb-2 display text-[1.75rem] text-bone">
                       From a single body to the whole rig.
                     </p>
                     <p className={panelLead}>
@@ -375,7 +375,7 @@ export default function FinancePage() {
                 title: "Finance options",
                 content: (
                   <>
-                    <p className="mb-2 font-display text-lg font-semibold text-bone">
+                    <p className="mb-2 display text-[1.75rem] text-bone">
                       Structured to suit your business.
                     </p>
                     <p className={panelLead}>
@@ -427,7 +427,6 @@ export default function FinancePage() {
         eyebrow="Finance"
         heading="Get the gear working sooner."
         primaryCta={{ label: "Apply for finance", href: "#apply" }}
-        phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />
     </>
   );

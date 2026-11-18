@@ -42,7 +42,7 @@ export default async function TermsPage() {
 
       <section className="section">
         <Container>
-          <div className="max-w-3xl text-base leading-relaxed text-mute">
+          <div className="plain-headings max-w-3xl text-base leading-relaxed text-mute">
 
             {/* Issuer block */}
             <div className="card mb-3 p-5 text-sm sm:p-6">

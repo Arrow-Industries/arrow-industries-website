@@ -43,7 +43,7 @@ export default function ContactPage() {
       <PageHero
         compact
         eyebrow="Contact"
-        heading="Contact Arrow Industries"
+        heading="Talk to the workshop."
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Contact", href: "/contact" },
@@ -56,14 +56,14 @@ export default function ContactPage() {
           <div className="grid gap-3 lg:grid-cols-3">
             <a
               href={site.phoneHref}
-              className="card-link group relative flex items-center gap-4 overflow-hidden rounded-2xl bg-[linear-gradient(180deg,#e7100a,#c80500)] p-5 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.2)] sm:p-6 lg:flex-col lg:items-start"
+              className="card-link group relative flex items-center gap-4 overflow-hidden rounded-2xl bg-accent p-5 text-white sm:p-6 lg:flex-col lg:items-start"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
                 <Phone className="h-5 w-5 text-white" strokeWidth={2} aria-hidden />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium text-white/85">Call now</p>
-                <p className="mt-1 font-display text-2xl font-semibold leading-tight sm:text-3xl">
+                <p className="mt-1 display text-[2.5rem] sm:text-5xl">
                   {site.phone}
                 </p>
                 <p className="mt-1 text-xs text-white/85">Mon – Fri, {site.hours[0].time}</p>
@@ -83,7 +83,7 @@ export default function ContactPage() {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="label">Text us</p>
-                <p className="mt-1 font-display text-2xl font-semibold leading-tight text-bone sm:text-3xl">
+                <p className="mt-1 display text-[2.5rem] text-bone sm:text-5xl">
                   {site.phone}
                 </p>
               </div>
@@ -128,7 +128,7 @@ export default function ContactPage() {
               <div className="flex flex-1 flex-col gap-5 p-5 sm:p-6">
                 <div>
                   <p className="label">Address</p>
-                  <p className="mt-1.5 font-display text-lg font-semibold leading-snug text-bone">
+                  <p className="display mt-2 text-[2.25rem] text-bone">
                     {site.address.line1}
                     <br />
                     {site.address.suburb} {site.address.state} {site.address.postcode}
@@ -196,8 +196,7 @@ export default function ContactPage() {
 
       <CTASection
         eyebrow="Request a quote"
-        heading="Get a quote for your next build or repair"
-        primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
+        heading="Get a quote for your next build or repair."
         secondaryCta={{ label: "Configure your build", href: "/configure" }}
       />
     </>

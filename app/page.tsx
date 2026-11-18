@@ -1,19 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ChevronRight, Instagram } from "lucide-react";
-import { Container } from "@/components/Container";
+import { ArrowRight } from "lucide-react";
+import { BuildWall } from "@/components/BuildWall";
 import { Button } from "@/components/Button";
-import { TrustBar } from "@/components/TrustBar";
-import { TrustedBy } from "@/components/TrustedBy";
+import { Container } from "@/components/Container";
 import { CTASection } from "@/components/CTASection";
 import { PartnerLogos } from "@/components/PartnerLogos";
+import { PhotoBand, ViewBuildsLink, WorkshopStrip } from "@/components/ProductParts";
+import { ProductChooser } from "@/components/ProductChooser";
+import { RoadworthyBand } from "@/components/RoadworthyBand";
 import { SectionHeader } from "@/components/SectionHeader";
-import { site } from "@/data/site";
-import { PhotoBand, PhotoCard, WorkshopStrip } from "@/components/ProductParts";
+import { TapTheTruck } from "@/components/TapTheTruck";
 import { Testimonials } from "@/components/Testimonials";
-import { TruckDrawing } from "@/components/TruckDrawing";
+import { TrustedBy } from "@/components/TrustedBy";
 import { media } from "@/data/media";
-import { toBuilds, type BuildItem } from "@/lib/builds";
+import { site } from "@/data/site";
+import { tipperWalk } from "@/data/truck-parts";
+import { toBuilds } from "@/lib/builds";
 import { fetchTopInstagramMedia } from "@/lib/instagram";
 
 // Canonical for the home page is emitted directly in JSX (not via the
@@ -28,317 +31,131 @@ import { fetchTopInstagramMedia } from "@/lib/instagram";
 // call never sits on a user's request path. Refreshes at most hourly.
 export const revalidate = 3600;
 
+const doors = [
+  { href: "#build", note: "New truck body or trailer", label: "Build" },
+  { href: "#roadworthy", note: "Heavy vehicle inspection", label: "Roadworthy" },
+  { href: "#repairs", note: "Trucks, bodies and trailers", label: "Repairs" },
+];
+
 export default async function HomePage() {
   const posts = await fetchTopInstagramMedia(12, 30);
-  const recentBuilds = toBuilds(posts)
-    .filter((b) => !b.video)
-    .slice(0, 4);
+  const recentBuilds = toBuilds(posts).filter((b) => !b.video);
+
   return (
     <>
       <link rel="canonical" href={`${site.url}/`} />
       <Hero />
-      <ProductsSection />
-      <RoadworthySection />
-      <WorkshopSection />
-      <ConfigureSection />
-      <RecentBuildsSection builds={recentBuilds} />
+      <ProductChooser />
+      <TapTheTruck walk={tipperWalk} id="tap-the-truck" />
+
+      <section className="band">
+        <Container>
+          <SectionHeader eyebrow="Campbellfield workshop" heading="Steel to site." className="mb-7 lg:mb-11" />
+        </Container>
+        <WorkshopStrip
+          items={[
+            { photo: media.welding, title: "Welded in-house" },
+            { photo: media.paintBooth, title: "Painted your colour" },
+            { photo: media.tailgate, title: "Fitted and tested" },
+            { photo: media.onSite, title: "Out to work" },
+          ]}
+        />
+      </section>
+
+      <section id="work" className="scroll-mt-15">
+        <Container className="flex flex-wrap items-end justify-between gap-4 pb-7 lg:pb-11">
+          <SectionHeader eyebrow="Recent work" heading="Off the floor." />
+          <ViewBuildsLink />
+        </Container>
+        <BuildWall builds={recentBuilds} />
+      </section>
+
       <Testimonials />
       <TrustedBy />
-      <PartnersSection />
-      <CTASection
-        eyebrow="Request a quote"
-        heading="Get a quote for your next build or repair"
-        primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
-        secondaryCta={{ label: "View builds", href: "/builds" }}
-      />
+      <RoadworthyBand />
+
+      <section id="repairs" className="scroll-mt-15">
+        <PhotoBand
+          photo={media.workshop}
+          eyebrow="Repairs & servicing"
+          heading="Fixed by the people who build them."
+        >
+          <Button href="/repairs-servicing" size="lg" variant="secondary">
+            Repairs &amp; servicing
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Button>
+        </PhotoBand>
+      </section>
+
+      <section className="section">
+        <Container>
+          <p className="eyebrow mb-4 text-center">Built with proven components</p>
+          <PartnerLogos />
+        </Container>
+      </section>
+
+      <CTASection eyebrow="Talk to the workshop" heading="Get a quote for your next build or repair." />
     </>
   );
 }
 
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden">
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 -z-10 h-[40rem] bg-[radial-gradient(55%_70%_at_50%_0%,rgb(225_6_0/0.17),transparent_72%)]"
-      />
-      <Container className="pt-12 text-center sm:pt-16 lg:pt-20">
-        <p className="pill">
-          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-          Melbourne workshop · 25+ years
-        </p>
-        <h1 className="mx-auto mt-5 max-w-4xl font-display text-[2.5rem] font-semibold leading-[1.03] text-bone sm:text-6xl lg:text-[4.5rem]">
-          Custom tipper bodies and trailers{" "}
-          <span className="text-accent">engineered for real work.</span>
+    <section>
+      <Container className="pb-4 pt-5 lg:pb-6 lg:pt-7">
+        <p className="eyebrow">Melbourne-built tipper bodies and trailers. 25+ years&rsquo; experience.</p>
+        <h1 className="display mt-3 whitespace-nowrap text-[21vw] leading-[0.88] lg:text-[min(12vw,13rem)]">
+          Built for <span className="block text-accent lg:inline">real work.</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-mute sm:text-lg">
-          Built in Melbourne for operators across Australia.
-        </p>
-        <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
-          <Button href="/request-a-quote" size="lg">
-            Request a quote
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Button>
-          <Button href="/configure" size="lg" variant="secondary">
-            Configure your build
-          </Button>
-        </div>
-
-        {/* The stage. The poster is the LCP image; the video plays over it. */}
-        <div className="relative mx-auto mt-10 max-w-6xl lg:mt-14">
-          <div
-            aria-hidden
-            className="absolute -inset-x-10 -bottom-10 top-1/3 -z-10 bg-[radial-gradient(50%_50%_at_50%_60%,rgb(225_6_0/0.2),transparent_75%)] blur-2xl"
-          />
-          <div className="relative aspect-video overflow-hidden rounded-2xl border border-line bg-ink-2 shadow-[var(--shadow-float)] lg:rounded-3xl">
-            <Image
-              src="/images/home/hero-stage-v1.jpg"
-              alt="An Arrow Industries tipper body on a five-axle truck in a studio"
-              fill
-              priority
-              sizes="(min-width: 1216px) 1152px, 100vw"
-              className="object-cover"
-            />
-            <video
-              className="hero-bg-video absolute inset-0 h-full w-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              poster="/images/home/hero-stage-v1.jpg"
-              aria-hidden="true"
-            >
-              <source src="/videos/home-hero.mp4" type="video/mp4" />
-            </video>
-          </div>
-        </div>
       </Container>
-      <div className="pt-7 lg:pt-9">
-        <TrustBar />
-      </div>
-    </section>
-  );
-}
 
-function ProductsSection() {
-  return (
-    <section className="section">
-      <Container>
-        <SectionHeader
-          eyebrow="What we build"
-          heading="Built in Campbellfield for the work ahead."
+      {/* The poster is the first image to load; the film plays over it. */}
+      <div className="relative aspect-[16/10] overflow-hidden bg-ink-3 lg:aspect-auto lg:h-[max(24rem,calc(100svh-3.75rem-19vw-6.25rem))]">
+        <Image
+          src="/images/home/hero-stage-v1.jpg"
+          alt="An Arrow Industries tipper body on a five-axle truck in a studio"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[50%_72%]"
         />
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <PhotoCard
-            href="/tipper-truck-bodies"
-            photo={media.tipperGraphiteRear}
-            title="Tipper bodies"
-            body="Custom-built for 4x2, 6x4, 8x4 and 10x4 chassis."
-          />
-          <PhotoCard
-            href="/dog-trailers"
-            photo={media.truckAndDogDusk}
-            title="Dog trailers"
-            body="3-axle and 4-axle trailers matched to your truck."
-          />
-          <PhotoCard
-            href="/semi-trailers"
-            photo={media.bodyPainted}
-            title="Semi trailers"
-            body="Tipping and flat-deck builds on 2 and 3 axles."
-            className="sm:col-span-2 sm:aspect-[16/9] lg:col-span-1 lg:aspect-[4/5]"
-          />
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function RoadworthySection() {
-  return (
-    <section className="section">
-      <Container>
-        <PhotoBand
-          photo={media.workshop}
-          eyebrow="Roadworthy inspections"
-          heading="VicRoads-licensed heavy vehicle testing."
-          body="Licensed Vehicle Tester EX 12409. Prime movers, rigid trucks, trailers and fleet vehicles tested and certified at our Campbellfield workshop."
+        <video
+          className="hero-bg-video absolute inset-0 h-full w-full object-cover object-[50%_72%]"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster="/images/home/hero-stage-v1.jpg"
+          aria-hidden="true"
         >
-          <div className="flex flex-wrap gap-2.5">
-            <Button href="/licensed-vehicle-testing#book" size="lg">
-              Book an inspection
-            </Button>
-            <Button href="/repairs-servicing" size="lg" variant="secondary">
-              Repairs &amp; servicing
-            </Button>
-          </div>
-        </PhotoBand>
-      </Container>
-    </section>
-  );
-}
+          <source src="/videos/home-hero.mp4" type="video/mp4" />
+        </video>
+      </div>
 
-function WorkshopSection() {
-  return (
-    <section className="section">
-      <Container>
-        <SectionHeader
-          eyebrow="Inside the workshop"
-          heading="One team, from first weld to final coat."
-        />
-        <WorkshopStrip
-          items={[
-            {
-              photo: media.welding,
-              title: "Fabricated in-house",
-            },
-            {
-              photo: media.paintBooth,
-              title: "Finished to your colour",
-            },
-            {
-              photo: media.onSite,
-              title: "Ready for real work",
-            },
-          ]}
-        />
-      </Container>
-    </section>
-  );
-}
-
-function ConfigureSection() {
-  return (
-    <section className="section">
-      <Container>
-        <div className="panel grid items-center gap-4 p-6 sm:p-8 lg:grid-cols-2 lg:p-12">
-          <div>
-            <p className="eyebrow mb-2">Configure</p>
-            <h2 className="font-display text-[1.75rem] font-semibold leading-[1.1] text-bone sm:text-4xl">
-              Spec your truck in a few clicks.
-            </h2>
-            <div className="mt-5">
-              <Button href="/configure" size="lg">
-                Configure your build
-                <ArrowRight className="h-4 w-4" aria-hidden />
-              </Button>
-            </div>
-          </div>
-          <TruckDrawing
-            product="tipper"
-            setup="8x4"
-            colour="#c5140e"
-            options={["Tarp system", "LED lighting"]}
-            className="h-auto w-full"
-          />
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-const FALLBACK_BUILDS = [
-  media.tipperGraphite,
-  media.dogSide,
-  media.sitrak,
-  media.truckAndDog,
-];
-
-function RecentBuildsSection({ builds }: { builds: BuildItem[] }) {
-  const usingIg = builds.length > 0;
-  return (
-    <section className="section">
-      <Container>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <SectionHeader
-            eyebrow="Recent builds"
-            heading={
-              <a
-                href={site.social.instagram}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-11 items-center gap-2.5 transition-colors hover:text-accent-text"
-              >
-                <Instagram className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
-                Follow the workshop
-              </a>
-            }
-          />
+      <nav aria-label="What do you need?" className="grid border-b border-line-soft lg:grid-cols-3">
+        {doors.map((d) => (
           <Link
-            href="/builds"
-            className="group inline-flex min-h-11 items-center gap-0.5 text-sm font-medium text-accent-text"
+            key={d.href}
+            href={d.href}
+            className="group flex min-h-21 items-center justify-between gap-4 border-t border-line-soft px-[clamp(1rem,3vw,2.5rem)] py-3 transition-colors hover:bg-accent lg:min-h-25 lg:border-l lg:border-t-0 lg:first:border-l-0"
           >
-            View builds
-            <ChevronRight
-              className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+            <span>
+              <span className="block text-[0.8125rem] text-mute transition-colors group-hover:text-white">
+                {d.note}
+              </span>
+              <span className="display mt-1 block text-[clamp(2.25rem,3vw,2.75rem)] leading-none">
+                {d.label}
+              </span>
+            </span>
+            <ArrowRight
+              className="h-7 w-7 shrink-0 transition-transform group-hover:translate-x-1.5"
+              strokeWidth={2}
               aria-hidden
             />
           </Link>
-        </div>
-        <ul className="mt-6 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
-          {usingIg
-            ? builds.map((b) => (
-                <li key={b.id}>
-                  <Link
-                    href={`/builds?build=${b.id}`}
-                    aria-label={`View ${b.name}`}
-                    className="group relative block aspect-square overflow-hidden rounded-xl bg-ink-2"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={b.image}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.04]"
-                    />
-                    <span
-                      aria-hidden
-                      className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(transparent,rgb(11_11_13/0.86))]"
-                    />
-                    <span className="absolute inset-x-3 bottom-2.5 text-[0.8125rem] font-semibold text-white">
-                      {b.name}
-                    </span>
-                  </Link>
-                </li>
-              ))
-            : FALLBACK_BUILDS.map((photo) => (
-                <li key={photo.src}>
-                  <Link
-                    href="/builds"
-                    aria-label="View builds"
-                    className="group relative block aspect-square overflow-hidden rounded-xl bg-ink-2"
-                  >
-                    <Image
-                      src={photo.src}
-                      alt={photo.alt}
-                      fill
-                      sizes="(min-width: 1024px) 25vw, 50vw"
-                      className="object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.04]"
-                    />
-                  </Link>
-                </li>
-              ))}
-        </ul>
-      </Container>
-    </section>
-  );
-}
-
-function PartnersSection() {
-  return (
-    <section className="section">
-      <Container>
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow">Components</p>
-          <h2 className="mt-1.5 font-display text-lg font-semibold leading-snug text-bone sm:text-xl">
-            Built with proven components from industry-leading suppliers
-          </h2>
-        </div>
-        <div className="mt-5">
-          <PartnerLogos />
-        </div>
-      </Container>
+        ))}
+      </nav>
     </section>
   );
 }

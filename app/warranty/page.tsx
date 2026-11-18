@@ -32,7 +32,7 @@ export default function WarrantyPage() {
 
       <section className="section">
         <Container>
-          <div className="max-w-3xl text-base leading-relaxed text-mute">
+          <div className="plain-headings max-w-3xl text-base leading-relaxed text-mute">
 
             {/* Issuer / intro block */}
             <div className="card mb-10 p-5 text-sm sm:p-6">

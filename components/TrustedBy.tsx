@@ -15,13 +15,9 @@ export function TrustedBy() {
   return (
     <section className="section">
       <Container>
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="eyebrow">
-            Customers
-          </p>
-          <h2 className="mt-3 font-display text-lg font-semibold leading-snug text-bone sm:text-xl">
-            Trusted by operators and dealer networks nationwide
-          </h2>
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="eyebrow">Customers</p>
+          <h2 className="display-sm mt-3">Trusted by operators and dealer networks nationwide</h2>
         </div>
 
         <div

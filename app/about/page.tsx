@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
-import Image from "next/image";
-import { Phone } from "lucide-react";
 import { Container } from "@/components/Container";
 import { ProductHero } from "@/components/ProductHero";
 import {
+  BuildCards,
   CheckGrid,
   InfoGrid,
   PhotoBand,
@@ -122,7 +121,11 @@ const industries = [
   "Truck dealers",
 ];
 
-const recentBuilds = [media.tipperGraphite, media.scania, media.tipperWhite];
+const recentBuilds = [media.tipperGraphite, media.scania, media.tipperWhite].map((b) => ({
+  src: b.src,
+  alt: b.alt,
+  title: "Tipper body",
+}));
 
 function TabIntro({
   heading,
@@ -136,8 +139,8 @@ function TabIntro({
   return (
     <>
       <div className="mb-4 max-w-2xl">
-        <p className="font-display text-lg font-semibold text-bone">{heading}</p>
-        <p className="mt-1.5 text-sm leading-relaxed text-mute sm:text-[0.9375rem]">
+        <p className="display text-[1.75rem] text-bone">{heading}</p>
+        <p className="mt-2 text-[1.0625rem] leading-relaxed text-mute">
           {body}
         </p>
       </div>
@@ -155,9 +158,10 @@ export default function AboutPage() {
       <ProductHero
         crumbs={crumbs}
         badge="About"
-        heading="Custom truck bodies and trailers built to handle demanding conditions."
+        heading="Built by operators, for operators."
         body="Designed, fabricated and serviced from our Campbellfield workshop, supporting operators across Australia."
         image={media.truckAndDogDusk.src}
+        imageAlt={media.truckAndDogDusk.alt}
         imagePosition="70% 55%"
         actions={
           <>
@@ -165,7 +169,6 @@ export default function AboutPage() {
               Request a quote
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
-              <Phone className="h-4 w-4" aria-hidden />
               Call {site.phone}
             </Button>
           </>
@@ -173,27 +176,31 @@ export default function AboutPage() {
       />
 
       {/* 2 — Stats and our story */}
-      <section className="section">
+      <section className="band">
         <Container>
           <StatTiles items={stats} />
+        </Container>
+      </section>
 
-          <div className="mt-10 lg:mt-14">
-            <PhotoBand
-              photo={media.welding}
-              eyebrow="Our story"
-              heading="Built for operators. Built to suit the job."
-              body="Arrow Industries was founded by Kon, who worked in the civil industry operating his own trucks and trailers, understanding firsthand what equipment needs to handle. Aaron brings a background in civil engineering across major projects in Victoria. Today, we operate as one workshop, one hands-on team, supporting operators across Australia."
-            />
-          </div>
+      <section>
+        <PhotoBand
+          photo={media.welding}
+          eyebrow="Our story"
+          heading="Built for operators. Built to suit the job."
+          body="Founded by Kon, who ran his own trucks and trailers in civil work. Today, one workshop and one hands-on team supporting operators across Australia."
+        />
+      </section>
 
-          <div className="mt-3">
+      <section className="section">
+        <Container>
+          <div>
             <DetailAccordion
               items={[
                 {
                   id: "full-story",
                   title: "Read our full story",
                   content: (
-                    <div className="space-y-4 text-sm leading-relaxed text-mute sm:text-[0.9375rem]">
+                    <div className="max-w-3xl space-y-4 text-[1.0625rem] leading-relaxed text-mute">
                       <p>
                         Arrow Industries started as a fabrication workshop in
                         Campbellfield, building tipper bodies for operators who
@@ -246,35 +253,22 @@ export default function AboutPage() {
       </section>
 
       {/* 3 — Inside the workshop */}
-      <section className="section">
+      <section className="band">
         <Container>
-          <SectionHeader
-            eyebrow="Inside the workshop"
-            heading="Welded, finished and inspected by the same team."
-          />
-          <WorkshopStrip items={workshop} />
+          <SectionHeader eyebrow="Inside the workshop" heading="Same team, start to finish." className="mb-7 lg:mb-11" />
         </Container>
+        <WorkshopStrip items={workshop} />
       </section>
 
       {/* 4 — Milestones */}
       <section className="section">
         <Container>
-          <SectionHeader
-            eyebrow="Experience"
-            heading="Built on experience. Focused on what matters today."
-          />
-          <ol className="mt-7 grid lg:grid-cols-4 lg:gap-6">
+          <SectionHeader eyebrow="Experience" heading="Built on experience." className="mb-7 lg:mb-11" />
+          <ol className="grid gap-x-6 sm:grid-cols-2 lg:grid-cols-4">
             {milestones.map((m) => (
-              <li
-                key={m.title}
-                className="relative flex flex-col gap-2 border-l border-line-soft pb-7 pl-5 last:pb-0 lg:border-l-0 lg:border-t lg:pb-0 lg:pl-0 lg:pt-5"
-              >
-                <span
-                  aria-hidden
-                  className="absolute -left-[3.5px] top-1.5 h-1.5 w-1.5 rounded-full bg-accent lg:-top-[3.5px] lg:left-0"
-                />
+              <li key={m.title} className="border-t border-line py-4">
                 <span className="eyebrow">{m.year}</span>
-                <h3 className="text-base font-semibold text-bone">{m.title}</h3>
+                <h3 className="mt-2.5 text-[1.75rem] text-bone">{m.title}</h3>
               </li>
             ))}
           </ol>
@@ -286,9 +280,9 @@ export default function AboutPage() {
         <Container>
           <SectionHeader
             eyebrow="Custom-built"
-            heading="Sized for the job in front of it."
+            heading="Sized for the job."
             body="Every Arrow build starts with the chassis, payload, route and operating conditions."
-            className="mb-5"
+            className="mb-6"
           />
           <Pills items={whatWeBuild.map((b) => b.title)} />
           <div className="mt-6">
@@ -299,7 +293,7 @@ export default function AboutPage() {
                   title: "What we build",
                   content: (
                     <div className="grid gap-3">
-                      <p className="text-sm leading-relaxed text-mute">
+                      <p className="max-w-3xl text-[1.0625rem] leading-relaxed text-mute">
                         No catalogue sizes. No compromises. Just a unit
                         engineered to do the work it&rsquo;s asked to do, year
                         after year.
@@ -368,32 +362,12 @@ export default function AboutPage() {
       </section>
 
       {/* 6 — Recent builds */}
-      <section className="section">
-        <Container>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeader eyebrow="Recent work" heading="Recent builds" />
-            <ViewBuildsLink />
-          </div>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {recentBuilds.map((b) => (
-              <li
-                key={b.src}
-                className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
-              >
-                <Image
-                  src={b.src}
-                  alt={b.alt}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-                <span className="material absolute bottom-2.5 left-2.5 rounded-full px-2.5 py-1 text-xs font-medium text-bone">
-                  Tipper body
-                </span>
-              </li>
-            ))}
-          </ul>
+      <section className="pt-10 lg:pt-16">
+        <Container className="flex flex-wrap items-end justify-between gap-4 pb-7 lg:pb-11">
+          <SectionHeader eyebrow="Recent work" heading="Recent builds." />
+          <ViewBuildsLink />
         </Container>
+        <BuildCards builds={recentBuilds} />
       </section>
 
       {/* 7 — Testimonials and call to action */}
@@ -401,9 +375,7 @@ export default function AboutPage() {
 
       <CTASection
         eyebrow="Talk to us"
-        heading="Get a quote for your next build or repair"
-        primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
-        phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
+        heading="Get a quote for your next build or repair."
       />
     </>
   );

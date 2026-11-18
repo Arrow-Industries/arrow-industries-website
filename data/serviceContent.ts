@@ -499,7 +499,7 @@ export const serviceContent: Record<string, ServiceContent> = {
       {
         title: "Same-day where possible",
         description:
-          "Most inspections are completed within a few hours. Minor defects can often be repaired and re-tested in the same visit.",
+          "Inspections take 60–120 minutes. Minor defects can often be repaired and re-tested in the same visit.",
       },
       {
         title: "Trailer & body inspections",
@@ -558,7 +558,7 @@ export const serviceContent: Record<string, ServiceContent> = {
       {
         question: "How long does a roadworthy take?",
         answer:
-          "Most inspections take 60–90 minutes. If anything fails, we'll talk through repair options and re-test the same day where possible.",
+          "Inspections take 60–120 minutes. If anything fails, we'll talk through repair options and re-test the same day where possible.",
       },
       {
         question: "Do I need to book in advance?",

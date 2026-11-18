@@ -14,6 +14,9 @@ import { getRwcSlots, type RwcSlotResult } from "@/lib/roadworthy-slots";
 import type { RwcVehicleType } from "@/lib/roadworthy";
 import { site } from "@/data/site";
 
+// What customers are told to allow on the day.
+const INSPECTION_TIME = "60–120 minutes";
+
 const inputBase = "field";
 const labelBase = "field-label";
 
@@ -71,7 +74,6 @@ export function RoadworthyBookingForm({
   trailerTypes,
   axlePrices,
   defectPrice,
-  durationMins,
   minDate,
   openDaysLabel,
 }: {
@@ -81,7 +83,6 @@ export function RoadworthyBookingForm({
   axlePrices: Record<string, number> | null;
   /** Flat defect clearance certificate price — null hides it. */
   defectPrice: number | null;
-  durationMins: number;
   /** Earliest selectable preferred date (yyyy-mm-dd). */
   minDate: string;
   /** e.g. "Monday to Friday" — shown as the date hint. */
@@ -555,7 +556,7 @@ export function RoadworthyBookingForm({
         label="Number of axles"
         name="axles"
         required
-        hint={`Allow ${durationMins} minutes for the inspection.`}
+        hint={`Allow ${INSPECTION_TIME} for the inspection.`}
       >
         <div className="relative sm:max-w-[calc(50%-0.625rem)]">
           <select
@@ -726,7 +727,7 @@ export function RoadworthyBookingForm({
 
       {complete && service === "defect" && defectPrice != null && (
         <div className="rounded-sm border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
-          Defect clearance certificate: <strong>${defectPrice} + GST</strong> per certificate · allow {durationMins} minutes on the day.
+          Defect clearance certificate: <strong>${defectPrice} + GST</strong> per certificate · allow {INSPECTION_TIME} on the day.
           <span className="mt-1 block text-xs text-mute">
             Pricing is confirmed when we confirm your booking and inspect the vehicle.
           </span>
@@ -734,7 +735,7 @@ export function RoadworthyBookingForm({
       )}
       {complete && service === "rwc" && axlePrices && axles && axlePrices[axles] != null && (
         <div className="rounded-sm border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-bone">
-          Estimated inspection price: <strong>${axlePrices[axles]} + GST</strong> · allow {durationMins} minutes on the day.
+          Estimated inspection price: <strong>${axlePrices[axles]} + GST</strong> · allow {INSPECTION_TIME} on the day.
           <span className="mt-1 block text-xs text-mute">
             Pricing is confirmed when we confirm your booking and inspect the vehicle.
           </span>

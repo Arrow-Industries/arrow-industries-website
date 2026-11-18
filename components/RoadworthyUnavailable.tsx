@@ -32,7 +32,7 @@ export function RoadworthyUnavailable() {
                 aria-hidden
               />
             </span>
-            <h2 className="mt-6 font-display text-2xl font-semibold leading-tight text-bone sm:text-3xl">
+            <h2 className="display-sm mt-6 text-bone">
               Online booking is paused
             </h2>
             <p className="mt-4 text-base leading-relaxed text-mute">

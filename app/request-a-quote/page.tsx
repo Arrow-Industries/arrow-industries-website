@@ -36,8 +36,8 @@ export default async function RequestAQuotePage() {
   return (
     <>
       <PageHero
-        eyebrow="Request a quote"
-        heading="Tell us what you need built, repaired or certified."
+        eyebrow="Build, repair or roadworthy"
+        heading="Request a quote."
         body="Share your chassis, payload, application and target lead time for a faster proposal and price."
         crumbs={[
           { label: "Home", href: "/" },
@@ -54,7 +54,7 @@ export default async function RequestAQuotePage() {
           <aside className="lg:col-span-5">
             <div className="sticky top-20 flex flex-col gap-3">
               <div className="card p-5">
-                <h2 className="text-base font-semibold text-bone">
+                <h2 className="text-[1.75rem] text-bone">
                   Or call us directly
                 </h2>
                 <p className="mt-2 text-sm text-mute">
@@ -62,7 +62,7 @@ export default async function RequestAQuotePage() {
                 </p>
                 <a
                   href={site.phoneHref}
-                  className="mt-4 inline-flex items-center gap-2 text-lg font-semibold text-bone transition-colors hover:text-accent-text"
+                  className="display mt-4 inline-flex items-center gap-2 text-[2.25rem] text-bone transition-colors hover:text-accent-text"
                 >
                   <Phone className="h-5 w-5" aria-hidden />
                   {site.phone}

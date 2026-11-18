@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Barlow, Barlow_Condensed } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Navbar } from "@/components/Navbar";
@@ -14,11 +14,20 @@ import {
 } from "@/lib/schema";
 import "./globals.css";
 
-const inter = Inter({
+const barlow = Barlow({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-barlow",
   display: "swap",
-  axes: ["opsz"],
+});
+
+// The slanted capitals echo the ARROW lettering on the trucks.
+const condensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["700", "800"],
+  style: "italic",
+  variable: "--font-condensed",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -57,11 +66,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b0b0d",
+  themeColor: "#0a0b0c",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
-  // Lets the floating dock sit clear of the iPhone home indicator.
+  // Lets the call and quote bar sit clear of the iPhone home indicator.
   viewportFit: "cover",
 };
 
@@ -69,11 +78,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-AU" className={inter.variable}>
+    <html lang="en-AU" className={`${barlow.variable} ${condensed.variable}`}>
       <body className="min-h-dvh antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-sm focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
         >
           Skip to content
         </a>

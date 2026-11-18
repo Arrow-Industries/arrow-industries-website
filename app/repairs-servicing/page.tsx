@@ -1,23 +1,11 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import {
-  CalendarCheck,
-  Cog,
-  FileSignature,
-  Hammer,
-  HardHat,
-  Package,
-  Phone,
-  ShieldAlert,
-  Truck,
-  Wrench,
-  Zap,
-} from "lucide-react";
+import { CalendarCheck } from "lucide-react";
 import { Container } from "@/components/Container";
 import { ProductHero } from "@/components/ProductHero";
 import { CTASection } from "@/components/CTASection";
 import { FAQAccordion } from "@/components/FAQAccordion";
-import { CheckList, InfoGrid, PhotoBand } from "@/components/ProductParts";
+import { CheckGrid, CheckList, InfoGrid, PhotoBand } from "@/components/ProductParts";
 import { DetailAccordion } from "@/components/DetailAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
@@ -46,60 +34,52 @@ const crumbs = [
   { label: "Repairs & Servicing", href: "/repairs-servicing" },
 ];
 
-const panelLead = "mb-4 max-w-2xl text-sm leading-relaxed text-mute";
+const panelLead = "mb-5 max-w-3xl text-[1.0625rem] leading-relaxed text-mute";
 
 const features = [
   {
-    icon: Hammer,
     title: "Structural repairs",
     body: "Cracked rails, damaged cross-members and chassis-mount repairs welded back to spec.",
   },
   {
-    icon: Truck,
     title: "Tipper bins",
     body: "Repairs, panel replacement and full rebuilds for damaged or worn tipper bodies.",
   },
   {
-    icon: ShieldAlert,
     title: "Tailgates",
     body: "Tailgate hinges, latches, seals and full tailgate rebuilds for tippers and dogs.",
   },
   {
-    icon: Cog,
     title: "Hydraulics",
     body: "Hoist, ram, pump and valve repairs — sourced and fitted from trusted suppliers.",
   },
   {
-    icon: Wrench,
     title: "Modifications",
     body: "Custom fabrication, headboard changes, sub-frame work and chassis modifications.",
   },
   {
-    icon: CalendarCheck,
     title: "Preventative servicing",
     body: "Scheduled maintenance to keep tippers, trailers and combinations operating reliably.",
   },
   {
-    icon: Package,
     title: "Quality parts",
     body: "Replacement components from JOST, SAF-Holland, Hella, Wurth and other proven suppliers.",
   },
   {
-    icon: FileSignature,
     title: "Insurance repairs",
     body: "Quoted and completed for insurer-managed claims with full documentation supplied.",
   },
 ];
 
 const useCases = [
-  { icon: Truck, label: "Damaged tipper bins" },
-  { icon: ShieldAlert, label: "Tailgate failures" },
-  { icon: Cog, label: "Hydraulic faults" },
-  { icon: Hammer, label: "Structural cracking" },
-  { icon: Wrench, label: "Suspension repairs" },
-  { icon: Zap, label: "Electrical faults" },
-  { icon: FileSignature, label: "Insurance repairs" },
-  { icon: HardHat, label: "Fleet preparation" },
+  "Damaged tipper bins",
+  "Tailgate failures",
+  "Hydraulic faults",
+  "Structural cracking",
+  "Suspension repairs",
+  "Electrical faults",
+  "Insurance repairs",
+  "Fleet preparation",
 ];
 
 const repairOptions = [
@@ -170,76 +150,51 @@ export default function RepairsPage() {
         badge="Repairs & Servicing"
         heading={
           <>
-            Truck body and trailer repairs,{" "}
-            <span className="text-accent">built for real work.</span>
+            Fixed by the people <span className="text-accent">who build them.</span>
           </>
         }
         body="Tipper bodies, trailers and heavy vehicle components repaired, rebuilt and maintained from our Campbellfield workshop."
         image={media.workshop.src}
+        imageAlt={media.workshop.alt}
         imagePosition="50% 42%"
         actions={
           <>
-            <Button
-              href={bookingUrl}
-              size="lg"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <Button href={bookingUrl} size="lg" target="_blank" rel="noreferrer">
               <CalendarCheck className="h-4 w-4" aria-hidden />
               Book an inspection
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
-              <Phone className="h-4 w-4 text-accent-text" aria-hidden />
               Call {site.phone}
             </Button>
           </>
         }
       />
 
-      {/* What we repair: icons and titles, with the descriptions in the detail below */}
-      <section id="overview" className="section">
+      <section id="overview" className="band scroll-mt-15">
         <Container>
-          <SectionHeader
-            eyebrow="Capability"
-            heading="What we repair, rebuild and service."
-          />
-          <ul className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            {features.map((f) => {
-              const Icon = f.icon;
-              return (
-                <li key={f.title} className="card flex min-w-0 flex-col gap-3 p-4 sm:p-5">
-                  <span className="icon-tile">
-                    <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
-                  </span>
-                  <h3 className="font-display text-base font-semibold leading-snug text-bone">
-                    {f.title}
-                  </h3>
-                </li>
-              );
-            })}
+          <SectionHeader eyebrow="Capability" heading="What we repair." className="mb-7 lg:mb-11" />
+          <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((f) => (
+              <li key={f.title} className="border-t border-line py-4">
+                <h3 className="display-sm">{f.title}</h3>
+              </li>
+            ))}
           </ul>
         </Container>
       </section>
 
-      <section id="why-arrow" className="section">
-        <Container>
-          <PhotoBand
-            photo={media.welding}
-            eyebrow="Why Arrow"
-            heading="Done by the same team that builds tippers and trailers."
-            body="Insurance repairs, fabrication work and ongoing servicing, all from one workshop."
-          />
-        </Container>
+      <section id="why-arrow">
+        <PhotoBand
+          photo={media.welding}
+          eyebrow="Why Arrow"
+          heading="One workshop. One team."
+          body="Insurance repairs, fabrication work and ongoing servicing, done by the team that builds tippers and trailers."
+        />
       </section>
 
-      {/* The full wording, closed until someone wants it */}
-      <section id="services" className="section">
+      <section id="services" className="band scroll-mt-15">
         <Container>
-          <SectionHeader
-            eyebrow="Service options"
-            heading="The detail, when you need it."
-            className="mb-6"
-          />
+          <SectionHeader eyebrow="Service options" heading="The full detail." className="mb-7 lg:mb-11" />
           <DetailAccordion
             items={[
               {
@@ -265,25 +220,13 @@ export default function RepairsPage() {
                     <p className={panelLead}>
                       Most jobs land in one of these categories &mdash; but if you&rsquo;re not sure, book a diagnostic inspection.
                     </p>
-                    <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                      {useCases.map((u) => {
-                        const Icon = u.icon;
-                        return (
-                          <li key={u.label} className="card flex items-center gap-3 p-4">
-                            <span className="icon-tile">
-                              <Icon className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.5} aria-hidden />
-                            </span>
-                            <span className="min-w-0 text-sm font-semibold text-bone">{u.label}</span>
-                          </li>
-                        );
-                      })}
-                    </ul>
+                    <CheckGrid items={useCases} />
                   </>
                 ),
               },
               {
                 id: "options",
-                title: "Service options",
+                title: "Insurance, fleet & service options",
                 content: (
                   <>
                     <p className={panelLead}>
@@ -311,25 +254,17 @@ export default function RepairsPage() {
         </Container>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="section">
+      <section id="faq" className="scroll-mt-15 pb-16 lg:pb-24">
         <Container>
-          <SectionHeader eyebrow="FAQ" heading="Common questions, answered." />
-          <div className="mt-6">
-            <FAQAccordion items={faqs} />
-          </div>
+          <SectionHeader eyebrow="FAQ" heading="Common questions." className="mb-7 lg:mb-11" />
+          <FAQAccordion items={faqs} />
         </Container>
       </section>
 
       <CTASection
         eyebrow="Repairs & Servicing"
         heading="Need a tipper or trailer repaired?"
-        primaryCta={{
-          label: "Book an inspection",
-          href: bookingUrl,
-        }}
-        phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
-        footnote="Diagnostic inspection · Written quote · Insurance work supported"
+        primaryCta={{ label: "Book an inspection", href: bookingUrl }}
       />
     </>
   );

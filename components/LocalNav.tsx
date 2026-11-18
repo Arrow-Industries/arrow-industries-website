@@ -44,19 +44,20 @@ export function LocalNav({ items, label }: { items: LocalNavItem[]; label: strin
   return (
     <nav
       aria-label={label}
-      className="material sticky top-14 z-30 mt-6 border-y border-line-soft"
+      className="material sticky top-15 z-30 border-b border-line-soft"
     >
-      <ul className="container-page flex gap-1 overflow-x-auto py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ul className="container-page flex gap-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {items.map((item) => (
           <li key={item.id} className="shrink-0">
             <a
               href={`#${item.id}`}
               aria-current={active === item.id ? "true" : undefined}
               className={cn(
-                "inline-flex h-11 items-center rounded-full px-3.5 text-[0.8125rem] font-medium transition-colors lg:h-8 lg:px-3",
+                "display relative inline-flex h-12 items-center text-[1.375rem] transition-colors",
+                "after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:bg-accent",
                 active === item.id
-                  ? "bg-white/[0.12] text-bone"
-                  : "text-mute hover:text-bone",
+                  ? "text-bone after:opacity-100"
+                  : "text-mute after:opacity-0 hover:text-bone",
               )}
             >
               {item.label}

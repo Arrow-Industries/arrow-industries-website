@@ -14,7 +14,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
   const baseId = useId();
 
   return (
-    <ul className="list-group">
+    <ul className="rule-list">
       {items.map((item, i) => {
         const isOpen = open === i;
         const id = `${baseId}-${i}`;
@@ -26,16 +26,16 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
                 id={`${id}-q`}
                 aria-expanded={isOpen}
                 aria-controls={id}
-                className="flex min-h-13 w-full items-center justify-between gap-4 px-[1.125rem] py-3.5 text-left transition-colors hover:bg-white/[0.03]"
+                className="group flex min-h-16 w-full items-center justify-between gap-4 py-3 text-left"
                 onClick={() => setOpen(isOpen ? null : i)}
               >
-                <span className="text-[0.9375rem] font-medium tracking-normal text-bone sm:text-base">
+                <span className="display text-[1.625rem] leading-none transition-colors group-hover:text-accent-text sm:text-[2rem]">
                   {item.question}
                 </span>
                 <ChevronDown
                   className={cn(
-                    "h-4 w-4 shrink-0 text-mute transition-transform duration-300 ease-[var(--ease-mac)]",
-                    isOpen && "rotate-180",
+                    "h-6 w-6 shrink-0 text-mute transition-transform duration-300 ease-[var(--ease-mac)]",
+                    isOpen && "rotate-180 text-accent-text",
                   )}
                   aria-hidden
                 />
@@ -52,7 +52,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
               )}
             >
               <div className="overflow-hidden">
-                <p className="px-[1.125rem] pb-4 pr-10 text-sm leading-relaxed text-mute sm:text-[0.9375rem]">
+                <p className="max-w-3xl pb-6 pr-10 text-[1.0625rem] leading-relaxed text-mute">
                   {item.answer}
                 </p>
               </div>

@@ -104,7 +104,7 @@ export default async function BuildsPage() {
         <Container>
           <div className="card flex flex-wrap items-center justify-between gap-5 p-5 sm:p-6">
             <div>
-              <h2 className="font-display text-xl font-semibold text-bone">Running an Arrow?</h2>
+              <h2 className="display-sm text-bone">Running an Arrow?</h2>
               <p className="mt-1 text-sm leading-relaxed text-mute">
                 Tag @arrow_industries_co and use #BuiltByArrow to show us your truck at work.
               </p>

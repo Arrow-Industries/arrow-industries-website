@@ -1,56 +1,56 @@
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
+import { PinStripe } from "@/components/PinStripe";
+import { site } from "@/data/site";
 
 interface CTASectionProps {
   eyebrow?: string;
   heading: string;
-  body?: string;
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
-  phoneCta?: { label: string; href: string };
-  footnote?: string;
 }
 
+/** How every page signs off: one line, the phone number, and the next step. */
 export function CTASection({
   eyebrow,
   heading,
-  body,
   primaryCta = { label: "Request a quote", href: "/request-a-quote" },
   secondaryCta,
-  phoneCta,
-  footnote,
 }: CTASectionProps) {
   return (
-    <section className="section pb-14 lg:pb-20">
-      <Container>
-        <div className="panel px-6 py-12 text-center sm:px-10 lg:py-16">
-          {eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}
-          <h2 className="mx-auto max-w-2xl font-display text-[1.75rem] font-semibold leading-[1.1] text-bone sm:text-4xl lg:text-[2.75rem]">
-            {heading}
-          </h2>
-          {body && (
-            <p className="mx-auto mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-mute sm:text-lg">
-              {body}
-            </p>
+    <section>
+      <PinStripe />
+      <div className="bg-accent py-12 text-white lg:py-20">
+        <Container>
+          {eyebrow && (
+            <p className="text-[0.8125rem] font-semibold uppercase tracking-[0.14em]">{eyebrow}</p>
           )}
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
-            <Button href={primaryCta.href} size="lg">
-              {primaryCta.label}
-            </Button>
-            {secondaryCta && (
-              <Button href={secondaryCta.href} size="lg" variant="secondary">
-                {secondaryCta.label}
+          <h2 className="display-md mt-3 max-w-5xl">{heading}</h2>
+          <a
+            href={site.phoneHref}
+            aria-label={`Call ${site.phone}`}
+            className="display mt-6 block whitespace-nowrap text-[17.6vw] leading-[0.9] lg:mt-9 lg:text-[min(16vw,17rem)]"
+          >
+            {site.phone}
+          </a>
+          <div className="mt-7 flex flex-wrap items-center justify-between gap-5 border-t border-white/50 pt-6 lg:mt-10">
+            <p className="font-medium">
+              {site.address.line1}, {site.address.suburb} {site.address.state}{" "}
+              {site.address.postcode}
+            </p>
+            <div className="flex flex-wrap gap-2.5">
+              <Button href={primaryCta.href} size="lg" variant="dark">
+                {primaryCta.label}
               </Button>
-            )}
-            {phoneCta && (
-              <Button href={phoneCta.href} size="lg" variant="secondary">
-                {phoneCta.label}
-              </Button>
-            )}
+              {secondaryCta && (
+                <Button href={secondaryCta.href} size="lg" variant="light">
+                  {secondaryCta.label}
+                </Button>
+              )}
+            </div>
           </div>
-          {footnote && <p className="label mt-6">{footnote}</p>}
-        </div>
-      </Container>
+        </Container>
+      </div>
     </section>
   );
 }

@@ -28,7 +28,7 @@ export default function ErrorPage({
         <p className="eyebrow">
           Something went wrong
         </p>
-        <h1 className="mt-4 font-display text-3xl font-semibold text-bone">
+        <h1 className="display-md mt-4 text-bone">
           Sorry — that didn&rsquo;t go through.
         </h1>
         <p className="mt-4 text-sm leading-relaxed text-mute sm:text-base">
