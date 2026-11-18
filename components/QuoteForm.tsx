@@ -23,6 +23,7 @@ import { formatBytes, prepareFiles, LIMIT_HINT } from "@/lib/upload-limits";
 import { FALLBACK_PRODUCTS, SERVICE_ENQUIRIES } from "@/data/enquiry-types";
 import { NO_TRUCK, TruckPicker, type TruckChoice } from "@/components/TruckPicker";
 import type { BuildCategory } from "@/lib/build-options";
+import { submitKeepingAnswers } from "@/lib/submit-form";
 
 const inputBase = "field";
 
@@ -167,7 +168,13 @@ export function QuoteForm({ products }: { products: BuildCategory[] }) {
   }
 
   return (
-    <form ref={formRef} action={formAction} className="grid gap-3" noValidate>
+    <form
+      ref={formRef}
+      action={formAction}
+      onSubmit={(e) => submitKeepingAnswers(e, formAction)}
+      className="grid gap-3"
+      noValidate
+    >
       {/* Honeypot — must remain empty. Hidden from real users + assistive tech. */}
       <div
         aria-hidden="true"

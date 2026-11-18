@@ -20,6 +20,7 @@ import { Button } from "@/components/Button";
 import { cn } from "@/lib/utils";
 import { site } from "@/data/site";
 import { formatBytes, prepareFiles, LIMIT_HINT } from "@/lib/upload-limits";
+import { submitKeepingAnswers } from "@/lib/submit-form";
 
 /* ---------- Option lists (must match lib/finance.ts whitelists exactly) ---------- */
 
@@ -163,7 +164,13 @@ export function FinanceForm() {
   }
 
   return (
-    <form ref={formRef} action={formAction} className="grid gap-3" noValidate>
+    <form
+      ref={formRef}
+      action={formAction}
+      onSubmit={(e) => submitKeepingAnswers(e, formAction)}
+      className="grid gap-3"
+      noValidate
+    >
       {/* Honeypot — must remain empty. Hidden from real users + assistive tech. */}
       <div
         aria-hidden="true"

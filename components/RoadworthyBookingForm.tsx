@@ -10,6 +10,7 @@ import { useActionState, useEffect, useRef, useState, isValidElement, cloneEleme
 import { CalendarCheck, CheckCircle2, ChevronDown, ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/Button";
 import { submitRoadworthyBooking } from "@/lib/roadworthy-action";
+import { submitKeepingAnswers } from "@/lib/submit-form";
 import { getRwcSlots, type RwcSlotResult } from "@/lib/roadworthy-slots";
 import type { RwcVehicleType } from "@/lib/roadworthy";
 import { site } from "@/data/site";
@@ -364,7 +365,7 @@ export function RoadworthyBookingForm({
   }
 
   return (
-    <form ref={formRef} action={formAction} className="grid gap-5" noValidate onSubmit={captureForSave} onInput={recomputeComplete} onChange={recomputeComplete}>
+    <form ref={formRef} action={formAction} className="grid gap-5" noValidate onSubmit={(e) => { captureForSave(); submitKeepingAnswers(e, formAction); }} onInput={recomputeComplete} onChange={recomputeComplete}>
       {/* Honeypot — must remain empty. Hidden from real users + assistive tech. */}
       <div aria-hidden="true" className="pointer-events-none absolute -left-[9999px] h-0 w-0 overflow-hidden">
         <label htmlFor="rwc-website">Website (leave blank)</label>
