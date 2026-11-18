@@ -11,10 +11,12 @@ export function TapTheTruck({
   walk,
   id = "tap",
   eyebrow = "The detail",
+  heading = "Tap the truck.",
 }: {
   walk: TruckWalk;
   id?: string;
   eyebrow?: string;
+  heading?: string;
 }) {
   const { photo, parts, width, height } = walk;
   const [active, setActive] = useState(0);
@@ -34,7 +36,7 @@ export function TapTheTruck({
     <section id={id} className="scroll-mt-15 bg-ink-2 pt-16 lg:pt-24">
       <Container>
         <p className="eyebrow">{eyebrow}</p>
-        <h2 className="display-lg mt-3">Tap the truck.</h2>
+        <h2 className="display-lg mt-3">{heading}</h2>
       </Container>
 
       <div className="mt-7 grid grid-cols-[minmax(0,1fr)] lg:mt-11 lg:grid-cols-[auto_minmax(22rem,1fr)]">

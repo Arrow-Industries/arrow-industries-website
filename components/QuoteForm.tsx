@@ -38,6 +38,8 @@ export function QuoteForm({ products }: { products: BuildCategory[] }) {
   const [buildType, setBuildType] = useState("");
   const [truck, setTruck] = useState<TruckChoice>(NO_TRUCK);
   const buildTypes = products.find((p) => p.name === enquiry)?.types ?? [];
+  // Trailers are Arrow's own product. Truck bodies suit any make or model.
+  const isArrowTrailer = productNames.includes(enquiry) && /trailer/i.test(enquiry);
 
   const [state, formAction, isPending] = useActionState(submitQuoteForm, null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -269,8 +271,18 @@ export function QuoteForm({ products }: { products: BuildCategory[] }) {
         </Field>
       )}
 
-      <TruckPicker value={truck} onChange={setTruck} />
+      {isArrowTrailer ? (
+        <div className="flex flex-col gap-2">
+          <input type="hidden" name="vehicleMake" value="Arrow" />
+          <input type="hidden" name="vehicleModel" value="" />
+          <p className="field-label">Trailer make</p>
+          <p className="display text-[1.75rem]">Arrow</p>
+        </div>
+      ) : (
+        <TruckPicker value={truck} onChange={setTruck} />
+      )}
 
+      {!isArrowTrailer && (
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Vehicle year" name="vehicleYear">
           <input
@@ -297,6 +309,7 @@ export function QuoteForm({ products }: { products: BuildCategory[] }) {
           />
         </Field>
       </div>
+      )}
 
       <Field
         label="Payload / application"

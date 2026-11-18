@@ -237,7 +237,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         </Container>
       </section>
 
-      {walk && <TapTheTruck walk={walk} />}
+      {walk && <TapTheTruck walk={walk} heading="Tap the trailer." />}
 
       {recentBuilds.length > 0 && (
         <section id="builds" className="scroll-mt-28 pt-16 lg:pt-24">

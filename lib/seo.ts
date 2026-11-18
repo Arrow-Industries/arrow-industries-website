@@ -7,7 +7,9 @@ import type { Metadata } from "next";
  * The root layout supplies the site-wide defaults (metadataBase, the generated
  * OG/Twitter images, card type). Next.js does NOT derive per-page OG/Twitter
  * titles from the page `title`, so without this every shared link would render
- * the same generic card. This fills in the page-specific title/description.
+ * the same generic card. This fills in the page-specific title/description, and
+ * names the share images because page-level OG/Twitter settings replace the
+ * layout's.
  */
 export function pageMetadata({
   title,
@@ -23,7 +25,12 @@ export function pageMetadata({
     title,
     description,
     alternates: { canonical: path },
-    openGraph: { title, description, url: path },
-    twitter: { title, description },
+    openGraph: {
+      title,
+      description,
+      url: path,
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Arrow Industries" }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: ["/twitter-image"] },
   };
 }

@@ -27,7 +27,7 @@ export default async function ConfigurePage() {
         compact
         eyebrow="Configure"
         heading="Configure your build."
-        body="Choose your truck and the options that suit your work, then send it to the workshop for a quote."
+        body="Choose the options that suit your work, then send your build to the workshop for a quote."
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Configure", href: "/configure" },

@@ -109,28 +109,31 @@ function Hero() {
         </h1>
       </Container>
 
-      {/* The poster is the first image to load; the film plays over it. */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-ink-3 lg:aspect-auto lg:h-[max(24rem,calc(100svh-3.75rem-19vw-6.25rem))]">
-        <Image
-          src="/images/home/hero-stage-v1.jpg"
-          alt="An Arrow Industries tipper body on a five-axle truck in a studio"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[50%_72%]"
-        />
-        <video
-          className="hero-bg-video absolute inset-0 h-full w-full object-cover object-[50%_72%]"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          poster="/images/home/hero-stage-v1.jpg"
-          aria-hidden="true"
-        >
-          <source src="/videos/home-hero.mp4" type="video/mp4" />
-        </video>
+      {/* Kept at the film's own shape and sized to fit the screen, so the whole
+          truck is always in view. The poster loads first; the film plays over it. */}
+      <div className="flex justify-center bg-black">
+        <div className="relative aspect-video w-full lg:h-[min(56.25vw,max(22rem,calc(100svh-3.75rem-5.25rem-10.56vw-6.25rem)))] lg:w-auto">
+          <Image
+            src="/images/home/hero-stage-v1.jpg"
+            alt="An Arrow Industries tipper body on a five-axle truck in a studio"
+            fill
+            priority
+            sizes="100vw"
+            className="object-contain"
+          />
+          <video
+            className="hero-bg-video absolute inset-0 h-full w-full object-contain"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            poster="/images/home/hero-stage-v1.jpg"
+            aria-hidden="true"
+          >
+            <source src="/videos/home-hero.mp4" type="video/mp4" />
+          </video>
+        </div>
       </div>
 
       <nav aria-label="What do you need?" className="grid border-b border-line-soft lg:grid-cols-3">

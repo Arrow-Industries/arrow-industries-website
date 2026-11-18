@@ -15,7 +15,7 @@ const BUILD_HANDOFF_KEY = "arrow.configured-build";
 const WORK = ["Civil", "Quarry", "Demolition", "Construction", "Bulk haulage", "Waste", "Fleet"];
 
 const chip =
-  "min-h-11 rounded-[0.625rem] border px-3 text-sm font-medium transition-colors lg:min-h-10";
+  "min-h-11 border px-3 text-sm font-medium transition-colors lg:min-h-10";
 const chipOn = "border-bone bg-bone text-ink";
 const chipOff = "border-line bg-white/[0.04] text-bone hover:bg-white/[0.1]";
 
@@ -216,13 +216,18 @@ export function Configurator({ config }: { config: BuildConfig }) {
       .filter((o) => selected.has(o.id))
       .map((o) => (o.custom && typed[o.id]?.trim() ? typed[o.id].trim() : o.name));
 
-  const truckName = [
-    make === OTHER ? otherTruck.trim() : make,
-    make === OTHER ? "" : model === OTHER ? otherTruck.trim() : model,
-    variant && variant !== OTHER ? variant : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  // Trailers are Arrow's own product. Truck bodies suit any make or model.
+  const isArrowTrailer = productOf(category.name) !== "tipper";
+
+  const truckName = isArrowTrailer
+    ? ""
+    : [
+        make === OTHER ? otherTruck.trim() : make,
+        make === OTHER ? "" : model === OTHER ? otherTruck.trim() : model,
+        variant && variant !== OTHER ? variant : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
 
   const buildName = `${type?.name ?? ""} ${category.name}`.trim();
 
@@ -238,7 +243,7 @@ export function Configurator({ config }: { config: BuildConfig }) {
 
   const summary = [
     `Build: ${buildName}`,
-    truckName ? `Truck: ${truckName}` : "",
+    isArrowTrailer ? "Make: Arrow" : truckName ? `Truck: ${truckName}` : "",
     `Main work: ${work}`,
     reference.trim() ? `Your reference: ${reference.trim()}` : "",
     ...specLines,
@@ -272,7 +277,7 @@ export function Configurator({ config }: { config: BuildConfig }) {
     const payload = {
       enquiry: category.name,
       buildType: type?.name ?? "",
-      truck: { make, model, variant, other: otherTruck },
+      truck: isArrowTrailer ? undefined : { make, model, variant, other: otherTruck },
       work,
       reference: reference.trim(),
       summary,
@@ -301,8 +306,8 @@ export function Configurator({ config }: { config: BuildConfig }) {
     const remove = [...standard].filter((id) => !selected.has(id));
     if (add.length) q.set("add", add.join(","));
     if (remove.length) q.set("remove", remove.join(","));
-    if (make && make !== OTHER) q.set("make", make);
-    if (model && model !== OTHER) q.set("model", model);
+    if (!isArrowTrailer && make && make !== OTHER) q.set("make", make);
+    if (!isArrowTrailer && model && model !== OTHER) q.set("model", model);
     const url = `${window.location.origin}/configure?${q.toString()}`;
     try {
       if (navigator.share) {
@@ -394,10 +399,17 @@ export function Configurator({ config }: { config: BuildConfig }) {
             </div>
           </fieldset>
 
+          {isArrowTrailer ? (
+            <div>
+              <p className="field-label">Trailer make</p>
+              <p className="display mt-1.5 text-[1.75rem]">Arrow</p>
+            </div>
+          ) : (
           <fieldset className="grid min-w-0 gap-3">
-            <legend className="field-label mb-2">
-              {productOf(category.name) === "tipper" ? "Your truck" : "Towing truck"}
-            </legend>
+            <legend className="field-label mb-1">Your truck</legend>
+            <p className="text-sm text-mute">
+              We build for any make or model. Choose Other if yours isn&rsquo;t listed.
+            </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <Select
                 id="cfg-make"
@@ -449,6 +461,7 @@ export function Configurator({ config }: { config: BuildConfig }) {
               )}
             </div>
           </fieldset>
+          )}
 
           <fieldset className="min-w-0">
             <legend className="field-label mb-2">Main work</legend>

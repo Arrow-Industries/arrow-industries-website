@@ -319,7 +319,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
                     onMouseMove={() => setActive(index)}
                     onClick={() => run(item)}
                     className={cn(
-                      "flex h-10 items-center gap-3 rounded-[0.5rem] px-2.5 text-sm",
+                      "flex h-10 items-center gap-3 px-2.5 text-sm",
                       selected ? "bg-accent text-white" : "text-bone",
                     )}
                   >

@@ -301,7 +301,11 @@ export default function Page() {
 
       <section id="chassis" className="band">
         <Container>
-          <SectionHeader eyebrow="Configurations" heading="Built to your chassis." />
+          <SectionHeader
+            eyebrow="Configurations"
+            heading="Built to your chassis."
+            body="Tipper bodies for any make or model of truck."
+          />
           <ChoiceTiles items={chassisChoices} />
         </Container>
       </section>
