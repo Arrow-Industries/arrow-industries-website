@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import {
   CalendarCheck,
-  ClipboardList,
   Cog,
   FileSignature,
   Hammer,
@@ -15,12 +14,16 @@ import {
   Zap,
 } from "lucide-react";
 import { Container } from "@/components/Container";
-import { PageHero } from "@/components/PageHero";
+import { ProductHero } from "@/components/ProductHero";
 import { CTASection } from "@/components/CTASection";
+import { FAQAccordion } from "@/components/FAQAccordion";
+import { CheckList, InfoGrid, PhotoBand } from "@/components/ProductParts";
+import { SpecTabs } from "@/components/SpecTabs";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
-import { faqPageSchema, serviceSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/lib/schema";
+import { media } from "@/data/media";
 import { getServiceBySlug } from "@/data/services";
 import { getServiceContent } from "@/data/serviceContent";
 import { site } from "@/data/site";
@@ -37,6 +40,13 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const bookingUrl = site.booking.roadworthy;
+
+const crumbs = [
+  { label: "Home", href: "/" },
+  { label: "Repairs & Servicing", href: "/repairs-servicing" },
+];
+
+const tabLead = "mb-4 max-w-2xl text-sm leading-relaxed text-mute sm:text-[0.9375rem]";
 
 const features = [
   {
@@ -151,17 +161,22 @@ export default function RepairsPage() {
             ? [serviceSchema(repairsService, repairsContent)]
             : []),
           faqPageSchema(faqs),
+          breadcrumbSchema(crumbs),
         ]}
       />
 
-      <PageHero
-        eyebrow="Repairs & Servicing"
-        heading="Truck body and trailer repairs, built for real work."
+      <ProductHero
+        crumbs={crumbs}
+        badge="Repairs & Servicing"
+        heading={
+          <>
+            Truck body and trailer repairs,{" "}
+            <span className="text-accent">built for real work.</span>
+          </>
+        }
         body="Tipper bodies, trailers and heavy vehicle components repaired, rebuilt and maintained from our Campbellfield workshop."
-        crumbs={[
-          { label: "Home", href: "/" },
-          { label: "Repairs & Servicing", href: "/repairs-servicing" },
-        ]}
+        image={media.workshop.src}
+        imagePosition="50% 42%"
         actions={
           <>
             <Button
@@ -174,56 +189,53 @@ export default function RepairsPage() {
               Book an inspection
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
-              <Phone className="h-4 w-4" aria-hidden />
+              <Phone className="h-4 w-4 text-accent-text" aria-hidden />
               Call {site.phone}
             </Button>
           </>
         }
       />
 
-      {/* Overview */}
-      <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Overview"
-              heading="Heavy vehicle repairs, done by the same team that builds tippers and trailers."
-            />
-          </div>
-          <div className="lg:col-span-7 space-y-5 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
-            <p>
+      {/* Overview and capability */}
+      <section id="overview" className="section">
+        <Container>
+          <div className="grid gap-4 lg:grid-cols-12 lg:gap-12">
+            <div className="min-w-0 lg:col-span-5">
+              <SectionHeader
+                eyebrow="Overview"
+                heading="Heavy vehicle repairs, done by the same team that builds tippers and trailers."
+              />
+            </div>
+            <p className="min-w-0 text-[0.9375rem] leading-relaxed text-mute sm:text-base lg:col-span-7 lg:self-end">
               From damaged tipper bins and tailgates to structural repairs and
               hydraulic faults, we get heavy vehicles and trailers back on the
               road quickly.
             </p>
-            <p>
-              We handle insurance repairs, fabrication work and ongoing
-              servicing — all from the same workshop that builds our bodies.
+          </div>
+
+          <div className="mt-8 lg:mt-10">
+            <p className="eyebrow mb-2">Capability</p>
+            <h3 className="font-display text-xl font-semibold text-bone">
+              What we repair, rebuild and service.
+            </h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-mute sm:text-[0.9375rem]">
+              One workshop, full repair scope — from cracked rails to hydraulic rebuilds.
             </p>
           </div>
-        </Container>
-      </section>
-
-      {/* Key features */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Capability"
-            heading="What we repair, rebuild and service."
-            body="One workshop, full repair scope — from cracked rails to hydraulic rebuilds."
-          />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((f) => {
               const Icon = f.icon;
               return (
-                <li key={f.title} className="card flex flex-col gap-3 p-5 sm:p-6">
+                <li key={f.title} className="card flex gap-3.5 p-4 sm:p-5 lg:flex-col">
                   <span className="icon-tile">
                     <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
                   </span>
-                  <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
-                    {f.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-mute">{f.body}</p>
+                  <div className="min-w-0">
+                    <h4 className="font-display text-base font-semibold text-bone">
+                      {f.title}
+                    </h4>
+                    <p className="mt-1 text-sm leading-relaxed text-mute">{f.body}</p>
+                  </div>
                 </li>
               );
             })}
@@ -231,130 +243,82 @@ export default function RepairsPage() {
         </Container>
       </section>
 
-      {/* Common work */}
-      <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Use cases"
-              heading="Common repair and servicing work."
-              body="Most jobs land in one of these categories — but if you're not sure, book a diagnostic inspection."
-            />
-          </div>
-          <div className="lg:col-span-7">
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {useCases.map((u) => {
-                const Icon = u.icon;
-                return (
-                  <li
-                    key={u.label}
-                    className="card flex items-center gap-4 p-5 sm:p-6"
-                  >
-                    <span className="icon-tile">
-                      <Icon
-                        className="h-[1.125rem] w-[1.125rem]"
-                        strokeWidth={1.5}
-                        aria-hidden
-                      />
-                    </span>
-                    <span className="text-sm font-semibold text-bone sm:text-base">
-                      {u.label}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </Container>
-      </section>
-
-      {/* Repair options */}
-      <section className="section">
+      {/* Common work and service options */}
+      <section id="services" className="section">
         <Container>
           <SectionHeader
             eyebrow="Service options"
             heading="Repair and service options."
-            body="Pick the path that suits the job. Every option starts with a written diagnostic and quote."
+            className="mb-6"
           />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {repairOptions.map((r) => (
-              <li
-                key={r.title}
-                className="card flex flex-col gap-3 p-5 sm:p-6"
-              >
-                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
-                  {r.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-mute">{r.body}</p>
-              </li>
-            ))}
-          </ul>
+          <SpecTabs
+            label="Repair and service options"
+            tabs={[
+              {
+                id: "common",
+                label: "Common work",
+                content: (
+                  <>
+                    <p className={tabLead}>
+                      Most jobs land in one of these categories — but if you&rsquo;re not sure, book a diagnostic inspection.
+                    </p>
+                    <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                      {useCases.map((u) => {
+                        const Icon = u.icon;
+                        return (
+                          <li key={u.label} className="card flex items-center gap-3 p-4">
+                            <span className="icon-tile">
+                              <Icon className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.5} aria-hidden />
+                            </span>
+                            <span className="min-w-0 text-sm font-semibold text-bone">{u.label}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                ),
+              },
+              {
+                id: "options",
+                label: "Service options",
+                content: (
+                  <>
+                    <p className={tabLead}>
+                      Pick the path that suits the job. Every option starts with a written diagnostic and quote.
+                    </p>
+                    <InfoGrid items={repairOptions} />
+                  </>
+                ),
+              },
+            ]}
+          />
         </Container>
       </section>
 
       {/* Compliance / why us */}
-      <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Why Arrow"
-              heading="Workshop credentials that hold up under load."
-            />
-          </div>
-          <div className="lg:col-span-7">
-            <ul className="list-group">
-              {compliance.map((c) => (
-                <li key={c} className="list-row">
-                  <ClipboardList
-                    className="mt-0.5 h-5 w-5 shrink-0 text-accent"
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                  <p className="text-sm leading-relaxed text-bone sm:text-base">
-                    {c}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <section id="why-arrow" className="section">
+        <Container>
+          <PhotoBand
+            photo={media.welding}
+            eyebrow="Why Arrow"
+            heading="Workshop credentials that hold up under load."
+            body="We handle insurance repairs, fabrication work and ongoing servicing — all from the same workshop that builds our bodies."
+          >
+            <CheckList items={compliance} />
+          </PhotoBand>
         </Container>
       </section>
 
       {/* FAQ */}
-      <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-4">
-            <SectionHeader
-              eyebrow="FAQ"
-              heading="Common questions, answered."
-              body="Still have a question? Call the workshop or book an inspection."
-            />
-            <div className="mt-8 space-y-2 text-sm">
-              <p className="flex items-center gap-2 text-mute">
-                <Phone className="h-4 w-4 text-accent" aria-hidden />
-                <a href={site.phoneHref} className="hover:text-bone">
-                  {site.phone}
-                </a>
-              </p>
-              <p className="flex items-center gap-2 text-mute">
-                <CalendarCheck className="h-4 w-4 text-accent" aria-hidden />
-                Mon – Fri, 7:00 AM – 4:00 PM
-              </p>
-            </div>
-          </div>
-          <div className="lg:col-span-8">
-            <ul className="list-group">
-              {faqs.map((f) => (
-                <li key={f.question} className="list-row flex-col gap-1 py-4">
-                  <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
-                    {f.question}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-mute sm:text-base">
-                    {f.answer}
-                  </p>
-                </li>
-              ))}
-            </ul>
+      <section id="faq" className="section">
+        <Container>
+          <SectionHeader
+            eyebrow="FAQ"
+            heading="Common questions, answered."
+            body="Still have a question? Call the workshop or book an inspection."
+          />
+          <div className="mt-6">
+            <FAQAccordion items={faqs} />
           </div>
         </Container>
       </section>

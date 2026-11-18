@@ -44,6 +44,8 @@ export interface TrailerPageConfig {
     badge: string;
     subtext: string;
     capability: string[];
+    image: string;
+    imagePosition?: string;
   };
   recentBuilds: TrailerRecentBuild[];
   trailerType: TrailerTypeBlock;
@@ -187,7 +189,8 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
           </>
         }
         body={hero.subtext}
-        image="/images/builds/build-1.jpg"
+        image={hero.image}
+        imagePosition={hero.imagePosition}
         note="Built for civil, quarry and fleet applications"
         facts={hero.capability}
         actions={
@@ -208,7 +211,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         label={`${service.shortTitle} sections`}
         items={[
           { id: "overview", label: "Overview" },
-          { id: "builds", label: "Builds" },
+          ...(recentBuilds.length > 0 ? [{ id: "builds", label: "Builds" }] : []),
           { id: "setup", label: "Setup" },
           { id: "specs", label: "Specs" },
           { id: "process", label: "Process" },
@@ -243,6 +246,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         </Container>
       </section>
 
+      {recentBuilds.length > 0 && (
       <section id="builds" className="section">
         <Container>
           <div className="flex flex-wrap items-end justify-between gap-4">
@@ -256,6 +260,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
           <BuildCards builds={recentBuilds} />
         </Container>
       </section>
+      )}
 
       <section id="setup" className="section">
         <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
@@ -333,6 +338,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         heading="Get the setup right from the start."
         body="Send us your truck, job and target payload — we'll come back with a build proposal, lead time and pricing."
         primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
+        secondaryCta={{ label: "Configure your build", href: `/configure?product=${config.slug === "dog-trailers" ? "dog" : "semi"}` }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
         footnote="Built in Melbourne. Backed by the team that built it."
       />

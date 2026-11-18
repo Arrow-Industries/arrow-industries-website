@@ -20,6 +20,7 @@ import {
   Search,
   ShieldCheck,
   ShoppingBag,
+  SlidersHorizontal,
   Users,
 } from "lucide-react";
 import { flags } from "@/data/flags";
@@ -43,6 +44,13 @@ const COMMANDS: Command[] = [
     href: "/request-a-quote",
     icon: ClipboardList,
     keywords: "price enquiry build order new",
+  },
+  {
+    group: "Actions",
+    label: "Configure your build",
+    href: "/configure",
+    icon: SlidersHorizontal,
+    keywords: "customise custom spec colour options design tipper dog semi",
   },
   {
     group: "Actions",

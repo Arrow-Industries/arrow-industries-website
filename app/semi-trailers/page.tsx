@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
-import { TrailerPageTemplate } from "@/components/TrailerPageTemplate";
+import { TrailerPageTemplate, type TrailerRecentBuild } from "@/components/TrailerPageTemplate";
+import { media } from "@/data/media";
 import { getServiceBySlug } from "@/data/services";
 
 const slug = "semi-trailers";
@@ -42,29 +43,8 @@ const faqs = [
   },
 ];
 
-const recentBuilds = [
-  {
-    src: "/images/builds/build-1.jpg",
-    alt: "Arrow Industries semi tipper setup",
-    title: "Semi Tipper Setup",
-    application: "Bulk haulage",
-    specs: ["Tri-axle group", "Tipping body", "Heavy-duty drawgear"],
-  },
-  {
-    src: "/images/builds/build-2.jpg",
-    alt: "Arrow Industries 3-axle semi build",
-    title: "3-Axle Semi Build",
-    application: "Quarry application",
-    specs: ["High-payload setup", "Wear-rated floor", "PBS-aware"],
-  },
-  {
-    src: "/images/builds/build-3.jpg",
-    alt: "Arrow Industries 2-axle semi build",
-    title: "2-Axle Semi Build",
-    application: "Fleet setup",
-    specs: ["Light-tare focus", "Integrated hydraulics", "Job-ready"],
-  },
-];
+// Add real semi trailer builds here as photos become available.
+const recentBuilds: TrailerRecentBuild[] = [];
 
 const trailerType = {
   label: "Semi trailers",
@@ -116,6 +96,8 @@ export default function Page() {
           subtext:
             "Semi trailers designed to integrate properly with your prime mover — built for durability, balance and real-world performance on-site.",
           capability: ["2-axle", "3-axle"],
+          image: media.bodyPainted.src,
+          imagePosition: "50% 45%",
         },
         recentBuilds,
         trailerType,

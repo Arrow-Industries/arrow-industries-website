@@ -20,6 +20,7 @@ import {
 } from "@/components/ProductParts";
 import { SpecTabs } from "@/components/SpecTabs";
 import { SectionHeader } from "@/components/SectionHeader";
+import { media } from "@/data/media";
 import { getServiceBySlug } from "@/data/services";
 import { site } from "@/data/site";
 import {
@@ -282,7 +283,8 @@ export default function Page() {
           </>
         }
         body="Built in Melbourne for civil, quarry, demolition, construction and fleet operators who need durable, cleanly finished equipment that performs on site."
-        image="/images/builds/build-2.jpg"
+        image={media.tipperGraphiteRear.src}
+        imagePosition="64% 50%"
         note="Custom-built for 4x2, 6x4, 8x4 and 10x4 chassis."
         facts={credibilityPoints}
         actions={
@@ -440,6 +442,7 @@ export default function Page() {
         heading={tipperContent.ctaHeading}
         body={tipperContent.ctaBody}
         primaryCta={{ label: "Request a quote", href: "/request-a-quote" }}
+        secondaryCta={{ label: "Configure your build", href: "/configure?product=tipper" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
         footnote="Built in Melbourne. Backed by the team that built it."
       />

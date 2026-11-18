@@ -1,34 +1,23 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import {
-  Award,
-  Briefcase,
-  CheckCircle2,
-  ClipboardList,
-  Clock,
-  Drill,
-  Flame,
-  GraduationCap,
-  HandHelping,
-  Hammer,
-  Layers,
-  Mail,
-  MapPin,
-  PaintRoller,
-  Ruler,
-  Users,
-  Zap,
-} from "lucide-react";
+import { Clock, Hammer, Layers, Mail, MapPin, Users } from "lucide-react";
 import { Container } from "@/components/Container";
-import { PageHero } from "@/components/PageHero";
+import { ProductHero } from "@/components/ProductHero";
+import {
+  CheckGrid,
+  InfoGrid,
+  WorkshopStrip,
+} from "@/components/ProductParts";
+import { SpecTabs } from "@/components/SpecTabs";
 import { SectionHeader } from "@/components/SectionHeader";
 import { CareersForm } from "@/components/CareersForm";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { CTASection } from "@/components/CTASection";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
-import { faqPageSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqPageSchema } from "@/lib/schema";
 import type { FAQ } from "@/data/faqs";
+import { media } from "@/data/media";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = pageMetadata({
@@ -41,6 +30,11 @@ export const metadata: Metadata = pageMetadata({
 // Handles the careers form's server action (resume upload streamed to Graph).
 // See /request-a-quote for the rationale.
 export const maxDuration = 60;
+
+const crumbs = [
+  { label: "Home", href: "/" },
+  { label: "Careers", href: "/careers" },
+];
 
 const whyArrow = [
   {
@@ -71,64 +65,70 @@ const lookFor = [
 
 const roles = [
   {
-    icon: Flame,
     title: "Welder / Fabricator",
     body: "Entry-level or general welding and fabrication, working under direction. No formal qualification or prior experience required.",
   },
   {
-    icon: Hammer,
     title: "Senior Welder / Fabricator",
     body: "Experienced welder/fabricator who works independently, reads drawings and handles more complex builds — without a formal trade qualification.",
   },
   {
-    icon: Award,
     title: "Qualified Boilermaker / Welder",
     body: "Holds a recognised trade qualification — skilled fabrication, welding, drawing interpretation and complex manufacturing work.",
   },
   {
-    icon: Zap,
     title: "Auto Electrician",
     body: "12V/24V wiring, lighting systems, diagnostics and hydraulic control systems.",
   },
   {
-    icon: PaintRoller,
     title: "Painter",
     body: "Preparation, priming and painting of truck bodies, trailers and fabricated components.",
   },
   {
-    icon: Drill,
     title: "Hydraulic Fitter",
     body: "Installation, servicing and troubleshooting of hydraulic systems, hoists, pumps and controls.",
   },
   {
-    icon: HandHelping,
     title: "Trade Assistant",
     body: "Support fabrication, assembly and workshop operations while learning alongside experienced tradespeople.",
   },
   {
-    icon: GraduationCap,
     title: "Apprentice",
     body: "Start your trade career in a busy workshop with hands-on training and real projects.",
   },
   {
-    icon: Ruler,
     title: "Engineer",
     body: "Design and engineering support for custom builds — drawings, specs and compliance.",
   },
   {
-    icon: ClipboardList,
     title: "Operations Supervisor",
     body: "Coordinate the workshop floor — scheduling, workflow and keeping builds on track.",
   },
   {
-    icon: Briefcase,
     title: "Administration",
     body: "Office and customer support — scheduling, paperwork, invoicing and keeping things running.",
   },
   {
-    icon: Users,
     title: "Other",
     body: "Have relevant heavy vehicle, manufacturing or workshop experience? We'd still like to hear from you.",
+  },
+];
+
+const workshop = [
+  {
+    photo: media.paintBooth,
+    title: "Prep and paint",
+    body: "Preparation, priming and painting of truck bodies, trailers and fabricated components.",
+  },
+  {
+    photo: media.welding,
+    title: "Fabrication",
+    body: "Welds laid by qualified fabricators, inspected before paint.",
+  },
+  {
+    photo: media.workshop,
+    title: "Campbellfield workshop",
+    body: "One workshop, one hands-on team. Monday to Friday, 7:00 AM to 4:00 PM.",
   },
 ];
 
@@ -163,16 +163,16 @@ const careersFAQs: FAQ[] = [
 export default function CareersPage() {
   return (
     <>
-      <JsonLd data={faqPageSchema(careersFAQs)} />
+      <JsonLd data={[faqPageSchema(careersFAQs), breadcrumbSchema(crumbs)]} />
 
-      <PageHero
-        eyebrow="Careers"
+      {/* 1 — Hero */}
+      <ProductHero
+        crumbs={crumbs}
+        badge="Careers"
         heading="Build heavy gear with a Melbourne workshop that backs its trades."
         body="Arrow Industries builds custom tipper bodies, trailers and heavy vehicle equipment from our Campbellfield workshop. We're always looking for reliable tradespeople and apprentices who take pride in their work."
-        crumbs={[
-          { label: "Home", href: "/" },
-          { label: "Careers", href: "/careers" },
-        ]}
+        image={media.bodyPainted.src}
+        imagePosition="50% 22%"
         actions={
           <>
             <Button href="#apply" size="lg">
@@ -185,24 +185,15 @@ export default function CareersPage() {
         }
       />
 
-      {/* Trust strip */}
-      <Container className="pb-2">
-        <div className="card px-5 py-3.5">
-          <p className="eyebrow">
-            Family-owned workshop.{" "}
-            <span className="text-bone">Steady work. Real builds.</span>
-          </p>
-        </div>
-      </Container>
-
-      {/* Why work with Arrow */}
+      {/* 2 — Why work with Arrow */}
       <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Why Arrow"
             heading="A workshop worth turning up to."
+            body="Family-owned workshop. Steady work. Real builds."
           />
-          <ul className="mt-10 grid gap-3 sm:grid-cols-3">
+          <ul className="mt-6 grid gap-3 sm:grid-cols-3">
             {whyArrow.map((item) => {
               const Icon = item.icon;
               return (
@@ -227,70 +218,53 @@ export default function CareersPage() {
               );
             })}
           </ul>
+
+          <div className="mt-8">
+            <SpecTabs
+              label="Roles and what we look for"
+              tabs={[
+                {
+                  id: "roles",
+                  label: "Roles we hire for",
+                  content: (
+                    <>
+                      <p className="mb-4 font-display text-lg font-semibold text-bone">
+                        The roles that build an Arrow unit.
+                      </p>
+                      <InfoGrid items={roles} />
+                    </>
+                  ),
+                },
+                {
+                  id: "look-for",
+                  label: "What we look for",
+                  content: (
+                    <>
+                      <p className="mb-4 font-display text-lg font-semibold text-bone">
+                        The people who fit in here.
+                      </p>
+                      <CheckGrid items={lookFor} />
+                    </>
+                  ),
+                },
+              ]}
+            />
+          </div>
         </Container>
       </section>
 
-      {/* What we look for */}
+      {/* 3 — The workshop */}
       <section className="section">
         <Container>
           <SectionHeader
-            eyebrow="What we look for"
-            heading="The people who fit in here."
+            eyebrow="The workshop"
+            heading="Inside the Campbellfield workshop."
           />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-            {lookFor.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 card p-5"
-              >
-                <CheckCircle2
-                  className="mt-0.5 h-5 w-5 shrink-0 text-accent"
-                  strokeWidth={1.5}
-                  aria-hidden
-                />
-                <span className="text-sm leading-relaxed text-bone">
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <WorkshopStrip items={workshop} />
         </Container>
       </section>
 
-      {/* Roles we hire for */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Roles we hire for"
-            heading="The roles that build an Arrow unit."
-          />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {roles.map((role) => {
-              const Icon = role.icon;
-              return (
-                <li
-                  key={role.title}
-                  className="card flex flex-col gap-3 p-5 sm:p-6"
-                >
-                  <Icon
-                    className="h-6 w-6 text-accent"
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                  <h3 className="text-base font-semibold text-bone">
-                    {role.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-mute">
-                    {role.body}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </Container>
-      </section>
-
-      {/* Application form */}
+      {/* 4 — Application form */}
       <section
         id="apply"
         className="section"
@@ -375,7 +349,7 @@ export default function CareersPage() {
         </Container>
       </section>
 
-      {/* FAQ */}
+      {/* 5 — FAQ and call to action */}
       <section className="section">
         <Container className="max-w-3xl">
           <SectionHeader

@@ -486,8 +486,8 @@ function PhotoMenu({ item, pathname, onPick }: MenuProps) {
           View builds
           <ChevronRight className="h-3.5 w-3.5" aria-hidden />
         </Link>
-        <Button href="/request-a-quote" size="sm" onClick={onPick}>
-          Request a quote
+        <Button href="/configure" size="sm" onClick={onPick}>
+          Configure your build
         </Button>
       </div>
     </>

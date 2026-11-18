@@ -1,25 +1,26 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { pageMetadata } from "@/lib/seo";
 import Image from "next/image";
-import {
-  Building2,
-  Construction,
-  HardHat,
-  Mountain,
-  Phone,
-  Recycle,
-  Shovel,
-  Truck,
-  Warehouse,
-} from "lucide-react";
+import { Phone } from "lucide-react";
 import { Container } from "@/components/Container";
-import { PageHero } from "@/components/PageHero";
+import { ProductHero } from "@/components/ProductHero";
+import {
+  CheckGrid,
+  InfoGrid,
+  ViewBuildsLink,
+  WorkshopStrip,
+} from "@/components/ProductParts";
+import { SpecTabs } from "@/components/SpecTabs";
+import { Testimonials } from "@/components/Testimonials";
 import { CTASection } from "@/components/CTASection";
-import { FeatureSection } from "@/components/FeatureSection";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
+import { JsonLd } from "@/components/JsonLd";
 import { whyChooseArrow } from "@/data/features";
+import { media } from "@/data/media";
 import { site } from "@/data/site";
+import { breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = pageMetadata({
   title: "About Arrow Industries — Australian Truck Body & Trailer Manufacturer",
@@ -28,11 +29,34 @@ export const metadata: Metadata = pageMetadata({
   path: "/about",
 });
 
+const crumbs = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+];
+
 const stats = [
   { value: "25+", label: "Years experience" },
   { value: "Australian", label: "Built" },
   { value: "VicRoads", label: "Licensed" },
   { value: "Heavy-duty", label: "Builds" },
+];
+
+const workshop = [
+  {
+    photo: media.paintPrep,
+    title: "Prep and paint",
+    body: "Preparation, priming and painting of truck bodies, trailers and fabricated components.",
+  },
+  {
+    photo: media.bodyPainted,
+    title: "2-pack paint",
+    body: "Finished to any 2-pack colour code you specify.",
+  },
+  {
+    photo: media.onSite,
+    title: "Built for real site conditions",
+    body: "Engineered around continuous on-site work: quarries, tip sites and unsealed roads.",
+  },
 ];
 
 const milestones = [
@@ -58,28 +82,77 @@ const milestones = [
   },
 ];
 
-const industries = [
-  { label: "Civil construction", icon: Construction },
-  { label: "Quarry", icon: Mountain },
-  { label: "Transport", icon: Truck },
-  { label: "Bulk haulage", icon: Warehouse },
-  { label: "Waste management", icon: Recycle },
-  { label: "Earthmoving", icon: Shovel },
-  { label: "Fleet operators", icon: HardHat },
-  { label: "Truck dealers", icon: Building2 },
+const whatWeBuild = [
+  {
+    title: "4x2 tipper bodies",
+    body: "Configured for lighter payloads, urban work and tight access conditions.",
+  },
+  {
+    title: "6x4 tipper bodies",
+    body: "Configured to suit chassis and payload requirements.",
+  },
+  {
+    title: "8x4 tipper bodies",
+    body: "Built for heavy-duty transport and high-cycle work.",
+  },
+  {
+    title: "Dog trailers",
+    body: "Matched to your tipper for legal payload and stability.",
+  },
+  {
+    title: "Semi trailers",
+    body: "Tipping and flat-deck builds for long-haul performance.",
+  },
 ];
+
+const industries = [
+  "Civil construction",
+  "Quarry",
+  "Transport",
+  "Bulk haulage",
+  "Waste management",
+  "Earthmoving",
+  "Fleet operators",
+  "Truck dealers",
+];
+
+const recentBuilds = [media.tipperGraphite, media.scania, media.tipperWhite];
+
+function TabIntro({
+  heading,
+  body,
+  children,
+}: {
+  heading: string;
+  body: string;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <div className="mb-4 max-w-2xl">
+        <p className="font-display text-lg font-semibold text-bone">{heading}</p>
+        <p className="mt-1.5 text-sm leading-relaxed text-mute sm:text-[0.9375rem]">
+          {body}
+        </p>
+      </div>
+      {children}
+    </>
+  );
+}
 
 export default function AboutPage() {
   return (
     <>
-      <PageHero
-        eyebrow="About"
+      <JsonLd data={breadcrumbSchema(crumbs)} />
+
+      {/* 1 — Hero */}
+      <ProductHero
+        crumbs={crumbs}
+        badge="About"
         heading="Custom truck bodies and trailers built to handle demanding conditions."
         body="Designed, fabricated and serviced from our Campbellfield workshop — supporting operators across construction, quarry, transport and waste across Australia."
-        crumbs={[
-          { label: "Home", href: "/" },
-          { label: "About", href: "/about" },
-        ]}
+        image={media.truckAndDogDusk.src}
+        imagePosition="70% 55%"
         actions={
           <>
             <Button href="/request-a-quote" size="lg">
@@ -93,151 +166,119 @@ export default function AboutPage() {
         }
       />
 
-      {/* Stats */}
+      {/* 2 — Stats and our story */}
       <section className="section">
         <Container>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             {stats.map((s) => (
               <li
                 key={s.label}
-                className="card flex flex-col gap-1 p-5 text-center sm:p-6"
+                className="card flex flex-col gap-1 p-4 text-center sm:p-6"
               >
-                <span className="font-display text-2xl font-semibold text-bone sm:text-[1.75rem]">
+                <span className="font-display text-xl font-semibold text-bone sm:text-[1.75rem]">
                   {s.value}
                 </span>
-                <span className="label">
-                  {s.label}
-                </span>
+                <span className="label">{s.label}</span>
               </li>
             ))}
           </ul>
-        </Container>
-      </section>
 
-      {/* Our Story */}
-      <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Our story"
-              heading="Built for operators. Built to suit the job."
-            />
-            <div className="mt-6 space-y-4 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
-              <p>
-                Arrow Industries started as a fabrication workshop in
-                Campbellfield, building tipper bodies for operators who needed
-                stronger, more practical equipment.
-              </p>
-              <p>
-                The business was founded by Kon, who worked directly in the
-                civil industry operating his own trucks and trailers on site —
-                understanding firsthand what equipment needs to handle.
-              </p>
-              <p>
-                That experience is backed by engineering insight, with Aaron
-                bringing a background in civil engineering across major
-                projects in Victoria, with a deep understanding of site
-                requirements, compliance and real-world operating conditions.
-              </p>
-              <p>
-                Today, we operate the same way — one workshop, one hands-on
-                team, supporting operators across Australia.
-              </p>
-
-              <ul className="!my-5 space-y-1 border-l-2 border-accent pl-4 text-[0.9375rem] text-bone">
-                <li className="font-semibold">Built for operators.</li>
-                <li className="font-semibold">Designed to suit the job.</li>
-                <li className="font-semibold">Custom-built for real conditions.</li>
-              </ul>
-
-              <p>
-                Each build is designed around the chassis, load, route and
-                operating conditions — practical, compliant and built for
-                long-term use.
-              </p>
-              <p>
-                When a unit comes back for servicing, repairs or
-                modifications, it&rsquo;s supported by the same team that
-                built it.
-              </p>
-            </div>
-          </div>
-          <div className="lg:col-span-7">
-            <div className="relative aspect-[4/3] card overflow-hidden">
-              <Image
-                src="/images/builds/build-3.jpg"
-                alt="Rear view of an Arrow Industries tipper body"
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
+          <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-12 lg:gap-12">
+            <div className="lg:col-span-7">
+              <SectionHeader
+                eyebrow="Our story"
+                heading="Built for operators. Built to suit the job."
               />
+              <div className="mt-6 space-y-4 text-[0.9375rem] leading-relaxed text-mute sm:text-base">
+                <p>
+                  Arrow Industries started as a fabrication workshop in
+                  Campbellfield, building tipper bodies for operators who needed
+                  stronger, more practical equipment.
+                </p>
+                <p>
+                  The business was founded by Kon, who worked directly in the
+                  civil industry operating his own trucks and trailers on site —
+                  understanding firsthand what equipment needs to handle.
+                </p>
+                <p>
+                  That experience is backed by engineering insight, with Aaron
+                  bringing a background in civil engineering across major
+                  projects in Victoria, with a deep understanding of site
+                  requirements, compliance and real-world operating conditions.
+                </p>
+                <p>
+                  Today, we operate the same way — one workshop, one hands-on
+                  team, supporting operators across Australia.
+                </p>
+
+                <ul className="!my-5 space-y-1 border-l-2 border-accent pl-4 text-[0.9375rem] text-bone">
+                  <li className="font-semibold">Built for operators.</li>
+                  <li className="font-semibold">Designed to suit the job.</li>
+                  <li className="font-semibold">Custom-built for real conditions.</li>
+                </ul>
+
+                <p>
+                  Each build is designed around the chassis, load, route and
+                  operating conditions — practical, compliant and built for
+                  long-term use.
+                </p>
+                <p>
+                  When a unit comes back for servicing, repairs or
+                  modifications, it&rsquo;s supported by the same team that
+                  built it.
+                </p>
+                <p>
+                  Supporting transport, construction and haulage operators
+                  across Australia for{" "}
+                  <span className="font-semibold text-bone">over 25 years</span>.
+                </p>
+              </div>
+            </div>
+            <div className="lg:col-span-5 lg:self-start lg:sticky lg:top-24">
+              <div className="card relative aspect-[4/5] overflow-hidden">
+                <Image
+                  src={media.welding.src}
+                  alt={media.welding.alt}
+                  fill
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  className="object-cover"
+                  style={{ objectPosition: "50% 30%" }}
+                />
+              </div>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* What we build */}
+      {/* 3 — Inside the workshop */}
       <section className="section">
         <Container>
-          <SectionHeader eyebrow="Capability" heading="What we build" />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {[
-              {
-                title: "4x2 tipper bodies",
-                desc: "Configured for lighter payloads, urban work and tight access conditions.",
-              },
-              {
-                title: "6x4 tipper bodies",
-                desc: "Configured to suit chassis and payload requirements.",
-              },
-              {
-                title: "8x4 tipper bodies",
-                desc: "Built for heavy-duty transport and high-cycle work.",
-              },
-              {
-                title: "Dog trailers",
-                desc: "Matched to your tipper for legal payload and stability.",
-              },
-              {
-                title: "Semi trailers",
-                desc: "Tipping and flat-deck builds for long-haul performance.",
-              },
-            ].map((item) => (
-              <li
-                key={item.title}
-                className="card flex flex-col gap-3 p-5 sm:p-6"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
-                    {item.title}
-                  </h3>
-                  <span
-                    aria-hidden
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
-                  />
-                </div>
-                <p className="text-sm leading-relaxed text-mute">
-                  {item.desc}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <SectionHeader
+            eyebrow="Inside the workshop"
+            heading="Welded, finished and inspected by the same team."
+          />
+          <WorkshopStrip items={workshop} />
         </Container>
       </section>
 
-      {/* Milestones */}
+      {/* 4 — Milestones */}
       <section className="section">
         <Container>
           <SectionHeader
             eyebrow="Experience"
             heading="Built on experience. Focused on what matters today."
           />
-          <ol className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-7 grid lg:grid-cols-4 lg:gap-6">
             {milestones.map((m) => (
-              <li key={m.title} className="card flex flex-col gap-3 p-5 sm:p-6">
-                <span className="eyebrow">
-                  {m.year}
-                </span>
+              <li
+                key={m.title}
+                className="relative flex flex-col gap-2 border-l border-line-soft pb-7 pl-5 last:pb-0 lg:border-l-0 lg:border-t lg:pb-0 lg:pl-0 lg:pt-5"
+              >
+                <span
+                  aria-hidden
+                  className="absolute -left-[3.5px] top-1.5 h-1.5 w-1.5 rounded-full bg-accent lg:-top-[3.5px] lg:left-0"
+                />
+                <span className="eyebrow">{m.year}</span>
                 <h3 className="text-base font-semibold text-bone">{m.title}</h3>
                 <p className="text-sm leading-relaxed text-mute">{m.body}</p>
               </li>
@@ -246,104 +287,66 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* Section 1 — Built for Australian conditions */}
+      {/* 5 — What we build, why Arrow, industries */}
       <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Why Arrow"
-              heading="Built for Australian conditions."
-              body="Decades of fabrication experience, real workshop capability and a refusal to cut corners on steel, welds or hydraulics."
-            />
-          </div>
-          <div className="lg:col-span-7">
-            <FeatureSection features={whyChooseArrow} />
-          </div>
-        </Container>
-      </section>
-
-      {/* Section 2 — Built for operators across Australia */}
-      <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Industries"
-              heading="Built for operators across Australia."
-              body="Working with operators who rely on equipment that performs — across construction, quarry, transport, waste and fleet operations."
-            />
-          </div>
-          <div className="lg:col-span-7">
-            <ul className="list-group">
-              {industries.map((i) => {
-                const Icon = i.icon;
-                return (
-                  <li
-                    key={i.label}
-                    className="list-row items-center"
+        <Container>
+          <SectionHeader
+            eyebrow="Custom-built"
+            heading="Sized for the job in front of it."
+            body="Every Arrow build starts with the chassis, payload, route and operating conditions. No catalogue sizes. No compromises. Just a unit engineered to do the work it’s asked to do, year after year."
+            className="mb-6"
+          />
+          <SpecTabs
+            label="About Arrow Industries"
+            tabs={[
+              {
+                id: "build",
+                label: "What we build",
+                content: <InfoGrid items={whatWeBuild} />,
+              },
+              {
+                id: "why-arrow",
+                label: "Why Arrow",
+                content: (
+                  <TabIntro
+                    heading="Built for Australian conditions."
+                    body="Decades of fabrication experience, real workshop capability and a refusal to cut corners on steel, welds or hydraulics."
                   >
-                    <Icon
-                      className="h-5 w-5 shrink-0 text-accent"
-                      strokeWidth={1.5}
-                      aria-hidden
+                    <InfoGrid
+                      items={whyChooseArrow.map((f) => ({
+                        title: f.title,
+                        body: f.description,
+                      }))}
                     />
-                    <span className="text-base font-semibold text-bone sm:text-lg">
-                      {i.label}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                  </TabIntro>
+                ),
+              },
+              {
+                id: "industries",
+                label: "Industries",
+                content: (
+                  <TabIntro
+                    heading="Built for operators across Australia."
+                    body="Working with operators who rely on equipment that performs — across construction, quarry, transport, waste and fleet operations."
+                  >
+                    <CheckGrid items={industries} />
+                  </TabIntro>
+                ),
+              },
+            ]}
+          />
         </Container>
       </section>
 
-      {/* Section 3 — Sized for the job in front of it */}
+      {/* 6 — Recent builds */}
       <section className="section">
         <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow">
-              Custom-built
-            </p>
-            <h2 className="mt-5 font-display text-[1.75rem] font-semibold leading-[1.12] text-bone sm:text-[2rem] lg:text-[2.25rem]">
-              Sized for the job in front of it.
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-[0.9375rem] leading-relaxed text-mute sm:text-base">
-              Every Arrow build starts with the chassis, payload, route and
-              operating conditions. No catalogue sizes. No compromises. Just a
-              unit engineered to do the work it&rsquo;s asked to do, year after
-              year.
-            </p>
-          </div>
-        </Container>
-      </section>
-
-      {/* Recent builds */}
-      <section className="section">
-        <Container>
-          <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeader eyebrow="Recent work" heading="Recent builds" />
-            <Button href="/builds" variant="ghost">
-              View builds
-            </Button>
+            <ViewBuildsLink />
           </div>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                src: "/images/builds/build-1.jpg",
-                alt: "Arrow Industries tipper body on a white cab-over truck, side view",
-                label: "Tipper body",
-              },
-              {
-                src: "/images/builds/build-2.jpg",
-                alt: "Arrow Industries tipper body with a graphite finish, side view",
-                label: "Tipper body",
-              },
-              {
-                src: "/images/builds/build-3.jpg",
-                alt: "Rear three-quarter view of an Arrow Industries tipper body",
-                label: "Tipper body",
-              },
-            ].map((b) => (
+            {recentBuilds.map((b) => (
               <li
                 key={b.src}
                 className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
@@ -356,7 +359,7 @@ export default function AboutPage() {
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 />
                 <span className="material absolute bottom-2.5 left-2.5 rounded-full px-2.5 py-1 text-xs font-medium text-bone">
-                  {b.label}
+                  Tipper body
                 </span>
               </li>
             ))}
@@ -364,16 +367,8 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* Trust line */}
-      <section className="section">
-        <Container>
-          <p className="text-center text-sm text-mute sm:text-base">
-            Supporting transport, construction and haulage operators across
-            Australia for{" "}
-            <span className="font-semibold text-bone">over 25 years</span>.
-          </p>
-        </Container>
-      </section>
+      {/* 7 — Testimonials and call to action */}
+      <Testimonials />
 
       <CTASection
         eyebrow="Talk to us"

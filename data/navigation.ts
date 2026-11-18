@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { ClipboardCheck, Landmark, ShoppingBag, Wrench } from "lucide-react";
 import { flags } from "@/data/flags";
+import { media } from "@/data/media";
 import { site } from "@/data/site";
 
 export interface NavChild {
@@ -35,22 +36,22 @@ export const primaryNav: NavItem[] = [
         label: "Tipper Truck Bodies",
         href: "/tipper-truck-bodies",
         description: "4x2, 6x4, 8x4 and 10x4",
-        image: "/images/builds/build-2.jpg",
-        imagePosition: "60% 50%",
+        image: media.tipperGraphiteRear.src,
+        imagePosition: "62% 50%",
       },
       {
         label: "Dog Trailers",
         href: "/dog-trailers",
         description: "3-axle and 4-axle",
-        image: "/images/builds/build-1.jpg",
-        imagePosition: "18% 55%",
+        image: media.dogSide.src,
+        imagePosition: "30% 55%",
       },
       {
         label: "Semi Trailers",
         href: "/semi-trailers",
         description: "2-axle and 3-axle",
-        image: "/images/builds/build-3.jpg",
-        imagePosition: "70% 50%",
+        image: media.bodyPainted.src,
+        imagePosition: "45% 50%",
       },
     ],
   },
@@ -104,6 +105,7 @@ export const footerLinks = {
     { label: "Dog Trailers", href: "/dog-trailers" },
     { label: "Semi Trailers", href: "/semi-trailers" },
     { label: "Builds", href: "/builds" },
+    { label: "Configure your build", href: "/configure" },
   ],
   services: [
     { label: "Roadworthy Inspections", href: "/licensed-vehicle-testing" },

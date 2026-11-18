@@ -54,7 +54,7 @@ export default function RequestAQuotePage() {
 
       <section className="section">
         <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="card p-5 sm:p-7 lg:col-span-7">
+          <div className="lg:col-span-7">
             <QuoteForm />
           </div>
 

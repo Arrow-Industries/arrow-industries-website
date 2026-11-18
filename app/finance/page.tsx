@@ -1,27 +1,24 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
-import {
-  Banknote,
-  CheckCircle2,
-  Clock,
-  FileText,
-  Handshake,
-  Mail,
-  Percent,
-  PhoneCall,
-  Truck,
-  Wrench,
-} from "lucide-react";
+import { Banknote, Clock, FileText, Mail, Percent, Phone } from "lucide-react";
 import { Container } from "@/components/Container";
-import { PageHero } from "@/components/PageHero";
+import { ProductHero } from "@/components/ProductHero";
+import {
+  CheckList,
+  InfoGrid,
+  Pills,
+  ProcessSteps,
+} from "@/components/ProductParts";
+import { SpecTabs } from "@/components/SpecTabs";
 import { SectionHeader } from "@/components/SectionHeader";
 import { FinanceForm } from "@/components/FinanceForm";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { CTASection } from "@/components/CTASection";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
-import { faqPageSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqPageSchema } from "@/lib/schema";
 import type { FAQ } from "@/data/faqs";
+import { media } from "@/data/media";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = pageMetadata({
@@ -79,22 +76,18 @@ const financeOptions = [
 
 const financeable = [
   {
-    icon: Truck,
     title: "Tipper truck bodies",
     body: "Custom tipper bodies built to your chassis and application.",
   },
   {
-    icon: Truck,
     title: "Dog & semi trailers",
     body: "Heavy-duty dog and semi trailers engineered for payload.",
   },
   {
-    icon: Handshake,
     title: "Truck & body packages",
     body: "Finance the complete setup — truck plus the Arrow body or trailer — in one facility.",
   },
   {
-    icon: Wrench,
     title: "Repairs, upgrades & fit-outs",
     body: "Major repairs, modifications and equipment upgrades can often be financed too.",
   },
@@ -102,21 +95,43 @@ const financeable = [
 
 const steps = [
   {
+    step: "01",
     title: "Send your details",
     body: "Tell us what you're building and how you'd prefer to finance it. Takes a couple of minutes.",
   },
   {
+    step: "02",
     title: "Linx shortlists a lender",
     body: "Our finance partner reviews your profile and matches it to the right lender from their panel.",
   },
   {
+    step: "03",
     title: "Approval & paperwork",
     body: "Rate and terms are confirmed and the paperwork is sorted — usually within a day or two.",
   },
   {
+    step: "04",
     title: "We build, you collect",
     body: "Finance settles and your Arrow build heads out the workshop door, ready for work.",
   },
+];
+
+const trustPoints = [
+  "Asset finance since 1999",
+  "Panel of 50+ lenders",
+  "Fast approvals",
+];
+
+const linxPoints = [
+  "Independent — works for you, not one bank",
+  "Specialists in transport & heavy equipment",
+  "Negotiates rates across 50+ lenders",
+  "Handles the paperwork end to end",
+];
+
+const crumbs = [
+  { label: "Home", href: "/" },
+  { label: "Finance", href: "/finance" },
 ];
 
 const financeFAQs: FAQ[] = [
@@ -155,39 +170,31 @@ const financeFAQs: FAQ[] = [
 export default function FinancePage() {
   return (
     <>
-      <JsonLd data={faqPageSchema(financeFAQs)} />
+      <JsonLd data={[faqPageSchema(financeFAQs), breadcrumbSchema(crumbs)]} />
 
-      <PageHero
-        eyebrow="Finance"
-        heading="Finance your next Arrow build."
+      <ProductHero
+        crumbs={crumbs}
+        badge="Finance"
+        heading={
+          <>
+            Finance your next <span className="text-accent">Arrow build.</span>
+          </>
+        }
         body="Spread the cost of a custom tipper body, trailer or complete truck-and-body package. Competitive asset finance, arranged through our partner Linx Australia Group."
-        crumbs={[
-          { label: "Home", href: "/" },
-          { label: "Finance", href: "/finance" },
-        ]}
+        image={media.scaniaGraphite.src}
+        imagePosition="62% 50%"
         actions={
           <>
             <Button href="#apply" size="lg">
-              Apply for Finance
+              Apply for finance
             </Button>
             <Button href={site.phoneHref} size="lg" variant="secondary">
+              <Phone className="h-4 w-4 text-accent-text" aria-hidden />
               Call {site.phone}
             </Button>
           </>
         }
       />
-
-      {/* Trust strip */}
-      <Container className="pb-2">
-        <div className="card px-5 py-3.5">
-          <p className="eyebrow">
-            Asset finance since 1999.{" "}
-            <span className="text-bone">
-              Panel of 50+ lenders. Fast approvals.
-            </span>
-          </p>
-        </div>
-      </Container>
 
       {/* Why finance */}
       <section className="section">
@@ -197,14 +204,14 @@ export default function FinancePage() {
             heading="Get the gear working without the up-front hit."
             body="Your equipment earns its keep from day one. Financing lets you put it to work now and pay for it as it pays you back."
           />
-          <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-4">
+            <Pills items={trustPoints} />
+          </div>
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {benefits.map((item) => {
               const Icon = item.icon;
               return (
-                <li
-                  key={item.title}
-                  className="card flex flex-col gap-4 p-5 sm:p-6"
-                >
+                <li key={item.title} className="card flex flex-col gap-3 p-5">
                   <span className="icon-tile">
                     <Icon
                       className="h-5 w-5 text-accent"
@@ -212,7 +219,7 @@ export default function FinancePage() {
                       aria-hidden
                     />
                   </span>
-                  <h3 className="text-base font-semibold text-bone">
+                  <h3 className="font-display text-base font-semibold text-bone">
                     {item.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-mute">
@@ -222,164 +229,24 @@ export default function FinancePage() {
               );
             })}
           </ul>
-        </Container>
-      </section>
-
-      {/* Finance partner — Linx */}
-      <section className="section">
-        <Container className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-7">
-            <SectionHeader
-              eyebrow="Our finance partner"
-              heading="Backed by Linx Australia Group."
-              body="Arrow builds the gear. Linx sorts the finance. They're an independent asset finance broker who've been at it since 1999, with a panel of around 50 lenders and deep experience in transport, trucks, trailers and heavy equipment."
-            />
-            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-              {[
-                "Independent — works for you, not one bank",
-                "Specialists in transport & heavy equipment",
-                "Negotiates rates across 50+ lenders",
-                "Handles the paperwork end to end",
-              ].map((point) => (
-                <li
-                  key={point}
-                  className="flex items-start gap-3 text-sm text-bone"
-                >
-                  <CheckCircle2
-                    className="mt-0.5 h-4 w-4 shrink-0 text-accent"
-                    strokeWidth={2}
-                    aria-hidden
-                  />
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="lg:col-span-5">
-            <div className="flex flex-col items-center gap-6 card p-8 text-center sm:p-10">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/customers/linx.png"
-                alt="Linx Australia Group"
-                width={260}
-                height={96}
-                loading="lazy"
-                className="h-auto w-56 max-w-full object-contain"
-              />
-              <p className="text-sm leading-relaxed text-mute">
-                Asset, equipment and transport finance specialists. Established
-                1999.
-              </p>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* What you can finance */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="What you can finance"
-            heading="From a single body to the whole rig."
-          />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {financeable.map((item) => {
-              const Icon = item.icon;
-              return (
-                <li
-                  key={item.title}
-                  className="card flex flex-col gap-3 p-5 sm:p-6"
-                >
-                  <Icon
-                    className="h-6 w-6 text-accent"
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                  <h3 className="text-base font-semibold text-bone">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-mute">
-                    {item.body}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </Container>
-      </section>
-
-      {/* Finance options */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Finance options"
-            heading="Structured to suit your business."
-            body="Linx can arrange any of the following. Not sure which fits? Pick “recommend an option” on the form and they'll talk it through with you."
-          />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-            {financeOptions.map((opt) => (
-              <li
-                key={opt.title}
-                className="card p-6"
-              >
-                <h3 className="text-base font-semibold text-bone">{opt.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-mute">
-                  {opt.body}
-                </p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-xs leading-relaxed text-mute">
-            General information only and not financial or tax advice. Speak to
-            Linx Australia Group or your accountant about what suits your
-            circumstances.
-          </p>
-        </Container>
-      </section>
-
-      {/* How it works */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="How it works"
-            heading="Four steps to finance."
-          />
-          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((step, i) => (
-              <li
-                key={step.title}
-                className="card flex flex-col gap-3 p-5 sm:p-6"
-              >
-                <span className="step-num">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="text-base font-semibold text-bone">{step.title}</h3>
-                <p className="text-sm leading-relaxed text-mute">{step.body}</p>
-              </li>
-            ))}
-          </ol>
         </Container>
       </section>
 
       {/* Application form */}
-      <section
-        id="apply"
-        className="section"
-      >
+      <section id="apply" className="section">
         <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-7">
+          <div className="min-w-0 lg:col-span-7">
             <SectionHeader
               eyebrow="Apply"
               heading="Apply for finance."
               body="Send your details and our finance partner Linx Australia Group will be in touch — usually within one business day — to talk through your options. No obligation."
-              className="mb-8"
+              className="mb-6"
             />
             <FinanceForm />
           </div>
 
-          <aside className="lg:col-span-5">
-            <div className="sticky top-20 flex flex-col gap-6">
+          <aside className="min-w-0 lg:col-span-5">
+            <div className="flex flex-col gap-4 lg:sticky lg:top-20">
               <div className="card p-6">
                 <h2 className="text-base font-semibold text-bone">
                   Prefer to talk it through?
@@ -390,24 +257,22 @@ export default function FinancePage() {
                 </p>
                 <a
                   href={site.phoneHref}
-                  className="mt-4 inline-flex items-center gap-2 text-lg font-semibold text-accent-text hover:underline"
+                  className="mt-4 flex items-center gap-2 text-lg font-semibold text-accent-text hover:underline"
                 >
-                  <PhoneCall className="h-5 w-5" aria-hidden />
+                  <Phone className="h-5 w-5" aria-hidden />
                   {site.phone}
                 </a>
                 <a
                   href={site.emailHref}
-                  className="mt-3 inline-flex items-center gap-2 break-all text-sm font-semibold text-bone hover:text-accent-text"
+                  className="mt-3 flex items-center gap-2 break-all text-sm font-semibold text-bone hover:text-accent-text"
                 >
                   <Mail className="h-4 w-4 shrink-0" aria-hidden />
                   {site.email}
                 </a>
               </div>
 
-              <div className="flex flex-col items-center gap-4 card p-6 text-center">
-                <p className="label">
-                  Finance arranged by
-                </p>
+              <div className="card flex flex-col items-center gap-4 p-6 text-center">
+                <p className="label">Finance arranged by</p>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/customers/linx.png"
@@ -430,16 +295,103 @@ export default function FinancePage() {
         </Container>
       </section>
 
+      {/* Finance partner: Linx */}
+      <section className="section">
+        <Container className="grid items-center gap-6 lg:grid-cols-12 lg:gap-12">
+          <div className="min-w-0 lg:col-span-7">
+            <SectionHeader
+              eyebrow="Our finance partner"
+              heading="Backed by Linx Australia Group."
+              body="Arrow builds the gear. Linx sorts the finance. They're an independent asset finance broker who've been at it since 1999, with a panel of around 50 lenders and deep experience in transport, trucks, trailers and heavy equipment."
+              className="mb-6"
+            />
+            <CheckList items={linxPoints} />
+          </div>
+
+          <div className="min-w-0 lg:col-span-5">
+            <div className="card flex flex-col items-center gap-6 p-8 text-center sm:p-10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/customers/linx.png"
+                alt="Linx Australia Group"
+                width={260}
+                height={96}
+                loading="lazy"
+                className="h-auto w-56 max-w-full object-contain"
+              />
+              <p className="text-sm leading-relaxed text-mute">
+                Asset, equipment and transport finance specialists. Established
+                1999.
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* How it works, what you can finance and the finance options */}
+      <section className="section">
+        <Container>
+          <SectionHeader
+            eyebrow="How it works"
+            heading="Structured to suit your business."
+            className="mb-6"
+          />
+          <SpecTabs
+            label="How finance works"
+            tabs={[
+              {
+                id: "steps",
+                label: "How it works",
+                content: (
+                  <div className="[&>ol]:mt-0">
+                    <p className="mb-4 font-display text-lg font-semibold text-bone">
+                      Four steps to finance.
+                    </p>
+                    <ProcessSteps steps={steps} />
+                  </div>
+                ),
+              },
+              {
+                id: "financeable",
+                label: "What you can finance",
+                content: (
+                  <>
+                    <p className="mb-4 font-display text-lg font-semibold text-bone">
+                      From a single body to the whole rig.
+                    </p>
+                    <InfoGrid items={financeable} />
+                  </>
+                ),
+              },
+              {
+                id: "options",
+                label: "Finance options",
+                content: (
+                  <>
+                    <p className="mb-4 max-w-2xl text-[0.9375rem] leading-relaxed text-mute sm:text-base">
+                      Linx can arrange any of the following. Not sure which
+                      fits? Pick “recommend an option” on the form and
+                      they&rsquo;ll talk it through with you.
+                    </p>
+                    <InfoGrid items={financeOptions} />
+                  </>
+                ),
+              },
+            ]}
+          />
+          <p className="mt-6 text-xs leading-relaxed text-mute">
+            General information only and not financial or tax advice. Speak to
+            Linx Australia Group or your accountant about what suits your
+            circumstances.
+          </p>
+        </Container>
+      </section>
+
       {/* FAQ */}
       <section className="section">
-        <Container className="max-w-3xl">
-          <SectionHeader
-            eyebrow="FAQ"
-            heading="Finance questions"
-            align="center"
-            className="mx-auto"
-          />
-          <div className="mt-10">
+        <Container>
+          <SectionHeader eyebrow="FAQ" heading="Finance questions" />
+          <div className="mt-6">
             <FAQAccordion items={financeFAQs} />
           </div>
         </Container>
@@ -449,7 +401,7 @@ export default function FinancePage() {
         eyebrow="Finance"
         heading="Get the gear working sooner."
         body="Apply online and our finance partner will sort the rest while we build your unit."
-        primaryCta={{ label: "Apply for Finance", href: "#apply" }}
+        primaryCta={{ label: "Apply for finance", href: "#apply" }}
         phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
       />
     </>

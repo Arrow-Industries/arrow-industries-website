@@ -42,6 +42,26 @@ export function QuoteForm() {
   const errorRef = useRef<HTMLParagraphElement>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
+  const [fromConfigurator, setFromConfigurator] = useState(false);
+
+  // Arriving from the configurator: carry the chosen build into the form.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const form = formRef.current;
+    const build = q.get("build");
+    if (!form || !build) return;
+    const set = (name: string, value: string) => {
+      const field = form.elements.namedItem(name);
+      if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement) {
+        field.value = value;
+      }
+    };
+    const enquiry = q.get("enquiry") ?? "";
+    if ((enquiryTypes as readonly string[]).includes(enquiry)) set("enquiryType", enquiry);
+    set("payloadDetails", (q.get("work") ?? "").slice(0, 120));
+    set("description", build.slice(0, 800));
+    setFromConfigurator(true);
+  }, []);
 
   // On a failed submit, move focus to the offending field (so keyboard and
   // screen-reader users land on the problem); fall back to the error summary.
@@ -123,7 +143,7 @@ export function QuoteForm() {
   }
 
   return (
-    <form ref={formRef} action={formAction} className="grid gap-5" noValidate>
+    <form ref={formRef} action={formAction} className="grid gap-3" noValidate>
       {/* Honeypot — must remain empty. Hidden from real users + assistive tech. */}
       <div
         aria-hidden="true"
@@ -139,64 +159,14 @@ export function QuoteForm() {
         />
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Name" name="fullName" required>
-          <input
-            id="fullName"
-            name="fullName"
-            type="text"
-            required
-            autoComplete="name"
-            className={inputBase}
-          />
-        </Field>
+      {fromConfigurator && (
+        <p className="rounded-sm border border-line bg-white/[0.05] px-4 py-3 text-sm text-bone">
+          Your configured build has been added to this form. Add your details and send it through.
+        </p>
+      )}
 
-        <Field label="Business name" name="companyName">
-          <input
-            id="companyName"
-            name="companyName"
-            type="text"
-            autoComplete="organization"
-            className={inputBase}
-          />
-        </Field>
-
-        <Field label="Email" name="email" hint="Email or phone required.">
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            className={inputBase}
-          />
-        </Field>
-
-        <Field label="Phone" name="phone">
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            placeholder="e.g. 0412 345 678"
-            className={inputBase}
-          />
-        </Field>
-      </div>
-
-      <Field
-        label="Location / suburb"
-        name="location"
-        hint="Helps us plan delivery, transport & site access."
-      >
-        <input
-          id="location"
-          name="location"
-          autoComplete="address-level2"
-          placeholder="e.g. Campbellfield VIC, or your job site"
-          className={inputBase}
-        />
-      </Field>
-
+      <fieldset className="form-section">
+        <legend>Your build or job</legend>
       <Field label="Enquiry type" name="enquiryType" required>
         <div className="relative">
           <select
@@ -290,6 +260,92 @@ export function QuoteForm() {
         />
       </Field>
 
+      <Field label="Preferred timeframe" name="timeframe">
+        <input
+          id="timeframe"
+          name="timeframe"
+          type="text"
+          placeholder="e.g. 8–10 weeks, ASAP, Q3"
+          className={inputBase}
+        />
+      </Field>
+
+      <Field label="Message / extra notes" name="description">
+        <textarea
+          id="description"
+          name="description"
+          rows={6}
+          placeholder="Tell us what you need — drawings, photos, repair issue, preferred build type, access requirements or any other details."
+          className={cn(inputBase, "resize-y")}
+        />
+      </Field>
+
+      </fieldset>
+
+      <fieldset className="form-section">
+        <legend>Your details</legend>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Name" name="fullName" required>
+          <input
+            id="fullName"
+            name="fullName"
+            type="text"
+            required
+            autoComplete="name"
+            className={inputBase}
+          />
+        </Field>
+
+        <Field label="Business name" name="companyName">
+          <input
+            id="companyName"
+            name="companyName"
+            type="text"
+            autoComplete="organization"
+            className={inputBase}
+          />
+        </Field>
+
+        <Field label="Email" name="email" hint="Email or phone required.">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            className={inputBase}
+          />
+        </Field>
+
+        <Field label="Phone" name="phone">
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            placeholder="e.g. 0412 345 678"
+            className={inputBase}
+          />
+        </Field>
+      </div>
+
+      <Field
+        label="Location / suburb"
+        name="location"
+        hint="Helps us plan delivery, transport & site access."
+      >
+        <input
+          id="location"
+          name="location"
+          autoComplete="address-level2"
+          placeholder="e.g. Campbellfield VIC, or your job site"
+          className={inputBase}
+        />
+      </Field>
+
+      </fieldset>
+
+      <fieldset className="form-section">
+        <legend>Drawings or photos</legend>
       <Field
         label="Attach drawings or photos"
         name="attachments"
@@ -355,25 +411,7 @@ export function QuoteForm() {
         </div>
       </Field>
 
-      <Field label="Preferred timeframe" name="timeframe">
-        <input
-          id="timeframe"
-          name="timeframe"
-          type="text"
-          placeholder="e.g. 8–10 weeks, ASAP, Q3"
-          className={inputBase}
-        />
-      </Field>
-
-      <Field label="Message / extra notes" name="description">
-        <textarea
-          id="description"
-          name="description"
-          rows={6}
-          placeholder="Tell us what you need — drawings, photos, repair issue, preferred build type, access requirements or any other details."
-          className={cn(inputBase, "resize-y")}
-        />
-      </Field>
+      </fieldset>
 
       {state && !state.ok && (
         <p

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { ArrowUpRight, Check, ChevronLeft, ChevronRight, Link2, Play, X } from "lucide-react";
 import { Button } from "@/components/Button";
 import type { BuildItem, BuildProduct } from "@/lib/builds";
 import { cn } from "@/lib/utils";
@@ -42,6 +42,20 @@ export function BuildsGallery({ builds }: { builds: BuildItem[] }) {
   const visible = useMemo(() => builds.filter(active.match), [builds, active]);
   const openIndex = visible.findIndex((b) => b.id === openId);
 
+  // A shared link opens straight onto that build.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("build");
+    if (id && builds.some((b) => b.id === id)) setOpenId(id);
+  }, [builds]);
+
+  // Keeps the address shareable while a build is open.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (openId) url.searchParams.set("build", openId);
+    else url.searchParams.delete("build");
+    window.history.replaceState(window.history.state, "", url);
+  }, [openId]);
+
   return (
     <div>
       <div
@@ -77,32 +91,7 @@ export function BuildsGallery({ builds }: { builds: BuildItem[] }) {
             key={build.id}
             className={cn(i === 0 && visible.length > 4 && "col-span-2 row-span-2")}
           >
-            <button
-              type="button"
-              onClick={() => setOpenId(build.id)}
-              aria-label={`View ${build.name}`}
-              className="group relative block aspect-square h-full w-full overflow-hidden rounded-xl bg-ink-2 text-left"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={build.image}
-                alt=""
-                loading={i < 4 ? "eager" : "lazy"}
-                className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.04]"
-              />
-              <span
-                aria-hidden
-                className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(transparent,rgb(11_11_13/0.86))]"
-              />
-              <span className="absolute inset-x-3 bottom-2.5 text-[0.8125rem] font-semibold leading-tight text-white">
-                {build.name}
-              </span>
-              {build.video && (
-                <span className="material absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full">
-                  <Play className="h-3.5 w-3.5 fill-white text-white" aria-hidden />
-                </span>
-              )}
-            </button>
+            <BuildTile build={build} eager={i < 4} onOpen={() => setOpenId(build.id)} />
           </li>
         ))}
       </ul>
@@ -126,6 +115,66 @@ export function BuildsGallery({ builds }: { builds: BuildItem[] }) {
   );
 }
 
+function BuildTile({
+  build,
+  eager,
+  onOpen,
+}: {
+  build: BuildItem;
+  eager: boolean;
+  onOpen: () => void;
+}) {
+  const [previewing, setPreviewing] = useState(false);
+
+  function startPreview(e: React.PointerEvent) {
+    if (!build.video || e.pointerType !== "mouse") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setPreviewing(true);
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      onPointerEnter={startPreview}
+      onPointerLeave={() => setPreviewing(false)}
+      aria-label={`View ${build.name}`}
+      className="group relative block aspect-square h-full w-full overflow-hidden rounded-xl bg-ink-2 text-left"
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={build.image}
+        alt=""
+        loading={eager ? "eager" : "lazy"}
+        className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.04]"
+      />
+      {previewing && build.video && (
+        <video
+          src={build.video}
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(transparent,rgb(11_11_13/0.86))]"
+      />
+      <span className="absolute inset-x-3 bottom-2.5 text-[0.8125rem] font-semibold leading-tight text-white">
+        {build.name}
+      </span>
+      {build.video && (
+        <span className="material absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full">
+          <Play className="h-3.5 w-3.5 fill-white text-white" aria-hidden />
+        </span>
+      )}
+    </button>
+  );
+}
+
 function BuildDialog({
   build,
   position,
@@ -142,6 +191,22 @@ function BuildDialog({
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const touchX = useRef<number | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  async function share() {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `${build.name} | Arrow Industries`, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2200);
+    } catch {
+      // The visitor closed the share sheet, or the browser refused the copy.
+    }
+  }
 
   // Own the page while open, and hand focus back to the tile on the way out.
   useEffect(() => {
@@ -284,9 +349,19 @@ function BuildDialog({
               <ArrowUpRight className="h-4 w-4" aria-hidden />
             </Button>
           </div>
-          <p className="label mt-3 text-center" aria-live="polite">
-            {position} of {total}
-          </p>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={share}
+              className="inline-flex min-h-11 items-center gap-1.5 text-[0.8125rem] font-medium text-bone/85 transition-colors hover:text-bone"
+            >
+              {copied ? <Check className="h-4 w-4" aria-hidden /> : <Link2 className="h-4 w-4" aria-hidden />}
+              {copied ? "Link copied" : "Share this build"}
+            </button>
+            <p className="label" aria-live="polite">
+              {position} of {total}
+            </p>
+          </div>
         </div>
       </div>
     </div>

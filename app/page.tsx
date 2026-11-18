@@ -5,13 +5,16 @@ import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { TrustBar } from "@/components/TrustBar";
 import { TrustedBy } from "@/components/TrustedBy";
-import { ServiceCard } from "@/components/ServiceCard";
 import { CTASection } from "@/components/CTASection";
 import { PartnerLogos } from "@/components/PartnerLogos";
 import { SectionHeader } from "@/components/SectionHeader";
-import { services } from "@/data/services";
 import { site } from "@/data/site";
-import { fetchTopInstagramMedia, thumbFor, type IgMedia } from "@/lib/instagram";
+import { PhotoBand, PhotoCard, WorkshopStrip } from "@/components/ProductParts";
+import { Testimonials } from "@/components/Testimonials";
+import { TruckDrawing } from "@/components/TruckDrawing";
+import { media } from "@/data/media";
+import { toBuilds, type BuildItem } from "@/lib/builds";
+import { fetchTopInstagramMedia } from "@/lib/instagram";
 
 // Canonical for the home page is emitted directly in JSX (not via the
 // Metadata.alternates.canonical API) so the trailing slash is preserved.
@@ -26,14 +29,21 @@ import { fetchTopInstagramMedia, thumbFor, type IgMedia } from "@/lib/instagram"
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  const topPosts = await fetchTopInstagramMedia(3, 30);
+  const posts = await fetchTopInstagramMedia(12, 30);
+  const recentBuilds = toBuilds(posts)
+    .filter((b) => !b.video)
+    .slice(0, 4);
   return (
     <>
       <link rel="canonical" href={`${site.url}/`} />
       <Hero />
-      <ServicesSection />
+      <ProductsSection />
+      <RoadworthySection />
+      <WorkshopSection />
+      <ConfigureSection />
+      <RecentBuildsSection builds={recentBuilds} />
+      <Testimonials />
       <TrustedBy />
-      <RecentBuildsSection posts={topPosts} />
       <PartnersSection />
       <CTASection
         eyebrow="Request a quote"
@@ -73,8 +83,8 @@ function Hero() {
             Request a quote
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Button>
-          <Button href="/builds" size="lg" variant="secondary">
-            View builds
+          <Button href="/configure" size="lg" variant="secondary">
+            Configure your build
           </Button>
         </div>
 
@@ -115,86 +125,155 @@ function Hero() {
   );
 }
 
-function ServicesSection() {
-  const [feature, ...rest] = services;
-  const wide = rest[rest.length - 1];
-  // Roadworthy is a main part of the business, so it leads the smaller cards.
-  const standard = rest
-    .slice(0, -1)
-    .sort(
-      (a, b) =>
-        Number(b.slug === "licensed-vehicle-testing") -
-        Number(a.slug === "licensed-vehicle-testing"),
-    );
-
+function ProductsSection() {
   return (
     <section className="section">
       <Container>
         <SectionHeader
-          eyebrow="Our capability"
-          heading="What we build and service"
-          body="Built, fabricated and serviced from our Campbellfield workshop — one team, every build engineered to suit the job."
+          eyebrow="What we build"
+          heading="Built in Campbellfield for the work ahead."
+          body="Every tipper body and trailer is engineered around your chassis, payload and application."
         />
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <PhotoCard
+            href="/tipper-truck-bodies"
+            photo={media.tipperGraphiteRear}
+            title="Tipper bodies"
+            body="Custom-built for 4x2, 6x4, 8x4 and 10x4 chassis."
+          />
+          <PhotoCard
+            href="/dog-trailers"
+            photo={media.truckAndDogDusk}
+            title="Dog trailers"
+            body="3-axle and 4-axle trailers matched to your truck."
+          />
+          <PhotoCard
+            href="/semi-trailers"
+            photo={media.bodyPainted}
+            title="Semi trailers"
+            body="Tipping and flat-deck builds on 2 and 3 axles."
+            className="sm:col-span-2 sm:aspect-[16/9] lg:col-span-1 lg:aspect-[4/5]"
+          />
+        </div>
+      </Container>
+    </section>
+  );
+}
 
-        <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <li className="sm:col-span-2">
-            <ServiceCard
-              service={feature}
-              variant="feature"
-              image="/images/builds/build-2.jpg"
-            />
-          </li>
-          {standard.map((s) => (
-            <li key={s.slug}>
-              <ServiceCard service={s} />
-            </li>
-          ))}
-          <li className="sm:col-span-2 lg:col-span-3">
-            <ServiceCard service={wide} variant="wide" />
-          </li>
-        </ul>
+function RoadworthySection() {
+  return (
+    <section className="section">
+      <Container>
+        <PhotoBand
+          photo={media.workshop}
+          eyebrow="Roadworthy inspections"
+          heading="VicRoads-licensed heavy vehicle testing."
+          body="Licensed Vehicle Tester EX 12409. Prime movers, rigid trucks, trailers and fleet vehicles tested and certified at our Campbellfield workshop."
+        >
+          <div className="flex flex-wrap gap-2.5">
+            <Button href="/licensed-vehicle-testing#book" size="lg">
+              Book an inspection
+            </Button>
+            <Button href="/repairs-servicing" size="lg" variant="secondary">
+              Repairs &amp; servicing
+            </Button>
+          </div>
+        </PhotoBand>
+      </Container>
+    </section>
+  );
+}
+
+function WorkshopSection() {
+  return (
+    <section className="section">
+      <Container>
+        <SectionHeader
+          eyebrow="Inside the workshop"
+          heading="One team, from first weld to final coat."
+        />
+        <WorkshopStrip
+          items={[
+            {
+              photo: media.welding,
+              title: "Fabricated in-house",
+              body: "Welds laid by qualified fabricators and inspected before paint.",
+            },
+            {
+              photo: media.paintBooth,
+              title: "Finished to your colour",
+              body: "2-pack paint, with a clean finish on every build.",
+            },
+            {
+              photo: media.onSite,
+              title: "Ready for real work",
+              body: "Built for quarries, tip sites and unsealed roads.",
+            },
+          ]}
+        />
+      </Container>
+    </section>
+  );
+}
+
+function ConfigureSection() {
+  return (
+    <section className="section">
+      <Container>
+        <div className="panel grid items-center gap-4 p-6 sm:p-8 lg:grid-cols-2 lg:p-12">
+          <div>
+            <p className="eyebrow mb-2">Configure</p>
+            <h2 className="font-display text-[1.75rem] font-semibold leading-[1.1] text-bone sm:text-4xl">
+              Spec your truck in a few clicks.
+            </h2>
+            <p className="mt-3 max-w-md text-[0.9375rem] leading-relaxed text-mute sm:text-base">
+              Choose the setup, colour and options, then send your build to the workshop for a quote.
+            </p>
+            <div className="mt-5">
+              <Button href="/configure" size="lg">
+                Configure your build
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </Button>
+            </div>
+          </div>
+          <TruckDrawing
+            product="tipper"
+            setup="8x4"
+            colour="#c5140e"
+            options={["Tarp system", "LED lighting"]}
+            className="h-auto w-full"
+          />
+        </div>
       </Container>
     </section>
   );
 }
 
 const FALLBACK_BUILDS = [
-  {
-    src: "/images/builds/build-1.jpg",
-    alt: "Arrow Industries tipper body on a white cab-over truck, side view",
-  },
-  {
-    src: "/images/builds/build-2.jpg",
-    alt: "Arrow Industries tipper body with a graphite finish, side view",
-  },
-  {
-    src: "/images/builds/build-3.jpg",
-    alt: "Rear three-quarter view of an Arrow Industries tipper body",
-  },
+  media.tipperGraphite,
+  media.dogSide,
+  media.sitrak,
+  media.truckAndDog,
 ];
 
-function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
-  const usingIg = posts.length > 0;
+function RecentBuildsSection({ builds }: { builds: BuildItem[] }) {
+  const usingIg = builds.length > 0;
   return (
     <section className="section">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeader
-            eyebrow={usingIg ? "Recent builds" : "Recent work"}
+            eyebrow="Recent builds"
             heading={
-              usingIg ? (
-                <a
-                  href={site.social.instagram}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2.5 transition-colors hover:text-accent-text"
-                >
-                  <Instagram className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
-                  Follow us on Instagram
-                </a>
-              ) : (
-                "Recent builds"
-              )
+              <a
+                href={site.social.instagram}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2.5 transition-colors hover:text-accent-text"
+              >
+                <Instagram className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
+                Follow the workshop
+              </a>
             }
           />
           <Link
@@ -208,43 +287,45 @@ function RecentBuildsSection({ posts }: { posts: IgMedia[] }) {
             />
           </Link>
         </div>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-6 grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-3">
           {usingIg
-            ? posts.map((p) => (
-                <li key={p.id}>
-                  <a
-                    href={p.permalink}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={p.caption?.slice(0, 120) || "View on Instagram"}
-                    className="group relative block aspect-[5/4] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
+            ? builds.map((b) => (
+                <li key={b.id}>
+                  <Link
+                    href={`/builds?build=${b.id}`}
+                    aria-label={`View ${b.name}`}
+                    className="group relative block aspect-square overflow-hidden rounded-xl bg-ink-2"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={thumbFor(p)}
+                      src={b.image}
                       alt=""
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.03]"
+                      className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.04]"
                     />
-                    <span className="material absolute bottom-2.5 left-2.5 rounded-full px-2.5 py-1 text-xs font-medium text-bone">
-                      @{p.username || "arrowindustries"}
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(transparent,rgb(11_11_13/0.86))]"
+                    />
+                    <span className="absolute inset-x-3 bottom-2.5 text-[0.8125rem] font-semibold text-white">
+                      {b.name}
                     </span>
-                  </a>
+                  </Link>
                 </li>
               ))
-            : FALLBACK_BUILDS.map((b, i) => (
-                <li key={`fallback-${i}`}>
+            : FALLBACK_BUILDS.map((photo) => (
+                <li key={photo.src}>
                   <Link
                     href="/builds"
                     aria-label="View builds"
-                    className="group relative block aspect-[5/4] overflow-hidden rounded-2xl border border-line-soft bg-ink-2"
+                    className="group relative block aspect-square overflow-hidden rounded-xl bg-ink-2"
                   >
                     <Image
-                      src={b.src}
-                      alt={b.alt}
+                      src={photo.src}
+                      alt={photo.alt}
                       fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.03]"
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                      className="object-cover transition-transform duration-700 ease-[var(--ease-mac)] group-hover:scale-[1.04]"
                     />
                   </Link>
                 </li>

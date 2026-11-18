@@ -6,6 +6,7 @@ import { Button } from "@/components/Button";
 import { CTASection } from "@/components/CTASection";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
+import { Testimonials } from "@/components/Testimonials";
 import { site } from "@/data/site";
 import { toBuilds, type BuildItem } from "@/lib/builds";
 import { fetchInstagramMedia } from "@/lib/instagram";
@@ -111,11 +112,30 @@ export default async function BuildsPage() {
         </Container>
       </section>
 
+      <section className="section">
+        <Container>
+          <div className="card flex flex-wrap items-center justify-between gap-5 p-5 sm:p-6">
+            <div>
+              <h2 className="font-display text-xl font-semibold text-bone">Running an Arrow?</h2>
+              <p className="mt-1 text-sm leading-relaxed text-mute">
+                Tag @arrow_industries_co and use #BuiltByArrow to show us your truck at work.
+              </p>
+            </div>
+            <Button href={site.social.instagram} target="_blank" rel="noreferrer" variant="secondary">
+              <Instagram className="h-4 w-4" aria-hidden />
+              Follow on Instagram
+            </Button>
+          </div>
+        </Container>
+      </section>
+
+      <Testimonials />
+
       <CTASection
         eyebrow="Request a quote"
         heading="Have a build in mind?"
         body="Tell us your application, payload and chassis, and we'll come back with a build proposal, lead time and pricing."
-        phoneCta={{ label: `Call ${site.phone}`, href: site.phoneHref }}
+        secondaryCta={{ label: "Configure your build", href: "/configure" }}
       />
     </>
   );

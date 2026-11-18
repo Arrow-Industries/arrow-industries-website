@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { TrailerPageTemplate } from "@/components/TrailerPageTemplate";
+import { media } from "@/data/media";
 import { getServiceBySlug } from "@/data/services";
 
 const slug = "dog-trailers";
@@ -44,25 +45,25 @@ const faqs = [
 
 const recentBuilds = [
   {
-    src: "/images/builds/build-1.jpg",
-    alt: "Arrow Industries 3-axle dog trailer build",
+    src: media.dogWhite.src,
+    alt: media.dogWhite.alt,
     title: "3-Axle Dog Trailer",
     application: "Civil application",
-    specs: ["Matched to lead tipper", "Air suspension", "2-way tailgate"],
+    specs: ["Matched to lead tipper", "2-way tailgate"],
   },
   {
-    src: "/images/builds/build-2.jpg",
-    alt: "Arrow Industries 4-axle dog trailer build",
+    src: media.dogSide.src,
+    alt: media.dogSide.alt,
     title: "4-Axle Dog Trailer",
     application: "Quarry application",
-    specs: ["High-payload PBS", "Heavy-duty drawbar", "Wear-rated floor"],
+    specs: ["High-payload PBS", "Heavy-duty drawbar"],
   },
   {
-    src: "/images/builds/build-3.jpg",
-    alt: "Arrow Industries truck and dog combination",
+    src: media.truckAndDogDusk.src,
+    alt: media.truckAndDogDusk.alt,
     title: "Truck & Dog Combination",
     application: "Fleet setup",
-    specs: ["Matched truck and dog", "Integrated hydraulics", "Job-ready"],
+    specs: ["Matched truck and dog", "Integrated hydraulics"],
   },
 ];
 
@@ -116,6 +117,8 @@ export default function Page() {
           subtext:
             "Dog trailers designed to integrate properly with your tipper setup — built for durability, balance and real-world performance on-site.",
           capability: ["3-axle", "4-axle"],
+          image: media.truckAndDogDusk.src,
+          imagePosition: "62% 50%",
         },
         recentBuilds,
         trailerType,

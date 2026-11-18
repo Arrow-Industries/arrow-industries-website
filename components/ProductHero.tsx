@@ -10,6 +10,7 @@ interface ProductHeroProps {
   heading: ReactNode;
   body: string;
   image: string;
+  imagePosition?: string;
   /** A short line under the body, such as the chassis a body suits. */
   note?: string;
   actions: ReactNode;
@@ -24,6 +25,7 @@ export function ProductHero({
   heading,
   body,
   image,
+  imagePosition,
   note,
   actions,
   facts,
@@ -40,6 +42,7 @@ export function ProductHero({
             priority
             sizes="(min-width: 1216px) 1152px, 100vw"
             className="-z-20 object-cover"
+            style={{ objectPosition: imagePosition }}
           />
           <div
             aria-hidden

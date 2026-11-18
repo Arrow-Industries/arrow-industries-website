@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import Image from "next/image";
-import {
-  CalendarCheck,
-  CheckCircle2,
-  ClipboardCheck,
-  Clock,
-  MapPin,
-  Phone,
-  ShieldCheck,
-  Truck,
-} from "lucide-react";
+import { CalendarCheck, CheckCircle2, Clock, MapPin, Phone } from "lucide-react";
 import { Container } from "@/components/Container";
 import { PageHero } from "@/components/PageHero";
 import { CTASection } from "@/components/CTASection";
+import { FAQAccordion } from "@/components/FAQAccordion";
+import { CheckGrid, InfoGrid, ProcessSteps } from "@/components/ProductParts";
+import { SpecTabs } from "@/components/SpecTabs";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
@@ -45,22 +39,18 @@ export const revalidate = 300;
 
 const covered = [
   {
-    icon: Truck,
     title: "Heavy vehicle RWCs",
     body: "Prime movers, rigid trucks, tippers, dog trailers and semi trailers.",
   },
   {
-    icon: ClipboardCheck,
     title: "Trailer inspections",
     body: "Dog trailers, semi trailers and combinations inspected for compliance and roadworthiness.",
   },
   {
-    icon: ShieldCheck,
     title: "Tipper & trailer specialists",
     body: "Inspections done by the team that builds tippers, dog trailers and semi trailers — deep familiarity with what passes and what doesn't.",
   },
   {
-    icon: CalendarCheck,
     title: "Fast turnaround inspections",
     body: "Most inspections completed within a few hours. Defects discussed in writing if found.",
   },
@@ -145,6 +135,8 @@ const faqs = [
   },
 ];
 
+const tabLead = "mb-4 max-w-2xl text-sm leading-relaxed text-mute sm:text-[0.9375rem]";
+
 export default async function RoadworthyPage() {
   // Roadworthy inspections toggled offline — show the unavailable notice at the
   // same URL and skip the booking fetch + service JSON-LD. Flip
@@ -209,14 +201,14 @@ export default async function RoadworthyPage() {
       {/* Booking request form — feeds the dashboard's approval queue */}
       <section id="book" className="section">
         <Container>
-          <div className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-            <div className="lg:col-span-5">
+          <div className="grid gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-12">
+            <div className="min-w-0 lg:col-span-5">
               <SectionHeader
                 eyebrow="Request a booking"
                 heading="Pick a day — we'll confirm your time."
                 body="Tell us about the vehicle and when suits. The workshop checks the schedule and confirms every booking by email or phone, usually the same business day."
               />
-              <ul className="mt-8 grid gap-3">
+              <ul className="mt-6 grid gap-3">
                 {[
                   "Most inspections completed in 60–90 minutes",
                   "Any defects documented in writing on the spot",
@@ -229,226 +221,139 @@ export default async function RoadworthyPage() {
                 ))}
               </ul>
             </div>
-            <div className="lg:col-span-7">
+
+            <div className="min-w-0 lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1">
               <div className="card p-5 sm:p-7">
                 <RoadworthyBookingForm truckTypes={truckTypes} trailerTypes={trailerTypes} axlePrices={showPrices ? axlePrices : null} defectPrice={showPrices ? defectPrice : null} durationMins={durationMins} minDate={minDate} openDaysLabel={openDaysLabel} />
               </div>
             </div>
+
+            {/* Visit details, hours and the QR for the workshop wall */}
+            <div className="min-w-0 space-y-3 lg:col-span-5 lg:col-start-1 lg:row-start-2">
+              <div className="list-group">
+                <div className="list-row gap-3.5">
+                  <span className="icon-tile">
+                    <MapPin className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="label">Workshop</p>
+                    <a
+                      href={site.address.mapsHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-0.5 block text-sm font-medium leading-relaxed text-bone hover:text-accent-text"
+                    >
+                      {site.address.line1}, {site.address.suburb} {site.address.state}{" "}
+                      {site.address.postcode}
+                    </a>
+                  </div>
+                </div>
+                <div className="list-row gap-3.5">
+                  <span className="icon-tile">
+                    <Clock className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="label">Inspection hours, by appointment</p>
+                    <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+                      {hoursRows.map((h) => (
+                        <div key={h.label} className="contents">
+                          <dt className="text-bone">{h.label}</dt>
+                          <dd className="text-right tabular-nums text-mute">{h.time}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card hidden items-center gap-4 p-4 md:flex">
+                <div className="shrink-0 rounded-xl bg-white p-2">
+                  <Image
+                    src="/images/lvt/booking-qr-v2.png"
+                    alt="QR code — book a roadworthy inspection at Arrow Industries"
+                    width={160}
+                    height={160}
+                    className="h-28 w-28"
+                    unoptimized
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="eyebrow">Scan to book</p>
+                  <p className="mt-1 text-sm leading-relaxed text-mute">
+                    Open the booking form on your phone.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </Container>
       </section>
 
-      {/* Visit details, hours and the QR for the workshop wall */}
-      <section className="section">
-        <Container className="grid gap-3 md:grid-cols-12">
-          <div className="list-group md:col-span-8">
-            <div className="list-row gap-3.5">
-              <span className="icon-tile">
-                <MapPin className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="label">Workshop</p>
-                <a
-                  href={site.address.mapsHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-0.5 block text-sm font-medium leading-relaxed text-bone hover:text-accent-text"
-                >
-                  {site.address.line1}, {site.address.suburb} {site.address.state}{" "}
-                  {site.address.postcode}
-                </a>
-              </div>
-            </div>
-            <div className="list-row gap-3.5">
-              <span className="icon-tile">
-                <Clock className="h-[1.125rem] w-[1.125rem]" strokeWidth={1.75} aria-hidden />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="label">Inspection hours, by appointment</p>
-                <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-sm">
-                  {hoursRows.map((h) => (
-                    <div key={h.label} className="contents">
-                      <dt className="text-bone">{h.label}</dt>
-                      <dd className="text-right tabular-nums text-mute">{h.time}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            </div>
-          </div>
-
-          <div className="card hidden flex-col items-center justify-center gap-3 p-5 text-center md:col-span-4 md:flex">
-            <p className="eyebrow">Scan to book</p>
-            <div className="rounded-xl bg-white p-2.5">
-              <Image
-                src="/images/lvt/booking-qr-v2.png"
-                alt="QR code — book a roadworthy inspection at Arrow Industries"
-                width={160}
-                height={160}
-                className="h-40 w-40"
-                unoptimized
-              />
-            </div>
-            <p className="max-w-[14rem] text-xs leading-relaxed text-mute">
-              Open the booking form on your phone.
-            </p>
-          </div>
-        </Container>
-      </section>
-
-      {/* What's covered */}
-      <section className="section">
+      {/* What's covered, inspection types and who it's for */}
+      <section id="inspections" className="section">
         <Container>
           <SectionHeader
             eyebrow="What's covered"
             heading="Heavy vehicle and trailer inspections."
             body="Full inspection scope — backed by 25+ years of experience building tippers and trailers ourselves."
+            className="mb-6"
           />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-            {covered.map((c) => {
-              const Icon = c.icon;
-              return (
-                <li key={c.title} className="card flex gap-5 p-5 sm:p-6">
-                  <span className="icon-tile">
-                    <Icon className="h-5 w-5" strokeWidth={1.5} aria-hidden />
-                  </span>
-                  <div>
-                    <h3 className="font-display text-lg font-semibold text-bone">
-                      {c.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-mute sm:text-base">
-                      {c.body}
+          <SpecTabs
+            label="Roadworthy inspection details"
+            tabs={[
+              {
+                id: "covered",
+                label: "What's covered",
+                content: <InfoGrid items={covered} />,
+              },
+              {
+                id: "types",
+                label: "Inspection types",
+                content: (
+                  <>
+                    <p className={tabLead}>Pick the inspection that suits the job.</p>
+                    <InfoGrid items={inspectionTypes} />
+                  </>
+                ),
+              },
+              {
+                id: "who",
+                label: "Who it's for",
+                content: (
+                  <>
+                    <p className={tabLead}>
+                      If your truck, trailer or fleet vehicle needs a roadworthy certificate, we can help.
                     </p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </Container>
-      </section>
-
-      {/* Who it's for */}
-      <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Who it's for"
-              heading="Built for operators and fleet compliance."
-              body="If your truck, trailer or fleet vehicle needs a roadworthy certificate, we can help."
-            />
-          </div>
-          <div className="lg:col-span-7">
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {useCases.map((u) => (
-                <li
-                  key={u}
-                  className="flex items-center gap-3 text-sm text-bone sm:text-base"
-                >
-                  <CheckCircle2
-                    className="h-4 w-4 shrink-0 text-accent"
-                    strokeWidth={2}
-                    aria-hidden
-                  />
-                  {u}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Container>
-      </section>
-
-      {/* Inspection types */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Inspection types"
-            heading="Pick the inspection that suits the job."
+                    <CheckGrid items={useCases} />
+                  </>
+                ),
+              },
+            ]}
           />
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {inspectionTypes.map((t) => (
-              <li
-                key={t.title}
-                className="card flex flex-col gap-3 p-5 sm:p-6"
-              >
-                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
-                  {t.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-mute">{t.body}</p>
-              </li>
-            ))}
-          </ul>
         </Container>
       </section>
 
       {/* Process */}
-      <section className="section">
+      <section id="process" className="section">
         <Container>
           <SectionHeader
             eyebrow="What to expect"
             heading="A clear four-step inspection process."
           />
-          <ol className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {process.map((p) => (
-              <li key={p.step} className="card flex flex-col gap-3 p-5 sm:p-6">
-                <span className="step-num">
-                  {p.step}
-                </span>
-                <h3 className="font-display text-base font-semibold text-bone sm:text-lg">
-                  {p.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-mute">{p.body}</p>
-              </li>
-            ))}
-          </ol>
+          <ProcessSteps steps={process} />
         </Container>
       </section>
 
       {/* FAQ */}
-      <section className="section">
-        <Container className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-4">
-            <SectionHeader
-              eyebrow="FAQ"
-              heading="Common questions, answered."
-              body="Still have a question? Call the workshop or send us an enquiry."
-            />
-            <div className="mt-8 space-y-2 text-sm">
-              <p className="flex items-center gap-2 text-mute">
-                <Phone className="h-4 w-4 text-accent" aria-hidden />
-                <a href={site.phoneHref} className="hover:text-bone">
-                  {site.phone}
-                </a>
-              </p>
-              <p className="flex items-center gap-2 text-mute">
-                <Clock className="h-4 w-4 text-accent" aria-hidden />
-                Mon – Fri, 6:00 AM – 4:00 PM
-              </p>
-              <p className="flex items-start gap-2 text-mute">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
-                <a
-                  href={site.address.mapsHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-bone"
-                >
-                  {site.address.line1}, {site.address.suburb}
-                </a>
-              </p>
-            </div>
-          </div>
-          <div className="lg:col-span-8">
-            <ul className="list-group">
-              {faqs.map((f) => (
-                <li key={f.question} className="list-row flex-col gap-1 py-4">
-                  <h3 className="font-display text-lg font-semibold text-bone sm:text-xl">
-                    {f.question}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-mute sm:text-base">
-                    {f.answer}
-                  </p>
-                </li>
-              ))}
-            </ul>
+      <section id="faq" className="section">
+        <Container>
+          <SectionHeader
+            eyebrow="FAQ"
+            heading="Common questions, answered."
+            body="Still have a question? Call the workshop or send us an enquiry."
+          />
+          <div className="mt-6">
+            <FAQAccordion items={faqs} />
           </div>
         </Container>
       </section>
