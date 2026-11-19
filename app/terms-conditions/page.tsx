@@ -133,13 +133,13 @@ const indent: Record<1 | 2 | 3, string> = { 1: "", 2: "pl-8", 3: "pl-16" };
 function Block({ b }: { b: TermsBlock }) {
   if (b.kind === "clause")
     return (
-      <h2 id={b.id} className="mt-12 first:mt-0 mb-4 scroll-mt-24 font-display text-xl font-semibold text-bone sm:text-[1.375rem]">
+      <h2 id={b.id} className="mt-12 first:mt-0 mb-4 scroll-mt-6 font-display text-xl font-semibold text-bone sm:text-[1.375rem]">
         <span className="text-accent-text">{b.number}.</span> {b.heading}
       </h2>
     );
   if (b.kind === "subclause")
     return (
-      <h3 id={b.id} className="mt-6 mb-3 scroll-mt-24 font-display text-base font-semibold text-bone sm:text-lg">
+      <h3 id={b.id} className="mt-6 mb-3 scroll-mt-6 font-display text-base font-semibold text-bone sm:text-lg">
         <span className="text-accent-text/80">{b.number}</span>{" "}
         <span className="ml-1">{b.heading}</span>
       </h3>

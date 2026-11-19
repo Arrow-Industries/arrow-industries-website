@@ -251,14 +251,14 @@ export default function FinancePage() {
                 </p>
                 <a
                   href={site.phoneHref}
-                  className="mt-4 flex items-center gap-2 text-lg font-semibold text-accent-text hover:underline"
+                  className="mt-3 flex min-h-11 items-center gap-2 text-lg font-semibold text-accent-text hover:underline"
                 >
                   <Phone className="h-5 w-5" aria-hidden />
                   {site.phone}
                 </a>
                 <a
                   href={site.emailHref}
-                  className="mt-3 flex items-center gap-2 break-all text-sm font-semibold text-bone hover:text-accent-text"
+                  className="flex min-h-11 items-center gap-2 break-all text-sm font-semibold text-bone hover:text-accent-text"
                 >
                   <Mail className="h-4 w-4 shrink-0" aria-hidden />
                   {site.email}

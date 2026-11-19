@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export interface LocalNavItem {
@@ -14,6 +14,19 @@ export interface LocalNavItem {
  */
 export function LocalNav({ items, label }: { items: LocalNavItem[]; label: string }) {
   const [active, setActive] = useState(items[0]?.id);
+  const listRef = useRef<HTMLUListElement>(null);
+
+  // On a phone the strip scrolls sideways: keep the current section in view.
+  useEffect(() => {
+    const list = listRef.current;
+    const link = list?.querySelector<HTMLElement>('[aria-current="true"]');
+    if (!list || !link) return;
+    const box = list.getBoundingClientRect();
+    const place = link.getBoundingClientRect();
+    if (place.left >= box.left + 16 && place.right <= box.right - 16) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    list.scrollBy({ left: place.left - box.left - 16, behavior: reduced ? "auto" : "smooth" });
+  }, [active]);
 
   useEffect(() => {
     let frame = 0;
@@ -46,14 +59,14 @@ export function LocalNav({ items, label }: { items: LocalNavItem[]; label: strin
       aria-label={label}
       className="material sticky top-15 z-30 border-b border-line-soft"
     >
-      <ul className="container-page flex gap-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ul ref={listRef} className="container-page flex gap-5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {items.map((item) => (
           <li key={item.id} className="shrink-0">
             <a
               href={`#${item.id}`}
               aria-current={active === item.id ? "true" : undefined}
               className={cn(
-                "display relative inline-flex h-12 items-center text-[1.375rem] transition-colors",
+                "display relative inline-flex h-12 min-w-11 items-center justify-center text-[1.375rem] transition-colors",
                 "after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:bg-accent",
                 active === item.id
                   ? "text-bone after:opacity-100"

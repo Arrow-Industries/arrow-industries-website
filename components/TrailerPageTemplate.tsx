@@ -223,7 +223,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         ]}
       />
 
-      <section id="setups" className="band scroll-mt-28">
+      <section id="setups" className="band scroll-mt-12">
         <Container>
           <p className="eyebrow">Configurations</p>
           <ul className="display display-lg mt-4 flex flex-wrap gap-x-[0.45em] gap-y-1">
@@ -240,7 +240,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
       {walk && <TapTheTruck walk={walk} heading="Tap the trailer." />}
 
       {recentBuilds.length > 0 && (
-        <section id="builds" className="scroll-mt-28 pt-16 lg:pt-24">
+        <section id="builds" className="scroll-mt-12 pt-16 lg:pt-24">
           <Container className="flex flex-wrap items-end justify-between gap-4 pb-7 lg:pb-11">
             <SectionHeader eyebrow="Recent builds" heading="Real trailers. Real combinations." />
             <ViewBuildsLink />
@@ -261,7 +261,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         </PhotoBand>
       </section>
 
-      <section id="specs" className="band scroll-mt-28">
+      <section id="specs" className="band scroll-mt-12">
         <Container>
           <SectionHeader eyebrow="Specifications" heading="The full spec." className="mb-7 lg:mb-11" />
           <DetailAccordion
@@ -302,7 +302,7 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         </Container>
       </section>
 
-      <section id="faq" className="band scroll-mt-28 pt-0 lg:pt-0">
+      <section id="faq" className="band scroll-mt-20 pt-0 lg:pt-0">
         <Container>
           <SectionHeader eyebrow="FAQ" heading="Common questions." className="mb-7 lg:mb-11" />
           <FAQAccordion items={faqs} />

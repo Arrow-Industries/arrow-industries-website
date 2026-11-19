@@ -62,7 +62,7 @@ export default async function HomePage() {
         />
       </section>
 
-      <section id="work" className="scroll-mt-15">
+      <section id="work">
         <Container className="flex flex-wrap items-end justify-between gap-4 pb-7 lg:pb-11">
           <SectionHeader eyebrow="Recent work" heading="Off the floor." />
           <ViewBuildsLink />
@@ -74,7 +74,7 @@ export default async function HomePage() {
       <TrustedBy />
       <RoadworthyBand />
 
-      <section id="repairs" className="scroll-mt-15">
+      <section id="repairs">
         <PhotoBand
           photo={media.workshop}
           eyebrow="Repairs & servicing"
@@ -103,9 +103,13 @@ function Hero() {
   return (
     <section className="home-hero">
       <Container className="pb-4 pt-5 lg:pb-[var(--hero-pad-bottom)] lg:pt-[var(--hero-pad-top)]">
-        <p className="eyebrow">Melbourne-built tipper bodies and trailers. 25+ years&rsquo; experience.</p>
-        <h1 className="display mt-3 whitespace-nowrap text-[21vw] leading-[0.88] lg:mt-[var(--hero-gap)] lg:text-[length:var(--hero-type)]">
-          Built for <span className="block text-accent lg:inline">real work.</span>
+        <h1>
+          <span className="eyebrow font-sans not-italic">
+            Melbourne-built tipper bodies and trailers. 25+ years&rsquo; experience.
+          </span>
+          <span className="display mt-3 block whitespace-nowrap text-[21vw] leading-[0.88] lg:mt-[var(--hero-gap)] lg:text-[length:var(--hero-type)]">
+            Built for <span className="block text-accent lg:inline">real work.</span>
+          </span>
         </h1>
       </Container>
 

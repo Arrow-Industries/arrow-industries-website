@@ -61,7 +61,7 @@ export function BuildsGallery({ builds }: { builds: BuildItem[] }) {
       <div
         role="group"
         aria-label="Filter builds"
-        className="-mx-5 flex gap-1.5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 [&::-webkit-scrollbar]:hidden"
+        className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0 [&::-webkit-scrollbar]:hidden"
       >
         {filters.map((f) => (
           <button

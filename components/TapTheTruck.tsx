@@ -33,7 +33,7 @@ export function TapTheTruck({
   }
 
   return (
-    <section id={id} className="scroll-mt-15 bg-ink-2 pt-16 lg:pt-24">
+    <section id={id} className="scroll-mt-12 bg-ink-2 pt-16 lg:pt-24">
       <Container>
         <p className="eyebrow">{eyebrow}</p>
         <h2 className="display-lg mt-3">{heading}</h2>

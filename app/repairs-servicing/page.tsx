@@ -170,7 +170,7 @@ export default function RepairsPage() {
         }
       />
 
-      <section id="overview" className="band scroll-mt-15">
+      <section id="overview" className="band">
         <Container>
           <SectionHeader eyebrow="Capability" heading="What we repair." className="mb-7 lg:mb-11" />
           <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -192,7 +192,7 @@ export default function RepairsPage() {
         />
       </section>
 
-      <section id="services" className="band scroll-mt-15">
+      <section id="services" className="band">
         <Container>
           <SectionHeader eyebrow="Service options" heading="The full detail." className="mb-7 lg:mb-11" />
           <DetailAccordion
@@ -254,7 +254,7 @@ export default function RepairsPage() {
         </Container>
       </section>
 
-      <section id="faq" className="scroll-mt-15 pb-16 lg:pb-24">
+      <section id="faq" className="scroll-mt-8 pb-16 lg:pb-24">
         <Container>
           <SectionHeader eyebrow="FAQ" heading="Common questions." className="mb-7 lg:mb-11" />
           <FAQAccordion items={faqs} />

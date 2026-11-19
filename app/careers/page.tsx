@@ -334,7 +334,7 @@ export default function CareersPage() {
                   </p>
                   <a
                     href={site.emailHref}
-                    className="mt-4 inline-flex items-center gap-2 break-all text-base font-semibold text-accent-text hover:underline"
+                    className="mt-3 inline-flex min-h-11 items-center gap-2 break-all text-base font-semibold text-accent-text hover:underline"
                   >
                     <Mail className="h-5 w-5 shrink-0" aria-hidden />
                     {site.email}

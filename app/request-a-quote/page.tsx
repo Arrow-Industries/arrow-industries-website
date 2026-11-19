@@ -62,7 +62,7 @@ export default async function RequestAQuotePage() {
                 </p>
                 <a
                   href={site.phoneHref}
-                  className="display mt-4 inline-flex items-center gap-2 text-[2.25rem] text-bone transition-colors hover:text-accent-text"
+                  className="display mt-3 inline-flex min-h-11 items-center gap-2 text-[2.25rem] text-bone transition-colors hover:text-accent-text"
                 >
                   <Phone className="h-5 w-5" aria-hidden />
                   {site.phone}

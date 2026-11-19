@@ -43,6 +43,6 @@ export const dogWalk: TruckWalk = {
     { title: "Lighting", body: "LED lighting and safety systems.", x: 70.4, y: 61 },
     { title: "Spray suppression", body: "Spray suppression systems.", x: 43.6, y: 71.2 },
     { title: "Spreader chains", body: "Fitted to suit the drawbar.", x: 19.5, y: 74.9 },
-    { title: "Drawbar", body: "Heavy-duty drawbars and tow connections.", x: 5.4, y: 83.6 },
+    { title: "Drawbar", body: "Heavy-duty drawbars and tow connections.", x: 6.5, y: 83.6 },
   ],
 };

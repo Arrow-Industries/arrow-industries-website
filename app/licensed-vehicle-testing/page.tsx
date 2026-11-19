@@ -222,7 +222,7 @@ export default async function RoadworthyPage() {
       </section>
 
       {/* Booking request form — feeds the dashboard's approval queue */}
-      <section id="book" className="band scroll-mt-15">
+      <section id="book" className="band">
         <Container>
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-x-14">
             <div className="min-w-0 lg:col-span-5">
@@ -289,7 +289,7 @@ export default async function RoadworthyPage() {
         </Container>
       </section>
 
-      <section id="inspect" className="scroll-mt-15 bg-ink-2 py-16 lg:py-24">
+      <section id="inspect" className="bg-ink-2 py-16 lg:py-24">
         <Container>
           <p className="eyebrow">What we inspect</p>
           <ul className="display display-md mt-4">
@@ -305,7 +305,7 @@ export default async function RoadworthyPage() {
         </Container>
       </section>
 
-      <section id="how" className="band scroll-mt-15">
+      <section id="how" className="band">
         <Container>
           <SectionHeader
             eyebrow="How it works"
@@ -316,7 +316,7 @@ export default async function RoadworthyPage() {
         </Container>
       </section>
 
-      <section id="inspections" className="scroll-mt-15 pb-16 lg:pb-24">
+      <section id="inspections" className="scroll-mt-8 pb-16 lg:pb-24">
         <Container>
           <SectionHeader eyebrow="Inspection details" heading="The full detail." className="mb-7 lg:mb-11" />
           <DetailAccordion
@@ -361,7 +361,7 @@ export default async function RoadworthyPage() {
         </Container>
       </section>
 
-      <section id="faq" className="scroll-mt-15 pb-16 lg:pb-24">
+      <section id="faq" className="scroll-mt-8 pb-16 lg:pb-24">
         <Container>
           <SectionHeader eyebrow="FAQ" heading="Common questions." className="mb-7 lg:mb-11" />
           <FAQAccordion items={faqs} />

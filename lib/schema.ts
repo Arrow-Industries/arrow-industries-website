@@ -15,8 +15,8 @@ export function localBusinessSchema() {
     telephone: site.phoneIntl,
     email: site.email,
     taxID: `AU-ABN-${site.abn.replace(/\s/g, "")}`,
+    image: `${site.url}/images/site/workshop-front-v1.jpg`,
     // Google requires a raster logo (PNG/JPG); SVG is not accepted.
-    image: `${site.url}/images/logo-black.png`,
     logo: `${site.url}/images/logo-black.png`,
     priceRange: "$$",
     address: {

@@ -111,7 +111,7 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <div className="mt-12 scroll-mt-24" id={`clause-${number}`}>
+    <div className="mt-12 scroll-mt-6" id={`clause-${number}`}>
       <h2 className="font-display text-xl font-semibold text-bone sm:text-2xl">
         <span className="text-accent-text">{number}.</span> {heading}
       </h2>

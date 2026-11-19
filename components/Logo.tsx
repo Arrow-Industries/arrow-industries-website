@@ -13,7 +13,7 @@ export function Logo({ className }: LogoProps) {
       href="/"
       aria-label={`${site.name} — home`}
       className={cn(
-        "inline-flex shrink-0 items-center rounded-sm transition-opacity hover:opacity-80",
+        "inline-flex min-h-11 min-w-11 shrink-0 items-center transition-opacity hover:opacity-80",
         className,
       )}
     >

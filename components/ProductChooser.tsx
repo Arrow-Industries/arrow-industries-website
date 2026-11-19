@@ -60,9 +60,10 @@ export function ProductChooser() {
   }
 
   return (
-    <section id="build" className="band scroll-mt-15">
+    <section id="build" className="band">
       <Container>
         <p className="eyebrow">Build</p>
+        <h2 className="sr-only">Custom tipper bodies, dog trailers and semi trailers</h2>
         <div
           ref={tabsRef}
           role="tablist"
