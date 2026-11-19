@@ -101,10 +101,10 @@ export default async function HomePage() {
 
 function Hero() {
   return (
-    <section>
-      <Container className="pb-4 pt-5 lg:pb-6 lg:pt-7">
+    <section className="home-hero">
+      <Container className="pb-4 pt-5 lg:pb-[var(--hero-pad-bottom)] lg:pt-[var(--hero-pad-top)]">
         <p className="eyebrow">Melbourne-built tipper bodies and trailers. 25+ years&rsquo; experience.</p>
-        <h1 className="display mt-3 whitespace-nowrap text-[21vw] leading-[0.88] lg:text-[min(12vw,13rem)]">
+        <h1 className="display mt-3 whitespace-nowrap text-[21vw] leading-[0.88] lg:mt-[var(--hero-gap)] lg:text-[length:var(--hero-type)]">
           Built for <span className="block text-accent lg:inline">real work.</span>
         </h1>
       </Container>
@@ -112,7 +112,7 @@ function Hero() {
       {/* Kept at the film's own shape and sized to fit the screen, so the whole
           truck is always in view. The poster loads first; the film plays over it. */}
       <div className="flex justify-center bg-black">
-        <div className="relative aspect-video w-full lg:h-[min(56.25vw,max(22rem,calc(100svh-3.75rem-5.25rem-10.56vw-6.25rem)))] lg:w-auto">
+        <div className="relative aspect-video w-full lg:h-[min(56.25vw,max(22rem,calc(100svh-3.75rem-var(--hero-space)-0.88*var(--hero-type)-3rem)))] lg:w-auto">
           <Image
             src="/images/home/hero-stage-v1.jpg"
             alt="An Arrow Industries tipper body on a five-axle truck in a studio"

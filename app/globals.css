@@ -189,6 +189,25 @@
     text-transform: uppercase;
   }
 
+  /* The home page opening. Shorter laptop screens trade some heading height
+     for a bigger film, which is always shown whole. */
+  .home-hero {
+    --hero-type: min(12vw, 13rem);
+    --hero-pad-top: 1.75rem;
+    --hero-pad-bottom: 1.5rem;
+    --hero-gap: 0.75rem;
+    --hero-space: 5.25rem;
+  }
+  @media (min-width: 1024px) and (max-height: 860px) {
+    .home-hero {
+      --hero-type: min(12vw, 13rem, 15svh);
+      --hero-pad-top: 1rem;
+      --hero-pad-bottom: 0.75rem;
+      --hero-gap: 0.5rem;
+      --hero-space: 3.5rem;
+    }
+  }
+
   /* ---------- Layout ---------- */
 
   .section {
