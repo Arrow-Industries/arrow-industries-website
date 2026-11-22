@@ -251,7 +251,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-start justify-center bg-black/55 px-3 pt-[max(1rem,12vh)] animate-fade"
+      className="palette-scrim fixed inset-0 z-[70] flex items-start justify-center px-3 pt-[max(1rem,12vh)]"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -261,7 +261,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
         aria-modal="true"
         aria-label="Search the site"
         onKeyDown={onKeyDown}
-        className="material popover flex max-h-[min(32rem,76dvh)] w-full max-w-xl flex-col overflow-hidden rounded-2xl animate-pop"
+        className="palette flex max-h-[min(32rem,76dvh)] w-full max-w-xl flex-col overflow-hidden"
       >
         <div className="flex items-center gap-3 border-b border-line-soft px-4">
           <Search className="h-[1.125rem] w-[1.125rem] shrink-0 text-mute" aria-hidden />
@@ -303,7 +303,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
         >
           {groups.map(({ group, items }) => (
             <div key={group} role="group" aria-label={group} className="pb-1">
-              <p aria-hidden className="label px-2.5 pb-1 pt-2">
+              <p aria-hidden className="palette-group px-2.5 pb-1.5 pt-3">
                 {group}
               </p>
               {items.map((item) => {
@@ -319,14 +319,14 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
                     onMouseMove={() => setActive(index)}
                     onClick={() => run(item)}
                     className={cn(
-                      "flex h-10 items-center gap-3 px-2.5 text-sm",
-                      selected ? "bg-accent text-white" : "text-bone",
+                      "palette-option flex h-11 items-center gap-3 px-2.5 text-[0.9375rem]",
+                      selected ? "bg-bone text-white" : "text-bone",
                     )}
                   >
                     <Icon
                       className={cn(
                         "h-4 w-4 shrink-0",
-                        selected ? "text-white" : "text-mute",
+                        selected ? "text-white" : "text-accent",
                       )}
                       strokeWidth={1.75}
                       aria-hidden
@@ -336,7 +336,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
                       <span
                         className={cn(
                           "ml-auto hidden truncate text-[0.8125rem] sm:block",
-                          selected ? "text-white/85" : "text-mute",
+                          selected ? "text-white/70" : "text-mute",
                         )}
                       >
                         {item.hint}

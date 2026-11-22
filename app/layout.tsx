@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { MobileActionBar } from "@/components/MobileActionBar";
 import { JsonLd } from "@/components/JsonLd";
+import { Motion } from "@/components/Motion";
 import { site } from "@/data/site";
 import {
   localBusinessSchema,
@@ -98,6 +99,7 @@ export default function RootLayout({
         <main id="main">{children}</main>
         <Footer />
         <MobileActionBar />
+        <Motion />
         <JsonLd
           data={[
             organizationSchema(),

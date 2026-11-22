@@ -1,3 +1,4 @@
+import { SideSpy } from "@/components/SectionBar";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo";
 import { Button } from "@/components/Button";
@@ -39,6 +40,8 @@ export default async function TermsPage() {
           { label: "Terms & Conditions", href: "/terms-conditions" },
         ]}
       />
+
+      <SideSpy within=".legal-nav" ids={blocks.filter((b) => b.kind === "clause").map((b) => b.id)} />
 
       <section className="sec tight">
         <div className="wrap legal">

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Action, Feat, Head, NextLink, PageOpen, Pair, Shots, type Crumb } from "@/components/Blocks";
 import { CTASection } from "@/components/CTASection";
+import { SectionBar } from "@/components/SectionBar";
 import type { FAQ } from "@/data/faqs";
 
 export interface ProductPageProps {
@@ -24,8 +25,19 @@ export interface ProductPageProps {
 
 /** One layout for every product: a bold opening, a few facts, then the detail. */
 export function ProductPage(p: ProductPageProps) {
+  const hasBuilds = !!p.recent && p.recent.length > 0;
   return (
     <>
+      <SectionBar
+        title={p.crumbs[p.crumbs.length - 1].label}
+        items={[
+          { id: "chassis", label: "Overview" },
+          { id: "options", label: "Options" },
+          ...(hasBuilds ? [{ id: "builds", label: "Recent builds" }] : []),
+          { id: "faq", label: "Questions" },
+        ]}
+        cta={{ href: p.configureHref, label: "Configure your build" }}
+      />
       <PageOpen
         crumbs={p.crumbs}
         title={

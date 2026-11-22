@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./variant-d.css";
+@import "./chrome.css";
 
 /*
  * Arrow design system.
@@ -107,7 +108,6 @@
     font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.5;
-    padding-bottom: env(safe-area-inset-bottom);
   }
   h1,
   h2,
@@ -138,12 +138,6 @@
   :focus-visible {
     outline: 2px solid var(--color-bone);
     outline-offset: 2px;
-  }
-  /* Leave room for the call and quote bar on phones and tablets. */
-  @media (max-width: 1023px) {
-    body {
-      padding-bottom: calc(3.625rem + env(safe-area-inset-bottom));
-    }
   }
 }
 
@@ -243,9 +237,9 @@
   }
 
   .material {
-    background-color: rgb(244 243 239 / 0.92);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    background-color: rgb(244 243 239 / 0.8);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
   }
   .popover {
     border: 1px solid var(--color-line);
@@ -478,19 +472,6 @@
   letter-spacing: 0;
   font-weight: 600;
   line-height: 1.3;
-}
-
-/* Content settles into place as it scrolls in, where the browser can do it
-   natively. Anywhere else it is simply already there. */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .section > *,
-    .reveal {
-      animation: reveal-up linear both;
-      animation-timeline: view();
-      animation-range: entry 0px entry 140px;
-    }
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

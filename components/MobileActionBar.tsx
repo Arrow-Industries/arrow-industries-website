@@ -2,26 +2,26 @@ import Link from "next/link";
 import { Phone } from "lucide-react";
 import { site } from "@/data/site";
 
-/** The bar along the bottom of phones and tablets: call, or ask for a quote. */
-export function MobileActionBar() {
+/** Call, or ask for a quote: the same pair wherever it appears on a phone. */
+export function DockActions({ onPick }: { onPick?: () => void }) {
   return (
-    <nav
-      aria-label="Mobile actions"
-      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 bg-ink pb-[env(safe-area-inset-bottom)] lg:hidden"
-    >
-      <a
-        href={site.phoneHref}
-        className="display flex h-14.5 items-center justify-center gap-2 border-t border-line text-[1.5rem] text-bone"
-      >
-        <Phone className="h-5 w-5 text-accent-text" aria-hidden />
+    <div className="dock">
+      <a href={site.phoneHref} className="dock-call" onClick={onPick}>
+        <Phone aria-hidden />
         Call
       </a>
-      <Link
-        href="/request-a-quote"
-        className="display flex h-14.5 items-center justify-center bg-accent text-[1.5rem] text-white"
-      >
+      <Link href="/request-a-quote" className="dock-quote" onClick={onPick}>
         Get a quote
       </Link>
+    </div>
+  );
+}
+
+/** The bar that floats at the bottom of phones and tablets. */
+export function MobileActionBar() {
+  return (
+    <nav aria-label="Mobile actions" className="dock-fixed">
+      <DockActions />
     </nav>
   );
 }

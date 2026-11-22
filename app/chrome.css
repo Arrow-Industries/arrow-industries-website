@@ -1,0 +1,210 @@
+/*
+ * The menus, and how things move.
+ *
+ * Every bar on the site is cut from the same cloth: the top bar and its
+ * drop-down panel, the phone menu, the floating call-and-quote bar, the
+ * section bar on long pages and the search panel. Same paper, same hairline,
+ * same pill shapes, same two easing curves.
+ */
+@layer components {
+:root {
+  --bar-h: 3.75rem;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-spring: cubic-bezier(.32, .72, 0, 1);
+  --glass: rgb(244 243 239 / .8);
+  --glass-filter: saturate(180%) blur(20px);
+}
+
+/* ---------- The top bar ---------- */
+.site-bar { position: sticky; top: 0; z-index: 50; background: var(--glass); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); transition: background-color .3s; }
+.site-bar::after { content: ""; position: absolute; inset: auto 0 0; height: 1px; background: var(--line); opacity: 0; transition: opacity .3s; pointer-events: none; }
+.site-bar[data-scrolled="true"]::after { opacity: 1; }
+.site-bar[data-open="true"] { background: var(--paper); }
+.site-bar[data-open="true"]::after { opacity: 0; }
+.bar-row { position: relative; z-index: 2; height: var(--bar-h); display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.bar-nav { display: none; height: 100%; }
+.bar-nav > ul { display: flex; height: 100%; align-items: center; gap: 2px; }
+.bar-nav > ul > li { display: flex; align-items: center; height: 100%; }
+.bar-link { position: relative; display: inline-flex; align-items: center; gap: 5px; height: 36px; padding: 0 14px; border-radius: 999px; font: 500 15px/1 var(--body); color: var(--text); white-space: nowrap; transition: color .2s; }
+.bar-link:hover, .bar-link[aria-expanded="true"], .bar-link[data-current="true"] { color: var(--ink); }
+/* The section you are in carries a short red stroke, cut on the same slant as the lettering. */
+.bar-link::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 2px; background: var(--red); transform: skewX(-24deg) scaleX(0); transform-origin: left; transition: transform .4s var(--ease-out); }
+.bar-link[data-current="true"]::after { transform: skewX(-24deg) scaleX(1); }
+.bar-out { font-size: 12px; color: var(--stone); }
+.bar-glide { position: absolute; z-index: 1; left: 0; top: calc((var(--bar-h) - 36px) / 2); height: 36px; border-radius: 999px; background: rgb(19 20 22 / .065); opacity: 0; pointer-events: none; transition: opacity .25s, transform .4s var(--ease-spring), width .4s var(--ease-spring); }
+.bar-glide[data-on="true"] { opacity: 1; }
+.bar-end { display: flex; align-items: center; gap: 6px; }
+.bar-phone { display: none; margin-right: 8px; font: 600 15px/1 var(--body); font-variant-numeric: tabular-nums; white-space: nowrap; transition: color .2s; }
+.bar-phone:hover { color: var(--red); }
+.bar-icon { display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 999px; color: var(--ink); transition: background-color .2s, transform .2s var(--ease-out); }
+.bar-icon:hover { background: rgb(19 20 22 / .065); }
+.bar-icon:active { transform: scale(.94); }
+.btn.bar-cta { display: none; padding: 10px 18px; font-size: 14px; margin-left: 6px; }
+/* Two lines that cross into a close mark. */
+.menu-btn span { grid-area: 1 / 1; width: 20px; height: 1.75px; border-radius: 2px; background: var(--ink); transition: transform .45s var(--ease-spring); }
+.menu-btn span:first-child { transform: translateY(-4px); }
+.menu-btn span:last-child { transform: translateY(4px); }
+.menu-btn[aria-expanded="true"] span:first-child { transform: rotate(45deg); }
+.menu-btn[aria-expanded="true"] span:last-child { transform: rotate(-45deg); }
+@media (min-width: 640px) { .bar-phone { display: block; } }
+@media (min-width: 1024px) {
+  .bar-nav { display: block; }
+  .btn.bar-cta { display: inline-flex; }
+  .menu-btn { display: none; }
+  .bar-phone { display: none; }
+}
+@media (min-width: 1200px) { .bar-phone { display: block; } }
+
+/* ---------- The drop-down panel ---------- */
+/* One sheet of paper under the bar. It grows and shrinks to fit whichever
+   menu is showing, and the menus cross-fade inside it. */
+.fly-bg { position: absolute; z-index: 0; inset: 100% 0 auto; height: 0; background: var(--paper); box-shadow: 0 1px 0 var(--line), 0 36px 60px -34px rgb(19 20 22 / .32); pointer-events: none; transition: height .44s var(--ease-spring); }
+.fly { position: absolute; z-index: 1; inset: 100% 0 auto; height: 0; overflow: hidden; visibility: hidden; transition: height .44s var(--ease-spring), visibility 0s .25s; }
+.fly[data-active="true"] { visibility: visible; transition: height .44s var(--ease-spring), visibility 0s; }
+.fly-inner { padding: 26px 0 38px; }
+.fly-inner > .mlabel { margin-bottom: 18px; }
+.fly-item { opacity: 0; transform: translateY(-10px); transition: opacity .16s, transform .16s; }
+.fly[data-active="true"] .fly-item { opacity: 1; transform: none; transition: opacity .5s var(--ease-out), transform .6s var(--ease-out); transition-delay: calc(var(--i, 0) * 38ms + 60ms); }
+.fly-scrim { position: fixed; inset: 0; z-index: 45; background: rgb(19 20 22 / .26); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); opacity: 0; visibility: hidden; transition: opacity .35s, visibility 0s .35s; }
+.fly-scrim[data-open="true"] { opacity: 1; visibility: visible; transition: opacity .35s, visibility 0s; }
+
+.fly-build { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 44px; align-items: start; }
+.fly-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.fly-card { display: block; }
+.fly-card .ph { display: block; position: relative; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: var(--night); }
+.fly-card .ph img { object-fit: cover; transition: transform .9s var(--ease-out); }
+.fly-card:hover .ph img { transform: scale(1.05); }
+.fly-card .t { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 14px; }
+.fly-card b { display: block; font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 1.9rem; line-height: 1; transition: color .2s; }
+.fly-card small { display: block; margin-top: 6px; font-size: 14px; color: var(--stone); }
+.fly-card:hover b, .fly-card[aria-current] b { color: var(--red); }
+.fly-card .go { width: 34px; height: 34px; font-size: 14px; }
+.fly-card:hover .go { background: var(--red); transform: translateX(3px); }
+.fly-links { border-top: 2px solid var(--ink); }
+.fly-links a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 50px; border-bottom: 1px solid var(--line); font-weight: 500; transition: color .2s; }
+.fly-links a span, .fly-cols b span { color: var(--stone); transition: transform .35s var(--ease-out), color .2s, opacity .2s; }
+.fly-links a:hover, .fly-links a[aria-current] { color: var(--red); }
+.fly-links a:hover span { transform: translateX(4px); color: var(--red); }
+.fly-cols { display: grid; grid-template-columns: repeat(4, 1fr); column-gap: 28px; border-top: 2px solid var(--ink); }
+.fly-cols a { display: block; padding: 18px 0 4px; }
+.fly-cols b { display: flex; align-items: baseline; gap: 10px; font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 1.7rem; line-height: 1; transition: color .2s; }
+.fly-cols b span { font: 500 15px/1 var(--body); opacity: 0; transform: translateX(-6px); }
+.fly-cols small { display: block; margin-top: 8px; font-size: 14px; color: var(--stone); max-width: 26ch; }
+.fly-cols a:hover b, .fly-cols a[aria-current] b { color: var(--red); }
+.fly-cols a:hover b span { opacity: 1; transform: none; color: var(--red); }
+
+/* ---------- A plus that turns into a close mark ---------- */
+.plus { flex: none; position: relative; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--ink); transition: background .25s, border-color .25s, transform .45s var(--ease-spring); }
+.plus::before, .plus::after { content: ""; position: absolute; left: 50%; top: 50%; width: 11px; height: 1.5px; background: var(--ink); transform: translate(-50%, -50%); transition: background .25s; }
+.plus::after { transform: translate(-50%, -50%) rotate(90deg); }
+[aria-expanded="true"] > .plus { background: var(--red); border-color: var(--red); transform: rotate(45deg); }
+[aria-expanded="true"] > .plus::before, [aria-expanded="true"] > .plus::after { background: #fff; }
+
+/* ---------- The phone menu ---------- */
+.sheet { position: fixed; inset: var(--bar-h) 0 0; z-index: 49; display: flex; flex-direction: column; background: var(--paper); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity .25s, transform .3s var(--ease-out), visibility 0s .3s; }
+.sheet[data-open="true"] { opacity: 1; visibility: visible; transform: none; transition: opacity .3s, transform .5s var(--ease-spring), visibility 0s; }
+.sheet-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 6px var(--gutter) 36px; }
+.sheet-list > li { border-bottom: 1px solid var(--line); opacity: 0; transform: translateY(16px); transition: opacity .2s, transform .2s; }
+.sheet[data-open="true"] .sheet-list > li { opacity: 1; transform: none; transition: opacity .55s var(--ease-out), transform .65s var(--ease-out); transition-delay: calc(var(--i, 0) * 45ms + 90ms); }
+.sheet-row { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; min-height: 68px; text-align: left; font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 2.5rem; line-height: 1; }
+.sheet-out { font: 500 20px/1 var(--body); color: var(--stone); }
+.sheet-sub { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s var(--ease-spring); }
+.sheet-sub[data-open="true"] { grid-template-rows: 1fr; }
+.sheet-sub > ul { min-height: 0; overflow: hidden; opacity: 0; transition: opacity .25s; }
+.sheet-sub[data-open="true"] > ul { opacity: 1; transition: opacity .4s .08s; }
+.sheet-sub li:last-child { padding-bottom: 14px; }
+.sheet-sub a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; font-size: 17px; font-weight: 500; }
+.sheet-sub a span { color: var(--stone); }
+.sheet-sub a[aria-current] { color: var(--red); }
+.sheet-foot { flex: none; position: relative; padding: 0 12px calc(10px + env(safe-area-inset-bottom)); }
+/* The list fades out as it passes under the buttons. */
+.sheet-foot::before { content: ""; position: absolute; inset: -28px 0 100%; background: linear-gradient(rgb(244 243 239 / 0), var(--paper)); pointer-events: none; }
+@media (min-width: 1024px) { .sheet { display: none; } }
+
+/* ---------- Call and quote, floating over the page on a phone ---------- */
+.dock { display: grid; grid-template-columns: 1fr 1.35fr; gap: 6px; padding: 6px; border-radius: 999px; background: rgb(251 250 247 / .84); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); box-shadow: 0 0 0 1px rgb(19 20 22 / .09), 0 16px 36px -12px rgb(19 20 22 / .34); }
+.dock a { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border-radius: 999px; font: 600 15px/1 var(--body); transition: transform .25s var(--ease-out), background-color .2s; }
+.dock a:active { transform: scale(.96); }
+.dock-call { color: var(--ink); }
+.dock-call svg { width: 17px; height: 17px; color: var(--red); }
+.dock-quote { background: var(--red); color: #fff; }
+.dock-fixed { position: fixed; z-index: 40; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); }
+@media (min-width: 1024px) { .dock-fixed { display: none; } }
+/* The page ends on the dark footer, which runs on underneath the floating bar. */
+@media (max-width: 1023px) { footer { padding-bottom: calc(30px + 4.75rem + env(safe-area-inset-bottom)); } }
+
+/* ---------- The section bar on long pages ---------- */
+.subbar { display: none; position: fixed; z-index: 30; inset: var(--bar-h) 0 auto; background: var(--glass); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); box-shadow: 0 1px 0 var(--line); transform: translateY(-100%); visibility: hidden; transition: transform .5s var(--ease-spring), visibility 0s .5s; }
+.subbar[data-shown="true"] { transform: none; visibility: visible; transition: transform .5s var(--ease-spring), visibility 0s; }
+.subbar .wrap { display: flex; align-items: center; gap: 28px; height: 50px; }
+.subbar-title { margin-right: auto; font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 1.5rem; line-height: 1; }
+.subbar ul { position: relative; display: flex; gap: 26px; height: 100%; }
+.subbar li a { display: flex; align-items: center; height: 100%; font-size: 14px; font-weight: 500; color: var(--stone); white-space: nowrap; transition: color .25s; }
+.subbar li a:hover, .subbar li a[aria-current] { color: var(--ink); }
+.subbar-mark { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--red); opacity: 0; transition: transform .45s var(--ease-spring), width .45s var(--ease-spring), opacity .25s; }
+.subbar .btn { padding: 8px 16px; font-size: 13.5px; }
+@media (min-width: 860px) {
+  .subbar { display: block; }
+  html:has(.subbar) { scroll-padding-top: 8.25rem; }
+  .book-card { top: 130px; }
+}
+
+/* ---------- Side lists of in-page links ---------- */
+.legal-nav a { position: relative; transition: color .25s, padding-left .35s var(--ease-out); }
+.legal-nav a::before { content: ""; position: absolute; left: 0; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; background: var(--red); transform: scale(0); transition: transform .35s var(--ease-out); }
+.legal-nav a[aria-current] { padding-left: 16px; color: var(--ink); font-weight: 600; }
+.legal-nav a[aria-current]::before { transform: scale(1); }
+
+/* ---------- Buttons answer the hand ---------- */
+.btn { transition: background-color .25s, color .25s, box-shadow .25s, transform .35s var(--ease-out); }
+.btn .arrow { display: inline-block; transition: transform .35s var(--ease-out); }
+.btn:hover .arrow { transform: translateX(4px); }
+.btn:active { transform: scale(.97); transition-duration: .12s; }
+.rcard:hover .go { transform: translateX(3px); }
+.fcols a { transition: color .2s; }
+.crumb a { transition: color .2s; }
+
+/* ---------- Fold-out rows ---------- */
+.acc summary b { transition: color .2s; }
+.acc details.closing summary i { background: transparent; border-color: var(--ink); transform: none; }
+.acc details.closing summary i::before, .acc details.closing summary i::after { background: var(--ink); }
+
+/* ---------- Search panel ---------- */
+.palette-scrim { background: rgb(19 20 22 / .3); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); animation: fade .25s ease-out both; }
+.palette { border-radius: 14px; background: rgb(251 250 247 / .92); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); box-shadow: 0 0 0 1px rgb(19 20 22 / .1), 0 40px 80px -24px rgb(19 20 22 / .45); animation: palette-in .38s var(--ease-spring) both; }
+.palette-group { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--stone); }
+.palette-option { border-radius: 8px; transition: background-color .12s, color .12s; }
+.palette .kbd { border-radius: 5px; }
+}
+
+@keyframes palette-in {
+  from { opacity: 0; transform: translateY(-10px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* How things arrive. Outside the layers so nothing else overrides it. */
+@media (prefers-reduced-motion: no-preference) {
+  /* The opening of every page comes up in order: label, heading, the rest. */
+  .p-hero .wrap > *,
+  .hero-grid > div > *,
+  .hero .film,
+  .hero .facts {
+    animation: rise .95s var(--ease-out) both;
+  }
+  .p-hero .wrap > :nth-child(2), .hero-grid > div:first-child > :nth-child(2) { animation-delay: 70ms; }
+  .p-hero .wrap > :nth-child(3), .hero-grid > .hero-side > :nth-child(1) { animation-delay: 150ms; }
+  .p-hero .wrap > :nth-child(4), .hero-grid > .hero-side > :nth-child(2) { animation-delay: 220ms; }
+  .p-hero .wrap > :nth-child(n + 5), .hero .film { animation-delay: 300ms; }
+  .hero .facts { animation-delay: 380ms; }
+
+  /* Further down, sections settle in as they are reached. */
+  [data-reveal="pending"] { opacity: 0; }
+  [data-reveal="in"] { animation: rise .95s var(--ease-out) var(--d, 0ms) both; }
+}
+@media print {
+  [data-reveal] { opacity: 1 !important; animation: none !important; }
+}

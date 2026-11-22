@@ -12,6 +12,7 @@ import { DetailAccordion } from "@/components/DetailAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
+import { SectionBar } from "@/components/SectionBar";
 import { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/lib/schema";
 import { getServiceBySlug } from "@/data/services";
 import { getServiceContent } from "@/data/serviceContent";
@@ -196,6 +197,17 @@ export default async function RoadworthyPage() {
           faqPageSchema(faqs),
           breadcrumbSchema(crumbs),
         ]}
+      />
+
+      <SectionBar
+        title="Roadworthy"
+        items={[
+          { id: "book", label: "Book" },
+          { id: "inspect", label: "What we inspect" },
+          { id: "how", label: "How it works" },
+          { id: "faq", label: "Questions" },
+        ]}
+        cta={{ href: "#book", label: "Book an inspection" }}
       />
 
       <section className="p-hero">

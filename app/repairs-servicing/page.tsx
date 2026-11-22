@@ -11,6 +11,7 @@ import { DetailAccordion } from "@/components/DetailAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
+import { SectionBar } from "@/components/SectionBar";
 import { breadcrumbSchema, faqPageSchema, serviceSchema } from "@/lib/schema";
 import { media } from "@/data/media";
 import { getServiceBySlug } from "@/data/services";
@@ -144,6 +145,16 @@ export default function RepairsPage() {
           faqPageSchema(faqs),
           breadcrumbSchema(crumbs),
         ]}
+      />
+
+      <SectionBar
+        title="Repairs"
+        items={[
+          { id: "overview", label: "What we repair" },
+          { id: "services", label: "Service options" },
+          { id: "faq", label: "Questions" },
+        ]}
+        cta={{ href: bookingUrl, label: "Book an inspection" }}
       />
 
       <PageOpen

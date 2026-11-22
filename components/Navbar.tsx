@@ -4,14 +4,12 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
-import { ArrowRight, ArrowUpRight, ChevronDown, Menu, Phone, Search, X } from "lucide-react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { Search } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { Button } from "@/components/Button";
-import { Container } from "@/components/Container";
+import { DockActions } from "@/components/MobileActionBar";
 import { primaryNav, type NavChild, type NavItem } from "@/data/navigation";
 import { site } from "@/data/site";
-import { cn } from "@/lib/utils";
 
 // Only downloaded the first time someone opens it.
 const CommandPalette = dynamic(
@@ -21,22 +19,120 @@ const CommandPalette = dynamic(
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/** A pause before a hovered menu opens, so crossing the bar doesn't flash one. */
+const OPEN_DELAY = 70;
+/** A pause before it closes, so a diagonal move to the panel keeps it open. */
+const CLOSE_DELAY = 160;
+
 const pathOf = (href: string) => href.split("#")[0];
+const linksOf = (item: NavItem) => [...(item.children ?? []), ...(item.links ?? [])];
 
 function isGroupActive(item: NavItem, pathname: string) {
-  return [...(item.children ?? []), ...(item.links ?? [])].some(
-    (c) => !c.external && pathOf(c.href) === pathname,
-  );
+  return linksOf(item).some((c) => !c.external && pathOf(c.href) === pathname);
 }
+
+// Layout effects warn on the server; the menus only measure in the browser.
+const useBrowserLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function Navbar() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
-  const openerRef = useRef<HTMLButtonElement>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const [flyout, setFlyout] = useState<string | null>(null);
+  const [flyHeight, setFlyHeight] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+
+  const headerRef = useRef<HTMLElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
+  const glideRef = useRef<HTMLSpanElement>(null);
+  const triggers = useRef(new Map<string, HTMLElement>());
+  const panels = useRef(new Map<string, HTMLElement>());
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flyoutRef = useRef<string | null>(null);
+  flyoutRef.current = flyout;
+
+  const cancelTimer = () => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+  };
+
+  /** Slide the soft highlight under a menu label, or fade it away. */
+  const glideTo = useCallback((label: string | null) => {
+    const glide = glideRef.current;
+    const header = headerRef.current;
+    if (!glide || !header) return;
+    const el = label ? triggers.current.get(label) : null;
+    if (!el) {
+      glide.dataset.on = "false";
+      return;
+    }
+    const left = el.getBoundingClientRect().left - header.getBoundingClientRect().left;
+    // First appearance: place it without sliding in from wherever it last was.
+    const snap = glide.dataset.on !== "true";
+    if (snap) glide.style.transition = "none";
+    glide.style.width = `${el.offsetWidth}px`;
+    glide.style.transform = `translateX(${left}px)`;
+    if (snap) {
+      void glide.offsetWidth;
+      glide.style.transition = "";
+    }
+    glide.dataset.on = "true";
+  }, []);
+
+  const closeFlyout = useCallback(() => {
+    cancelTimer();
+    setFlyout(null);
+    glideTo(null);
+  }, [glideTo]);
+
+  function hoverItem(item: NavItem) {
+    cancelTimer();
+    glideTo(item.label);
+    const next = item.external ? null : item.label;
+    if (next === flyoutRef.current) return;
+    // Moving between menus is immediate; the first one waits a moment.
+    const wait = flyoutRef.current ? 0 : OPEN_DELAY;
+    timer.current = setTimeout(() => setFlyout(next), wait);
+  }
+
+  function leaveBar() {
+    cancelTimer();
+    timer.current = setTimeout(() => {
+      setFlyout(null);
+      glideTo(null);
+    }, CLOSE_DELAY);
+  }
+
+  // The shared panel takes the height of whichever menu is showing.
+  useBrowserLayoutEffect(() => {
+    function measure() {
+      const panel = flyout ? panels.current.get(flyout) : null;
+      setFlyHeight(panel ? panel.offsetHeight : 0);
+    }
+    measure();
+    if (!flyout) return;
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [flyout]);
+
+  // Anything that changes the page puts the menus away.
+  useEffect(() => {
+    setFlyout(null);
+    setSheetOpen(false);
+    glideTo(null);
+  }, [pathname, glideTo]);
+
+  useEffect(() => () => cancelTimer(), []);
+
+  // A hairline appears under the bar once the page has moved.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -49,32 +145,37 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // While the mobile menu is open: lock scroll, move focus into the dialog,
-  // and restore focus to the trigger when it closes.
+  // While the phone menu is open: lock the page behind it, and put it away if
+  // the window grows into the desktop layout.
   useEffect(() => {
-    if (!open) return;
+    if (!sheetOpen) return;
     document.body.style.overflow = "hidden";
-    const opener = openerRef.current;
-    closeRef.current?.focus();
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const onWide = () => wide.matches && setSheetOpen(false);
+    wide.addEventListener("change", onWide);
     return () => {
       document.body.style.overflow = "";
-      opener?.focus();
+      wide.removeEventListener("change", onWide);
     };
-  }, [open]);
+  }, [sheetOpen]);
 
-  // Escape closes; Tab is trapped within the dialog.
-  function onDialogKeyDown(e: React.KeyboardEvent) {
+  // Escape closes the phone menu; Tab stays within the bar and the menu.
+  function onSheetKeyDown(e: React.KeyboardEvent) {
+    if (!sheetOpen) return;
     if (e.key === "Escape") {
       e.preventDefault();
-      setOpen(false);
+      setSheetOpen(false);
+      menuBtnRef.current?.focus();
       return;
     }
     if (e.key !== "Tab") return;
-    const nodes = dialogRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE);
-    if (!nodes || nodes.length === 0) return;
-    const list = Array.from(nodes);
-    const first = list[0];
-    const last = list[list.length - 1];
+    const nodes = [
+      ...(headerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []),
+      ...(sheetRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []),
+    ].filter((n) => n.offsetParent !== null && !n.closest("[inert]"));
+    if (nodes.length === 0) return;
+    const first = nodes[0];
+    const last = nodes[nodes.length - 1];
     const active = document.activeElement;
     if (e.shiftKey && active === first) {
       e.preventDefault();
@@ -85,25 +186,67 @@ export function Navbar() {
     }
   }
 
+  const open = flyout !== null;
+
   return (
     <>
-      <header className="material sticky top-0 z-50 border-b border-line-soft">
-        <Container className="flex h-15 items-center justify-between gap-4">
+      <header
+        ref={headerRef}
+        className="site-bar"
+        data-scrolled={scrolled}
+        data-open={open || sheetOpen}
+        onPointerEnter={(e) => e.pointerType === "mouse" && cancelTimer()}
+        onPointerLeave={(e) => e.pointerType === "mouse" && leaveBar()}
+        onBlur={(e) => {
+          // Keyboard focus leaving the bar closes the menu.
+          if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget as Node)) closeFlyout();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Escape" && flyout) {
+            const trigger = triggers.current.get(flyout);
+            closeFlyout();
+            trigger?.focus();
+          }
+          onSheetKeyDown(e);
+        }}
+      >
+        <span aria-hidden className="fly-bg" style={{ height: flyHeight }} />
+        <span aria-hidden ref={glideRef} className="bar-glide" data-on="false" />
+
+        <div className="wrap bar-row">
           <Logo />
 
-          <nav aria-label="Primary" className="hidden h-full lg:block">
-            <ul className="flex h-full items-stretch gap-1 xl:gap-3">
+          <nav aria-label="Primary" className="bar-nav">
+            <ul>
               {primaryNav.map((item) => (
-                <DesktopNavItem key={item.label} item={item} pathname={pathname} />
+                <DesktopItem
+                  key={item.label}
+                  item={item}
+                  pathname={pathname}
+                  open={flyout === item.label}
+                  height={flyHeight}
+                  onHover={() => hoverItem(item)}
+                  onToggle={(next) => {
+                    cancelTimer();
+                    setFlyout(next ? item.label : null);
+                    glideTo(next ? item.label : null);
+                  }}
+                  onPick={closeFlyout}
+                  registerTrigger={(el) => {
+                    if (el) triggers.current.set(item.label, el);
+                    else triggers.current.delete(item.label);
+                  }}
+                  registerPanel={(el) => {
+                    if (el) panels.current.set(item.label, el);
+                    else panels.current.delete(item.label);
+                  }}
+                />
               ))}
             </ul>
           </nav>
 
-          <div className="flex items-center gap-1.5 lg:gap-3">
-            <a
-              href={site.phoneHref}
-              className="display hidden min-h-11 items-center whitespace-nowrap text-2xl sm:inline-flex lg:hidden xl:inline-flex"
-            >
+          <div className="bar-end">
+            <a href={site.phoneHref} className="bar-phone">
               {site.phone}
             </a>
             <button
@@ -111,136 +254,99 @@ export function Navbar() {
               onClick={() => setPaletteOpen(true)}
               aria-label="Search the site"
               aria-keyshortcuts="Meta+K Control+K"
-              className="icon-btn"
+              className="bar-icon"
             >
               <Search className="h-[1.125rem] w-[1.125rem]" aria-hidden />
             </button>
-            <div className="hidden lg:block">
-              <Button href="/request-a-quote" size="sm">
-                Request a quote
-              </Button>
-            </div>
+            <Link href="/request-a-quote" className="btn btn-ink bar-cta">
+              Request a quote
+            </Link>
             <button
-              ref={openerRef}
+              ref={menuBtnRef}
               type="button"
-              className="icon-btn lg:hidden"
-              aria-label="Open menu"
+              className="bar-icon menu-btn"
+              aria-label={sheetOpen ? "Close menu" : "Open menu"}
               aria-haspopup="dialog"
-              aria-expanded={open}
-              onClick={() => setOpen(true)}
+              aria-expanded={sheetOpen}
+              onClick={() => setSheetOpen((o) => !o)}
             >
-              <Menu className="h-5 w-5" aria-hidden />
+              <span aria-hidden />
+              <span aria-hidden />
             </button>
           </div>
-        </Container>
+        </div>
       </header>
+
+      {/* Dims and softens the page while a menu is down. A click puts it away. */}
+      <div aria-hidden className="fly-scrim" data-open={open} onClick={closeFlyout} />
 
       {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}
 
-      {open && (
-        <div
-          ref={dialogRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Site menu"
-          onKeyDown={onDialogKeyDown}
-          className="fixed inset-0 z-[60] flex flex-col bg-ink animate-fade lg:hidden"
-        >
-          <Container className="flex h-15 shrink-0 items-center justify-between border-b border-line-soft">
-            <Logo />
-            <button
-              ref={closeRef}
-              type="button"
-              className="icon-btn"
-              aria-label="Close menu"
-              onClick={() => setOpen(false)}
-            >
-              <X className="h-5 w-5" aria-hidden />
-            </button>
-          </Container>
-
-          <Container className="flex-1 overflow-y-auto py-3">
-            <ul className="rule-list border-t-0">
-              {primaryNav.map((item) => {
-                if (item.external) {
-                  return (
-                    <li key={item.label}>
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => setOpen(false)}
-                        className="display flex min-h-16 w-full items-center justify-between gap-3 text-[2.5rem]"
-                      >
-                        {item.label}
-                        <ArrowUpRight className="h-6 w-6 text-mute" aria-hidden />
-                      </a>
-                    </li>
-                  );
-                }
-                const expanded = openGroup === item.label;
-                const links = [...(item.children ?? []), ...(item.links ?? [])];
+      <div
+        ref={sheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site menu"
+        className="sheet"
+        data-open={sheetOpen}
+        inert={!sheetOpen}
+        onKeyDown={onSheetKeyDown}
+      >
+        <div className="sheet-body">
+          <ul className="sheet-list">
+            {primaryNav.map((item, i) => {
+              const style = { "--i": i } as React.CSSProperties;
+              if (item.external) {
                 return (
-                  <li key={item.label}>
-                    <button
-                      type="button"
-                      className="display flex min-h-16 w-full items-center justify-between gap-3 text-left text-[2.5rem]"
-                      aria-expanded={expanded}
-                      onClick={() => setOpenGroup(expanded ? null : item.label)}
+                  <li key={item.label} style={style}>
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => setSheetOpen(false)}
+                      className="sheet-row"
                     >
                       {item.label}
-                      <ChevronDown
-                        className={cn(
-                          "h-6 w-6 text-mute transition-transform duration-200",
-                          expanded && "rotate-180 text-accent-text",
-                        )}
-                        aria-hidden
-                      />
-                    </button>
-                    {expanded && (
-                      <ul className="pb-3">
-                        {links.map((child) => (
-                          <li key={child.href + child.label}>
-                            <MenuLink
-                              child={child}
-                              onPick={() => setOpen(false)}
-                              className="flex min-h-12 items-center justify-between gap-3 py-2 text-[1.0625rem] font-medium text-bone"
-                            >
-                              {child.label}
-                              {child.external ? (
-                                <ArrowUpRight className="h-4 w-4 text-mute" aria-hidden />
-                              ) : (
-                                <ArrowRight className="h-4 w-4 text-mute" aria-hidden />
-                              )}
-                            </MenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                      <span className="sheet-out" aria-hidden>
+                        ↗
+                      </span>
+                    </a>
                   </li>
                 );
-              })}
-            </ul>
-          </Container>
-
-          <div className="grid shrink-0 grid-cols-2 pb-[env(safe-area-inset-bottom)]">
-            <a
-              href={site.phoneHref}
-              className="display flex h-14.5 items-center justify-center gap-2 bg-ink-3 text-[1.5rem]"
-            >
-              <Phone className="h-5 w-5 text-accent-text" aria-hidden />
-              Call
-            </a>
-            <Link
-              href="/request-a-quote"
-              onClick={() => setOpen(false)}
-              className="display flex h-14.5 items-center justify-center bg-accent text-[1.5rem] text-white"
-            >
-              Get a quote
-            </Link>
-          </div>
+              }
+              const expanded = openGroup === item.label;
+              return (
+                <li key={item.label} style={style}>
+                  <button
+                    type="button"
+                    className="sheet-row"
+                    aria-expanded={expanded}
+                    onClick={() => setOpenGroup(expanded ? null : item.label)}
+                  >
+                    {item.label}
+                    <i className="plus" aria-hidden />
+                  </button>
+                  <div className="sheet-sub" data-open={expanded} inert={!expanded}>
+                    <ul>
+                      {linksOf(item).map((child) => (
+                        <li key={child.href + child.label}>
+                          <MenuLink child={child} pathname={pathname} onPick={() => setSheetOpen(false)}>
+                            {child.label}
+                            <span aria-hidden>{child.external ? "↗" : "→"}</span>
+                          </MenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </div>
-      )}
+        <div className="sheet-foot">
+          <DockActions onPick={() => setSheetOpen(false)} />
+        </div>
+      </div>
     </>
   );
 }
@@ -250,17 +356,19 @@ function MenuLink({
   onPick,
   className,
   pathname,
+  style,
   children,
 }: {
   child: NavChild;
   onPick: () => void;
   className?: string;
   pathname?: string;
+  style?: React.CSSProperties;
   children: React.ReactNode;
 }) {
   if (child.external) {
     return (
-      <a href={child.href} target="_blank" rel="noreferrer" onClick={onPick} className={className}>
+      <a href={child.href} target="_blank" rel="noreferrer" onClick={onPick} className={className} style={style}>
         {children}
       </a>
     );
@@ -271,109 +379,91 @@ function MenuLink({
       onClick={onPick}
       aria-current={pathname === child.href ? "page" : undefined}
       className={className}
+      style={style}
     >
       {children}
     </Link>
   );
 }
 
-function DesktopNavItem({ item, pathname }: { item: NavItem; pathname: string }) {
-  const [open, setOpen] = useState(false);
-  const submenuId = useId();
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const groupRef = useRef<HTMLLIElement>(null);
+interface DesktopItemProps {
+  item: NavItem;
+  pathname: string;
+  open: boolean;
+  height: number;
+  onHover: () => void;
+  onToggle: (open: boolean) => void;
+  onPick: () => void;
+  registerTrigger: (el: HTMLElement | null) => void;
+  registerPanel: (el: HTMLElement | null) => void;
+}
 
-  // A tap or click anywhere else dismisses the menu.
-  useEffect(() => {
-    if (!open) return;
-    function onPointerDown(e: PointerEvent) {
-      if (!groupRef.current?.contains(e.target as Node)) setOpen(false);
-    }
-    document.addEventListener("pointerdown", onPointerDown);
-    return () => document.removeEventListener("pointerdown", onPointerDown);
-  }, [open]);
+function DesktopItem({
+  item,
+  pathname,
+  open,
+  height,
+  onHover,
+  onToggle,
+  onPick,
+  registerTrigger,
+  registerPanel,
+}: DesktopItemProps) {
+  const submenuId = useId();
+  const hover = (e: React.PointerEvent) => e.pointerType === "mouse" && onHover();
 
   if (item.external) {
     return (
-      <li className="flex">
+      <li>
         <a
+          ref={registerTrigger}
           href={item.href}
           target="_blank"
           rel="noreferrer"
-          className="display inline-flex items-center gap-1 px-2 text-[1.375rem] text-bone/70 transition-colors hover:text-bone"
+          className="bar-link"
+          onPointerEnter={hover}
         >
           {item.label}
-          <ArrowUpRight className="h-4 w-4 opacity-70" aria-hidden />
+          <span className="bar-out" aria-hidden>
+            ↗
+          </span>
         </a>
       </li>
     );
   }
 
-  const active = isGroupActive(item, pathname);
-  const close = () => setOpen(false);
-
   return (
-    <li
-      ref={groupRef}
-      className="flex"
-      // Hover is for mice only: on a touch screen the tap below does the work.
-      onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(true)}
-      onPointerLeave={(e) => e.pointerType === "mouse" && setOpen(false)}
-      // Close when focus leaves the group entirely (keyboard navigation).
-      onBlur={(e) => {
-        if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget as Node)) {
-          setOpen(false);
-        }
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Escape" && open) {
-          setOpen(false);
-          buttonRef.current?.focus();
-        }
-      }}
-    >
+    <li>
       <button
-        ref={buttonRef}
+        ref={registerTrigger}
         type="button"
-        className={cn(
-          "display relative inline-flex items-center gap-1 px-2 text-[1.375rem] transition-colors",
-          open || active ? "text-bone" : "text-bone/70 hover:text-bone",
-          "after:absolute after:inset-x-2 after:bottom-0 after:h-[3px] after:bg-accent after:transition-opacity",
-          open || active ? "after:opacity-100" : "after:opacity-0",
-        )}
+        className="bar-link"
+        data-current={isGroupActive(item, pathname)}
         aria-haspopup="true"
         aria-expanded={open}
-        aria-controls={open ? submenuId : undefined}
+        aria-controls={submenuId}
+        onPointerEnter={hover}
         onClick={(e) => {
           // A mouse has already opened it by hovering; don't close it again.
-          if (e.detail === 0 || !window.matchMedia("(hover: hover)").matches) {
-            setOpen((p) => !p);
-          } else {
-            setOpen(true);
-          }
+          const byMouse = e.detail !== 0 && window.matchMedia("(hover: hover)").matches;
+          onToggle(byMouse ? true : !open);
         }}
       >
         {item.label}
-        <ChevronDown
-          className={cn("h-4 w-4 opacity-70 transition-transform duration-200", open && "rotate-180")}
-          aria-hidden
-        />
       </button>
 
-      {open && (
-        <div
-          id={submenuId}
-          className="absolute inset-x-0 top-full border-b-[3px] border-accent bg-ink shadow-[var(--shadow-float)] animate-pop"
-        >
-          <Container className="py-7">
-            {item.menu === "photos" ? (
-              <PhotoMenu item={item} pathname={pathname} onPick={close} />
-            ) : (
-              <ListMenu item={item} pathname={pathname} onPick={close} />
-            )}
-          </Container>
+      {/* Stays in the page so the links are always there to be read; only the
+          open one can be seen or reached. */}
+      <div id={submenuId} className="fly" data-active={open} inert={!open} style={{ height }}>
+        <div ref={registerPanel} className="wrap fly-inner">
+          <p className="mlabel fly-item">{item.label}</p>
+          {item.menu === "photos" ? (
+            <PhotoMenu item={item} pathname={pathname} onPick={onPick} />
+          ) : (
+            <ListMenu item={item} pathname={pathname} onPick={onPick} />
+          )}
         </div>
-      )}
+      </div>
     </li>
   );
 }
@@ -384,56 +474,52 @@ interface MenuProps {
   onPick: () => void;
 }
 
+const step = (i: number) => ({ "--i": i }) as React.CSSProperties;
+
 function PhotoMenu({ item, pathname, onPick }: MenuProps) {
+  const cards = item.children ?? [];
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_17rem] gap-8">
-      <ul className="grid grid-cols-3 gap-1.5">
-        {item.children?.map((child) => (
-          <li key={child.href}>
+    <div className="fly-build">
+      <ul className="fly-cards">
+        {cards.map((child, i) => (
+          <li key={child.href} className="fly-item" style={step(i + 1)}>
             <Link
               href={child.href}
               onClick={onPick}
               aria-current={pathname === child.href ? "page" : undefined}
-              className="group relative block aspect-[16/10] overflow-hidden bg-ink-3"
+              className="fly-card"
             >
-              {child.image && (
-                <Image
-                  src={child.image}
-                  alt=""
-                  fill
-                  sizes="400px"
-                  className="object-cover transition-transform duration-500 ease-[var(--ease-mac)] group-hover:scale-105"
-                  style={{ objectPosition: child.imagePosition }}
-                />
-              )}
-              <span
-                aria-hidden
-                className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(transparent,rgb(10_11_12/0.92))]"
-              />
-              <span className="absolute inset-x-3.5 bottom-3">
-                <span className="display block text-[2rem] text-white">{child.label}</span>
-                {child.description && (
-                  <span className="mt-1 block text-[0.8125rem] text-white/80">{child.description}</span>
+              <span className="ph">
+                {child.image && (
+                  <Image
+                    src={child.image}
+                    alt=""
+                    fill
+                    sizes="360px"
+                    style={{ objectPosition: child.imagePosition }}
+                  />
                 )}
+              </span>
+              <span className="t">
+                <span>
+                  <b>{child.label}</b>
+                  {child.description && <small>{child.description}</small>}
+                </span>
+                <span className="go" aria-hidden>
+                  →
+                </span>
               </span>
             </Link>
           </li>
         ))}
       </ul>
-      <ul className="rule-list self-center">
-        {item.links?.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              onClick={onPick}
-              className="group flex min-h-13 items-center justify-between gap-3 font-medium text-bone transition-colors hover:text-accent-text"
-            >
+      <ul className="fly-links">
+        {item.links?.map((link, i) => (
+          <li key={link.href} className="fly-item" style={step(cards.length + 1 + i)}>
+            <MenuLink child={link} pathname={pathname} onPick={onPick}>
               {link.label}
-              <ArrowRight
-                className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                aria-hidden
-              />
-            </Link>
+              <span aria-hidden>→</span>
+            </MenuLink>
           </li>
         ))}
       </ul>
@@ -443,26 +529,18 @@ function PhotoMenu({ item, pathname, onPick }: MenuProps) {
 
 function ListMenu({ item, pathname, onPick }: MenuProps) {
   return (
-    <div className="grid grid-cols-[17rem_minmax(0,1fr)] items-start gap-8">
-      <p className="display text-[3.25rem]">{item.label}</p>
-      <ul className="grid grid-cols-2 gap-x-8 xl:grid-cols-4">
-        {item.children?.map((child) => (
-          <li key={child.href} className="border-t border-line">
-            <MenuLink
-              child={child}
-              pathname={pathname}
-              onPick={onPick}
-              className="group flex h-full flex-col gap-1.5 py-3.5"
-            >
-              <span className="display flex items-center gap-1.5 text-[1.625rem] transition-colors group-hover:text-accent-text">
-                {child.label}
-                {child.external && <ArrowUpRight className="h-5 w-5 text-mute" aria-hidden />}
-              </span>
-              {child.description && <span className="text-sm text-mute">{child.description}</span>}
-            </MenuLink>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul className="fly-cols">
+      {item.children?.map((child, i) => (
+        <li key={child.href} className="fly-item" style={step(i + 1)}>
+          <MenuLink child={child} pathname={pathname} onPick={onPick}>
+            <b>
+              {child.label}
+              <span aria-hidden>{child.external ? "↗" : "→"}</span>
+            </b>
+            {child.description && <small>{child.description}</small>}
+          </MenuLink>
+        </li>
+      ))}
+    </ul>
   );
 }
