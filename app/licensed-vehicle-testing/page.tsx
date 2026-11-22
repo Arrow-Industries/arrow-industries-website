@@ -214,13 +214,15 @@ export default async function RoadworthyPage() {
         <div className="wrap">
           <Crumbs crumbs={crumbs} />
           <p className="mlabel" style={{ marginTop: 30 }}>
-            VicRoads Licensed Vehicle Tester
+            VicRoads Licensed Vehicle Tester · EX 12409
           </p>
-          <p className="ex">
-            EX <span className="red">12409</span>
-          </p>
-          <div className="ex-row">
-            <h1>Heavy vehicle &amp; trailer roadworthy inspections.</h1>
+          <h1 className="long" style={{ marginTop: 18 }}>
+            Heavy vehicle &amp; trailer
+            <br />
+            roadworthy <span className="red">inspections.</span>
+          </h1>
+          <div className="row">
+            <p>Heavy vehicle and trailer inspections at our Campbellfield workshop.</p>
             <div className="actions">
               <Action href="#book">Book an inspection</Action>
               <Action href={site.phoneHref} tone="line" arrow={false}>

@@ -338,6 +338,18 @@ export function Navbar() {
                   </button>
                   <div className="sheet-sub" data-open={expanded} inert={!expanded}>
                     <ul>
+                      {item.href && !linksOf(item).some((c) => c.href === item.href) && (
+                        <li>
+                          <MenuLink
+                            child={{ label: item.overview ?? item.label, href: item.href }}
+                            pathname={pathname}
+                            onPick={() => setSheetOpen(false)}
+                          >
+                            {item.overview ?? item.label}
+                            <span aria-hidden>→</span>
+                          </MenuLink>
+                        </li>
+                      )}
                       {linksOf(item).map((child) => (
                         <li key={child.href + child.label}>
                           <MenuLink child={child} pathname={pathname} onPick={() => setSheetOpen(false)}>
@@ -446,29 +458,42 @@ function DesktopItem({
 
   return (
     <li>
-      <button
+      {/* The heading is a link to the whole section. Hovering it, or pressing
+          the down arrow, opens the panel of everything inside. */}
+      <Link
         ref={registerTrigger}
-        type="button"
+        href={item.href ?? "#"}
         className="bar-link"
-        data-current={isGroupActive(item, pathname)}
+        data-current={isGroupActive(item, pathname) || pathname === item.href}
         aria-haspopup="true"
         aria-expanded={open}
         aria-controls={submenuId}
         onPointerEnter={hover}
-        onClick={(e) => {
-          // A mouse has already opened it by hovering; don't close it again.
-          const byMouse = e.detail !== 0 && window.matchMedia("(hover: hover)").matches;
-          onToggle(byMouse ? true : !open);
+        onClick={onPick}
+        onKeyDown={(e) => {
+          if (e.key !== "ArrowDown" && e.key !== " ") return;
+          e.preventDefault();
+          onToggle(true);
+          const panel = document.getElementById(submenuId);
+          // Wait for the panel to become reachable before moving into it.
+          window.setTimeout(() => panel?.querySelector<HTMLElement>("a[href]")?.focus(), 60);
         }}
       >
         {item.label}
-      </button>
+      </Link>
 
       {/* Stays in the page so the links are always there to be read; only the
           open one can be seen or reached. */}
       <div id={submenuId} className="fly" data-active={open} inert={!open} style={{ height }}>
         <div ref={registerPanel} className="wrap fly-inner">
-          <p className="mlabel fly-item">{item.label}</p>
+          {item.href ? (
+            <Link href={item.href} onClick={onPick} className="mlabel fly-item fly-head">
+              {item.label}
+              <b aria-hidden>→</b>
+            </Link>
+          ) : (
+            <p className="mlabel fly-item">{item.label}</p>
+          )}
           {item.menu === "photos" ? (
             <PhotoMenu item={item} pathname={pathname} onPick={onPick} warm={warm} />
           ) : (

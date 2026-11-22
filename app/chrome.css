@@ -68,6 +68,11 @@
 .fly[data-active="true"] { visibility: visible; transition: height .44s var(--ease-spring), visibility 0s; }
 .fly-inner { padding: 26px 0 38px; }
 .fly-inner > .mlabel { margin-bottom: 18px; }
+/* The panel's own heading is a way in to the whole section. */
+a.fly-head { display: inline-flex; transition: color .2s; }
+a.fly-head b { font-weight: 500; opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .35s var(--ease-out); }
+a.fly-head:hover { color: var(--ink); }
+a.fly-head:hover b { opacity: 1; transform: none; color: var(--red); }
 .fly-item { opacity: 0; transform: translateY(-10px); transition: opacity .16s, transform .16s; }
 .fly[data-active="true"] .fly-item { opacity: 1; transform: none; transition: opacity .5s var(--ease-out), transform .6s var(--ease-out); transition-delay: calc(var(--i, 0) * 38ms + 60ms); }
 .fly-scrim { position: fixed; inset: 0; z-index: 45; background: rgb(19 20 22 / .26); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); opacity: 0; visibility: hidden; transition: opacity .35s, visibility 0s .35s; }
@@ -159,6 +164,11 @@
 .legal-nav a::before { content: ""; position: absolute; left: 0; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; background: var(--red); transform: scale(0); transition: transform .35s var(--ease-out); }
 .legal-nav a[aria-current] { padding-left: 16px; color: var(--ink); font-weight: 600; }
 .legal-nav a[aria-current]::before { transform: scale(1); }
+
+/* ---------- The range page ---------- */
+.rcard .rcard-title { font-size: 2.3rem; }
+.rows .semi:first-child { margin-top: 0; }
+.rows .semi { margin-top: 12px; }
 
 /* ---------- Buttons answer the hand ---------- */
 .btn { transition: background-color .25s, color .25s, box-shadow .25s, transform .35s var(--ease-out); }

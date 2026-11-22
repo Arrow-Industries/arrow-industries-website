@@ -14,7 +14,10 @@ export interface NavChild {
 
 export interface NavItem {
   label: string;
+  /** Where the heading itself leads: a page that covers everything under it. */
   href?: string;
+  /** What that page is called in the phone menu, when no link below already goes there. */
+  overview?: string;
   children?: NavChild[];
   /** Plain links shown beside the photos in a photo menu. */
   links?: NavChild[];
@@ -26,6 +29,8 @@ export interface NavItem {
 export const primaryNav: NavItem[] = [
   {
     label: "Build",
+    href: "/range",
+    overview: "The range",
     menu: "photos",
     children: [
       {
@@ -59,6 +64,8 @@ export const primaryNav: NavItem[] = [
   },
   {
     label: "Roadworthy",
+    href: "/licensed-vehicle-testing",
+    overview: "Roadworthy inspections",
     children: [
       {
         label: "Book an inspection",
@@ -84,6 +91,7 @@ export const primaryNav: NavItem[] = [
   },
   {
     label: "Repairs",
+    href: "/repairs-servicing",
     children: [
       {
         label: "Repairs & servicing",
@@ -111,6 +119,7 @@ export const primaryNav: NavItem[] = [
   { label: "Shop", href: site.shop.parts, external: true },
   {
     label: "Company",
+    href: "/about",
     children: [
       { label: "About", href: "/about", description: "The people behind Arrow." },
       { label: "Careers", href: "/careers", description: "Join the workshop." },

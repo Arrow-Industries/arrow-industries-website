@@ -7,6 +7,7 @@ import { site } from "@/data/site";
 const routes = [
   { path: "/", changeFrequency: "weekly" as const, priority: 1.0 },
   { path: "/about", changeFrequency: "yearly" as const, priority: 0.7 },
+  { path: "/range", changeFrequency: "monthly" as const, priority: 0.8 },
   { path: "/tipper-truck-bodies", changeFrequency: "monthly" as const, priority: 0.9 },
   { path: "/dog-trailers", changeFrequency: "monthly" as const, priority: 0.9 },
   { path: "/semi-trailers", changeFrequency: "monthly" as const, priority: 0.9 },

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./variant-d.css";
 @import "./chrome.css";
+@import "./configurator.css";
 
 /*
  * Arrow design system.

@@ -12,6 +12,8 @@ import { getSupabaseAdmin } from "@/lib/supabase/admin";
 export interface BuildOption {
   id: string;
   name: string;
+  /** The wording printed on the customer's quote. */
+  description?: string;
   swatch?: string;
   custom?: boolean;
   forTypes?: string[];
@@ -89,6 +91,7 @@ function toOption(o: Raw): BuildOption {
   return {
     id: text(o.id),
     name: text(o.name),
+    description: text(o.description).trim() || undefined,
     swatch: text(o.swatch) || undefined,
     custom: o.custom === true || undefined,
     forTypes: ids(o.forTypes),

@@ -94,7 +94,7 @@ export default function HomePage() {
               ["25+", "Years’ experience"],
               ["Any", "Make or model of truck"],
               ["In-house", "Built, painted and inspected"],
-              ["EX 12409", "VicRoads LVT"],
+              ["Roadworthy", "VicRoads licensed tester · EX 12409"],
             ]}
           />
         </div>
