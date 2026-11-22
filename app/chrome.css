@@ -15,6 +15,11 @@
   --glass-filter: saturate(180%) blur(20px);
 }
 
+/* Where a browser cannot frost the glass, the bars are simply solid paper. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --glass: rgb(244 243 239 / .97); }
+}
+
 /* ---------- The top bar ---------- */
 .site-bar { position: sticky; top: 0; z-index: 50; background: var(--glass); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); transition: background-color .3s; }
 .site-bar::after { content: ""; position: absolute; inset: auto 0 0; height: 1px; background: var(--line); opacity: 0; transition: opacity .3s; pointer-events: none; }

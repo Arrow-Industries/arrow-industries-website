@@ -42,6 +42,7 @@ export function Navbar() {
   const [flyout, setFlyout] = useState<string | null>(null);
   const [flyHeight, setFlyHeight] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const [warm, setWarm] = useState(false);
 
   const headerRef = useRef<HTMLElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -125,6 +126,14 @@ export function Navbar() {
   }, [pathname, glideTo]);
 
   useEffect(() => () => cancelTimer(), []);
+
+  // On a wide screen, fetch the menu photographs once the page is quiet, so
+  // they are already there the first time the menu opens. Phones never do.
+  useEffect(() => {
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
+    const id = setTimeout(() => setWarm(true), 1200);
+    return () => clearTimeout(id);
+  }, []);
 
   // A hairline appears under the bar once the page has moved.
   useEffect(() => {
@@ -224,6 +233,7 @@ export function Navbar() {
                   item={item}
                   pathname={pathname}
                   open={flyout === item.label}
+                  warm={warm || flyout !== null}
                   height={flyHeight}
                   onHover={() => hoverItem(item)}
                   onToggle={(next) => {
@@ -390,6 +400,7 @@ interface DesktopItemProps {
   item: NavItem;
   pathname: string;
   open: boolean;
+  warm: boolean;
   height: number;
   onHover: () => void;
   onToggle: (open: boolean) => void;
@@ -402,6 +413,7 @@ function DesktopItem({
   item,
   pathname,
   open,
+  warm,
   height,
   onHover,
   onToggle,
@@ -458,7 +470,7 @@ function DesktopItem({
         <div ref={registerPanel} className="wrap fly-inner">
           <p className="mlabel fly-item">{item.label}</p>
           {item.menu === "photos" ? (
-            <PhotoMenu item={item} pathname={pathname} onPick={onPick} />
+            <PhotoMenu item={item} pathname={pathname} onPick={onPick} warm={warm} />
           ) : (
             <ListMenu item={item} pathname={pathname} onPick={onPick} />
           )}
@@ -476,7 +488,7 @@ interface MenuProps {
 
 const step = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
-function PhotoMenu({ item, pathname, onPick }: MenuProps) {
+function PhotoMenu({ item, pathname, onPick, warm }: MenuProps & { warm: boolean }) {
   const cards = item.children ?? [];
   return (
     <div className="fly-build">
@@ -496,6 +508,7 @@ function PhotoMenu({ item, pathname, onPick }: MenuProps) {
                     alt=""
                     fill
                     sizes="360px"
+                    loading={warm ? "eager" : "lazy"}
                     style={{ objectPosition: child.imagePosition }}
                   />
                 )}
