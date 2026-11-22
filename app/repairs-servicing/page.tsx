@@ -4,6 +4,7 @@ import { CalendarCheck } from "lucide-react";
 import { Container } from "@/components/Container";
 import { ProductHero } from "@/components/ProductHero";
 import { CTASection } from "@/components/CTASection";
+import { Acc, Action, Feat, Head, PageOpen, Pair, Split } from "@/components/Blocks";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { CheckGrid, CheckList, InfoGrid, PhotoBand } from "@/components/ProductParts";
 import { DetailAccordion } from "@/components/DetailAccordion";
@@ -145,125 +146,87 @@ export default function RepairsPage() {
         ]}
       />
 
-      <ProductHero
+      <PageOpen
         crumbs={crumbs}
-        badge="Repairs & Servicing"
-        heading={
+        long
+        title={
           <>
-            Fixed by the people <span className="text-accent">who build them.</span>
+            Fixed by the people
+            <br />
+            who <span className="red">build them.</span>
           </>
         }
-        body="Tipper bodies, trailers and heavy vehicle components repaired, rebuilt and maintained from our Campbellfield workshop."
-        image={media.workshop.src}
-        imageAlt={media.workshop.alt}
-        imagePosition="50% 42%"
+        sub="Tipper bodies, trailers and heavy vehicle components repaired, rebuilt and maintained in Campbellfield."
         actions={
           <>
-            <Button href={bookingUrl} size="lg" target="_blank" rel="noreferrer">
-              <CalendarCheck className="h-4 w-4" aria-hidden />
-              Book an inspection
-            </Button>
-            <Button href={site.phoneHref} size="lg" variant="secondary">
+            <Action href={bookingUrl}>Book an inspection</Action>
+            <Action href={site.phoneHref} tone="line" arrow={false}>
               Call {site.phone}
-            </Button>
+            </Action>
           </>
         }
+        photo={{ src: media.workshop.src, alt: media.workshop.alt, position: "50% 42%" }}
+        facts={[
+          ["Any make", "Tippers, dogs and semis"],
+          ["In writing", "Quote before work starts"],
+          ["Insurance", "Claims documented"],
+          ["25+", "Years’ experience"],
+        ]}
       />
 
-      <section id="overview" className="band">
-        <Container>
-          <SectionHeader eyebrow="Capability" heading="What we repair." className="mb-7 lg:mb-11" />
-          <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((f) => (
-              <li key={f.title} className="border-t border-line py-4">
-                <h3 className="display-sm">{f.title}</h3>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      <section id="why-arrow">
-        <PhotoBand
-          photo={media.welding}
-          eyebrow="Why Arrow"
-          heading="One workshop. One team."
-          body="Insurance repairs, fabrication work and ongoing servicing, done by the team that builds tippers and trailers."
-        />
-      </section>
-
-      <section id="services" className="band">
-        <Container>
-          <SectionHeader eyebrow="Service options" heading="The full detail." className="mb-7 lg:mb-11" />
-          <DetailAccordion
+      <section className="sec" id="overview">
+        <div className="wrap">
+          <Head label="Capability" note="Not just Arrow-built units.">
+            What we <span className="red">repair.</span>
+          </Head>
+          <Feat
             items={[
-              {
-                id: "capability",
-                title: "What each repair covers",
-                content: (
-                  <>
-                    <p className={panelLead}>
-                      From damaged tipper bins and tailgates to structural repairs and
-                      hydraulic faults, we get heavy vehicles and trailers back on the
-                      road quickly. One workshop, full repair scope &mdash; from cracked
-                      rails to hydraulic rebuilds.
-                    </p>
-                    <InfoGrid items={features} />
-                  </>
-                ),
-              },
-              {
-                id: "common",
-                title: "Common work",
-                content: (
-                  <>
-                    <p className={panelLead}>
-                      Most jobs land in one of these categories &mdash; but if you&rsquo;re not sure, book a diagnostic inspection.
-                    </p>
-                    <CheckGrid items={useCases} />
-                  </>
-                ),
-              },
-              {
-                id: "options",
-                title: "Insurance, fleet & service options",
-                content: (
-                  <>
-                    <p className={panelLead}>
-                      Pick the path that suits the job. Every option starts with a written diagnostic and quote.
-                    </p>
-                    <InfoGrid items={repairOptions} />
-                  </>
-                ),
-              },
-              {
-                id: "credentials",
-                title: "Workshop credentials",
-                content: (
-                  <>
-                    <p className={panelLead}>
-                      We handle insurance repairs, fabrication work and ongoing servicing
-                      &mdash; all from the same workshop that builds our bodies.
-                    </p>
-                    <CheckList items={compliance} />
-                  </>
-                ),
-              },
+              ["Structural", "Cracked rails, cross-members and chassis mounts."],
+              ["Tipper bins", "Repairs, panel replacement and rebuilds."],
+              ["Tailgates", "Hinges, latches, seals and rebuilds."],
+              ["Hydraulics", "Hoist, ram, pump and valve repairs."],
+              ["Modifications", "Headboards, sub-frames and custom fabrication."],
+              ["Servicing", "Scheduled maintenance for tippers and trailers."],
+              ["Parts", "JOST, SAF-Holland, Hella and Wurth."],
+              ["Insurance", "Quoted and documented for insurer claims."],
             ]}
           />
-        </Container>
+        </div>
       </section>
 
-      <section id="faq" className="scroll-mt-8 pb-16 lg:pb-24">
-        <Container>
-          <SectionHeader eyebrow="FAQ" heading="Common questions." className="mb-7 lg:mb-11" />
-          <FAQAccordion items={faqs} />
-        </Container>
-      </section>
+      <Split
+        id="services"
+        label="Service options"
+        heading={
+          <>
+            How it <span className="red">works.</span>
+          </>
+        }
+        note="Not sure what it needs? Start with a diagnostic inspection."
+        tags={useCases}
+      >
+        <Acc openFirst items={repairOptions.map((o) => ({ q: o.title, a: o.body }))} />
+      </Split>
+
+      <Pair
+        id="faq"
+        label="Why Arrow"
+        heading={
+          <>
+            One workshop. <span className="red">One team.</span>
+          </>
+        }
+        bullets={compliance}
+        faqs={faqs}
+      />
 
       <CTASection
-        eyebrow="Repairs & Servicing"
-        heading="Need a tipper or trailer repaired?"
+        eyebrow="Repairs & servicing"
+        heading={
+          <>
+            Need a tipper or trailer <span className="red">repaired?</span>
+          </>
+        }
         primaryCta={{ label: "Book an inspection", href: bookingUrl }}
       />
     </>

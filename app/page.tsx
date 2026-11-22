@@ -1,23 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { BuildWall } from "@/components/BuildWall";
-import { Button } from "@/components/Button";
-import { Container } from "@/components/Container";
+import { Action, Facts, Head, NextLink, Steps } from "@/components/Blocks";
 import { CTASection } from "@/components/CTASection";
-import { PartnerLogos } from "@/components/PartnerLogos";
-import { PhotoBand, ViewBuildsLink, WorkshopStrip } from "@/components/ProductParts";
-import { ProductChooser } from "@/components/ProductChooser";
-import { RoadworthyBand } from "@/components/RoadworthyBand";
-import { SectionHeader } from "@/components/SectionHeader";
-import { TapTheTruck } from "@/components/TapTheTruck";
-import { Testimonials } from "@/components/Testimonials";
-import { TrustedBy } from "@/components/TrustedBy";
 import { media } from "@/data/media";
+import { partners } from "@/data/partners";
 import { site } from "@/data/site";
-import { tipperWalk } from "@/data/truck-parts";
-import { toBuilds } from "@/lib/builds";
-import { fetchTopInstagramMedia } from "@/lib/instagram";
 
 // Canonical for the home page is emitted directly in JSX (not via the
 // Metadata.alternates.canonical API) so the trailing slash is preserved.
@@ -27,142 +14,200 @@ import { fetchTopInstagramMedia } from "@/lib/instagram";
 // keep using Metadata.alternates.canonical (no trailing slash, matches
 // their URL) as normal.
 
-// Cache the page (incl. the Instagram fetch below) so the external Graph API
-// call never sits on a user's request path. Refreshes at most hourly.
-export const revalidate = 3600;
-
-const doors = [
-  { href: "#build", note: "New truck body or trailer", label: "Build" },
-  { href: "#roadworthy", note: "Heavy vehicle inspection", label: "Roadworthy" },
-  { href: "#repairs", note: "Trucks, bodies and trailers", label: "Repairs" },
+const range = [
+  {
+    href: "/tipper-truck-bodies",
+    photo: media.tipperGraphite,
+    title: "Tipper bodies",
+    line: "For any make or model.",
+  },
+  {
+    href: "/dog-trailers",
+    photo: media.dogSide,
+    title: "Dog trailers",
+    line: "3-axle and 4-axle, matched to your tipper.",
+  },
+  {
+    href: "/dog-trailers",
+    photo: media.truckAndDogDusk,
+    title: "Truck & dog sets",
+    line: "Built together as one combination.",
+  },
 ];
 
-export default async function HomePage() {
-  const posts = await fetchTopInstagramMedia(12, 30);
-  const recentBuilds = toBuilds(posts).filter((b) => !b.video);
+// A quiet row, so only the partners with a clean mark are shown.
+const partnerRow = ["SAF-Holland", "JOST", "Hella", "Bartlett", "Base Air", "Wurth", "Bulla Tarps"];
+
+export default function HomePage() {
+  const logos = partners.filter((p) => p.logo && partnerRow.includes(p.name));
 
   return (
     <>
       <link rel="canonical" href={`${site.url}/`} />
-      <Hero />
-      <ProductChooser />
-      <TapTheTruck walk={tipperWalk} id="tap-the-truck" />
 
-      <section className="band">
-        <Container>
-          <SectionHeader eyebrow="Campbellfield workshop" heading="Steel to site." className="mb-7 lg:mb-11" />
-        </Container>
-        <WorkshopStrip
-          items={[
-            { photo: media.welding, title: "Welded in-house" },
-            { photo: media.paintBooth, title: "Painted your colour" },
-            { photo: media.tailgate, title: "Fitted and tested" },
-            { photo: media.onSite, title: "Out to work" },
-          ]}
-        />
-      </section>
-
-      <section id="work">
-        <Container className="flex flex-wrap items-end justify-between gap-4 pb-7 lg:pb-11">
-          <SectionHeader eyebrow="Recent work" heading="Off the floor." />
-          <ViewBuildsLink />
-        </Container>
-        <BuildWall builds={recentBuilds} />
-      </section>
-
-      <Testimonials />
-      <TrustedBy />
-      <RoadworthyBand />
-
-      <section id="repairs">
-        <PhotoBand
-          photo={media.workshop}
-          eyebrow="Repairs & servicing"
-          heading="Fixed by the people who build them."
-        >
-          <Button href="/repairs-servicing" size="lg" variant="secondary">
-            Repairs &amp; servicing
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Button>
-        </PhotoBand>
-      </section>
-
-      <section className="section">
-        <Container>
-          <p className="eyebrow mb-4 text-center">Built with proven components</p>
-          <PartnerLogos />
-        </Container>
-      </section>
-
-      <CTASection eyebrow="Talk to the workshop" heading="Get a quote for your next build or repair." />
-    </>
-  );
-}
-
-function Hero() {
-  return (
-    <section className="home-hero">
-      <Container className="pb-4 pt-5 lg:pb-[var(--hero-pad-bottom)] lg:pt-[var(--hero-pad-top)]">
-        <h1>
-          <span className="eyebrow font-sans not-italic">
-            Melbourne-built tipper bodies and trailers. 25+ years&rsquo; experience.
-          </span>
-          <span className="display mt-3 block whitespace-nowrap text-[21vw] leading-[0.88] lg:mt-[var(--hero-gap)] lg:text-[length:var(--hero-type)]">
-            Built for <span className="block text-accent lg:inline">real work.</span>
-          </span>
-        </h1>
-      </Container>
-
-      {/* Kept at the film's own shape and sized to fit the screen, so the whole
-          truck is always in view. The poster loads first; the film plays over it. */}
-      <div className="flex justify-center bg-black">
-        <div className="relative aspect-video w-full lg:h-[min(56.25vw,max(22rem,calc(100svh-3.75rem-var(--hero-space)-0.88*var(--hero-type)-3rem)))] lg:w-auto">
-          <Image
-            src="/images/home/hero-stage-v1.jpg"
-            alt="An Arrow Industries tipper body on a five-axle truck in a studio"
-            fill
-            priority
-            sizes="100vw"
-            className="object-contain"
-          />
-          <video
-            className="hero-bg-video absolute inset-0 h-full w-full object-contain"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            poster="/images/home/hero-stage-v1.jpg"
-            aria-hidden="true"
-          >
-            <source src="/videos/home-hero.mp4" type="video/mp4" />
-          </video>
-        </div>
-      </div>
-
-      <nav aria-label="What do you need?" className="grid border-b border-line-soft lg:grid-cols-3">
-        {doors.map((d) => (
-          <Link
-            key={d.href}
-            href={d.href}
-            className="group flex min-h-21 items-center justify-between gap-4 border-t border-line-soft px-[clamp(1rem,3vw,2.5rem)] py-3 transition-colors hover:bg-accent lg:min-h-25 lg:border-l lg:border-t-0 lg:first:border-l-0"
-          >
-            <span>
-              <span className="block text-[0.8125rem] text-mute transition-colors group-hover:text-white">
-                {d.note}
-              </span>
-              <span className="display mt-1 block text-[clamp(2.25rem,3vw,2.75rem)] leading-none">
-                {d.label}
-              </span>
-            </span>
-            <ArrowRight
-              className="h-7 w-7 shrink-0 transition-transform group-hover:translate-x-1.5"
-              strokeWidth={2}
-              aria-hidden
+      <section className="hero">
+        <div className="wrap">
+          <div className="hero-grid">
+            <div>
+              <p className="mlabel">Family-owned · Campbellfield, Melbourne</p>
+              <h1>
+                Built for
+                <br />
+                <span className="red">real work.</span>
+              </h1>
+            </div>
+            <div className="hero-side">
+              <p>Tipper bodies for any make or model. Arrow-built dog and semi trailers.</p>
+              <div className="actions">
+                <Action href="/request-a-quote">Request a quote</Action>
+                <Action href="#range" tone="line" arrow={false}>
+                  See the range
+                </Action>
+              </div>
+            </div>
+          </div>
+          {/* The film is shown whole, never cropped. The poster loads first. */}
+          <div className="film">
+            <Image
+              src="/images/home/hero-stage-v1.jpg"
+              alt="An Arrow tipper body in graphite"
+              width={1920}
+              height={1080}
+              priority
+              sizes="(min-width: 1400px) 1340px, 100vw"
             />
+            <video
+              className="hero-bg-video"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster="/images/home/hero-stage-v1.jpg"
+              aria-hidden
+            >
+              <source src="/videos/home-hero.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <Facts
+            items={[
+              ["25+", "Years’ experience"],
+              ["Any", "Make or model of truck"],
+              ["In-house", "Built, painted and inspected"],
+              ["EX 12409", "VicRoads LVT"],
+            ]}
+          />
+        </div>
+      </section>
+
+      <section className="sec" id="range">
+        <div className="wrap">
+          <Head
+            label="The range"
+            note="Built to the chassis, the load and the work."
+          >
+            What we <span className="red">build.</span>
+          </Head>
+          <div className="range">
+            {range.map((r) => (
+              <Link key={r.title} className="rcard reveal" href={r.href}>
+                <div className="ph">
+                  <Image src={r.photo.src} alt={r.photo.alt} width={1440} height={1080} sizes="(min-width: 860px) 33vw, 100vw" />
+                </div>
+                <div className="txt">
+                  <div>
+                    <h3>{r.title}</h3>
+                    <p>{r.line}</p>
+                  </div>
+                  <span className="go" aria-hidden>
+                    →
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <Link className="semi reveal" href="/semi-trailers">
+            <div>
+              <b>Semi trailers</b>
+              <span className="note">Tipping or flat-deck.</span>
+            </div>
+            <span className="btn btn-line">
+              View <span className="arrow" aria-hidden>→</span>
+            </span>
           </Link>
-        ))}
-      </nav>
-    </section>
+        </div>
+      </section>
+
+      <section className="sec ruled">
+        <div className="wrap">
+          <Head label="How we build" note="One workshop, start to finish.">
+            Steel to <span className="red">site.</span>
+          </Head>
+          <Steps
+            items={[
+              ["Review", "Chassis, payload and application."],
+              ["Specify", "Drawings signed off before steel is cut."],
+              ["Fabricate", "Built in our Campbellfield workshop."],
+              ["Fit off", "Hydraulics, electrical and paint."],
+              ["Hand over", "Tested, plated and ready for work."],
+            ]}
+          />
+        </div>
+      </section>
+
+      <section className="sec flush">
+        <div className="wrap service">
+          <div className="svc dark reveal" id="roadworthy">
+            <p className="mlabel">VicRoads LVT · EX 12409</p>
+            <h3>
+              Roadworthy
+              <br />
+              on site.
+            </h3>
+            <p>Heavy vehicle and trailer inspections at our Campbellfield workshop.</p>
+            <div className="meta">
+              <span>60–120 minutes</span>
+              <Action href="/licensed-vehicle-testing">Book an inspection</Action>
+            </div>
+          </div>
+          <div className="svc reveal" id="repairs">
+            <p className="mlabel">Repairs &amp; servicing</p>
+            <h3>
+              Fixed by the people
+              <br />
+              who <span className="red">build them.</span>
+            </h3>
+            <p>Tipper bodies and trailers of any make, repaired and maintained.</p>
+            <div className="meta">
+              <span>Any make</span>
+              <Action href="/repairs-servicing" tone="ink">
+                Repairs &amp; servicing
+              </Action>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="sec flush">
+        <div className="wrap">
+          <NextLink href="/builds" label="Our work" name="Off the floor" />
+          <div className="logos reveal" style={{ borderTop: 0 }}>
+            <p className="mlabel">Component partners</p>
+            {logos.map((p) => (
+              <Image key={p.name} src={p.logo as string} alt={p.name} width={160} height={56} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CTASection
+        heading={
+          <>
+            Get a quote for your <span className="red">next build.</span>
+          </>
+        }
+        secondaryCta={{ label: "Configure your build", href: "/configure" }}
+      />
+    </>
   );
 }

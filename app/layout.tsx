@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Barlow, Barlow_Condensed, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Navbar } from "@/components/Navbar";
@@ -27,6 +27,14 @@ const condensed = Barlow_Condensed({
   weight: ["700", "800"],
   style: "italic",
   variable: "--font-condensed",
+  display: "swap",
+});
+
+// Small labels and numbering.
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["500"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -66,8 +74,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0b0c",
-  colorScheme: "dark",
+  themeColor: "#f4f3ef",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
   // Lets the call and quote bar sit clear of the iPhone home indicator.
@@ -78,7 +86,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-AU" className={`${barlow.variable} ${condensed.variable}`}>
+    <html lang="en-AU" className={`${barlow.variable} ${condensed.variable} ${mono.variable}`}>
       <body className="min-h-dvh antialiased">
         <a
           href="#main"

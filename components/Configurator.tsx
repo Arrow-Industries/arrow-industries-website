@@ -15,7 +15,7 @@ const BUILD_HANDOFF_KEY = "arrow.configured-build";
 const WORK = ["Civil", "Quarry", "Demolition", "Construction", "Bulk haulage", "Waste", "Fleet"];
 
 const chip =
-  "min-h-11 border px-3 text-sm font-medium transition-colors lg:min-h-10";
+  "min-h-11 rounded-full border px-4 text-sm font-medium transition-colors lg:min-h-10";
 const chipOn = "border-bone bg-bone text-ink";
 const chipOff = "border-line bg-white/[0.04] text-bone hover:bg-white/[0.1]";
 

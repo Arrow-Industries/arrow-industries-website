@@ -8,7 +8,7 @@ import { CTASection } from "@/components/CTASection";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { JsonLd } from "@/components/JsonLd";
 import { LocalNav } from "@/components/LocalNav";
-import { ProductHero } from "@/components/ProductHero";
+import { ProductPage } from "@/components/ProductPage";
 import {
   BuildCards,
   CheckGrid,
@@ -263,123 +263,46 @@ export default function Page() {
         ]}
       />
 
-      <ProductHero
+      <ProductPage
         crumbs={crumbs}
-        badge="Tipper Truck Bodies"
-        heading={
-          <>
-            Tipper bodies for <span className="text-accent">serious work.</span>
-          </>
-        }
-        body="Durable, cleanly finished bodies, built in Melbourne for the work ahead."
-        image={media.tipperWhite.src}
-        imageAlt={media.tipperWhite.alt}
-        imagePosition="50% 62%"
-        actions={
-          <>
-            <Button href="/configure?product=tipper" size="lg">
-              Configure yours
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Button>
-            <Button href="/request-a-quote" size="lg" variant="secondary">
-              Request a quote
-            </Button>
-          </>
-        }
-      />
-
-      <LocalNav
-        label="Tipper truck body sections"
-        items={[
-          { id: "chassis", label: "Chassis" },
-          { id: "tap", label: "The truck" },
-          { id: "builds", label: "Builds" },
-          { id: "specs", label: "Specifications" },
-          { id: "faq", label: "FAQ" },
+        title={["Tipper", "bodies."]}
+        sub="Built in Melbourne, for any make or model of truck."
+        photo={{ src: media.tipperGraphite.src, alt: media.tipperGraphite.alt }}
+        facts={[
+          ["Any", "Make or model of truck"],
+          ["4x2–10x4", "Chassis configurations"],
+          ["6–12 wks", "Typical build"],
+          ["2-pack", "Any colour code"],
         ]}
-      />
-
-      <section id="chassis" className="band scroll-mt-12">
-        <Container>
-          <SectionHeader
-            eyebrow="Configurations"
-            heading="Built to your chassis."
-            body="Tipper bodies for any make or model of truck."
-          />
-          <ChoiceTiles items={chassisChoices} />
-        </Container>
-      </section>
-
-      <TapTheTruck walk={tipperWalk} />
-
-      <section id="builds" className="scroll-mt-12 pt-16 lg:pt-24">
-        <Container className="flex flex-wrap items-end justify-between gap-4 pb-7 lg:pb-11">
-          <SectionHeader eyebrow="Recent builds" heading="Real trucks. Real jobs." />
-          <ViewBuildsLink />
-        </Container>
-        <BuildCards builds={recentBuilds} />
-      </section>
-
-      <section id="specs" className="band scroll-mt-12">
-        <Container>
-          <SectionHeader eyebrow="Specifications" heading="The full spec." className="mb-7 lg:mb-11" />
-          <DetailAccordion
-            items={[
-              { id: "options", title: "Build options", content: <CheckGrid items={buildOptions} /> },
-              { id: "materials", title: "Materials & engineering", content: <InfoGrid items={materials} /> },
-              {
-                id: "setup",
-                title: "Complete working setup",
-                content: (
-                  <div className="grid gap-5">
-                    <p className="max-w-3xl text-[1.0625rem] leading-relaxed text-mute">
-                      A tipper body is only one part of the system. Every Arrow build is designed
-                      as a complete working setup &mdash; from the body and subframe through to
-                      hydraulics, hoist configuration, and trailer connections where required.
-                    </p>
-                    <CheckList items={[...completeSetup.features, ...completeSetup.outcomes]} />
-                  </div>
-                ),
-              },
-              {
-                id: "chassis-guide",
-                title: "Chassis guide",
-                content: (
-                  <InfoGrid items={chassisConfigs.map((c) => ({ title: c.title, body: c.use }))} />
-                ),
-              },
-              {
-                id: "applications",
-                title: "Applications",
-                content: (
-                  <div className="grid gap-5">
-                    <p className="max-w-3xl text-[1.0625rem] leading-relaxed text-mute">
-                      Every Arrow tipper is engineered around the application, the payload and the
-                      chassis it&rsquo;s running on &mdash; sized correctly, balanced for the truck,
-                      and finished for the work it needs to do.
-                    </p>
-                    <Pills items={[...applications, ...credibilityPoints]} />
-                  </div>
-                ),
-              },
-              { id: "why-arrow", title: "Why Arrow", content: <InfoGrid items={whyArrow} /> },
-              { id: "process", title: "The build process", content: <ProcessSteps steps={process} /> },
-            ]}
-          />
-        </Container>
-      </section>
-
-      <section id="faq" className="band scroll-mt-20 pt-0 lg:pt-0">
-        <Container>
-          <SectionHeader eyebrow="FAQ" heading="Common questions." className="mb-7 lg:mb-11" />
-          <FAQAccordion items={faqs} />
-        </Container>
-      </section>
-
-      <CTASection
-        eyebrow="Request a quote"
-        heading={tipperContent.ctaHeading}
-        secondaryCta={{ label: "Configure your build", href: "/configure?product=tipper" }}
+        points={{
+          label: "Configurations",
+          heading: (
+            <>
+              Built to your <span className="red">chassis.</span>
+            </>
+          ),
+          note: "Sized to the truck, the payload and the work.",
+          xl: true,
+          items: chassisChoices.map((c) => [c.title, `${c.body}.`] as [string, string]),
+        }}
+        tags={applications}
+        options={buildOptions.map((o) => o.replace(" (manual or electric)", ", manual or electric"))}
+        recent={[
+          { src: media.scania.src, alt: media.scania.alt, title: "Scania tipper body", tag: "Tipper" },
+          { src: media.sitrak.src, alt: media.sitrak.alt, title: "SITRAK tipper body", tag: "Tipper" },
+          { src: media.tipperWhite.src, alt: media.tipperWhite.alt, title: "Tipper body on its hoist", tag: "Tipper" },
+        ]}
+        setup={{
+          heading: (
+            <>
+              Set up to <span className="red">work.</span>
+            </>
+          ),
+          bullets: completeSetup.features,
+        }}
+        faqs={faqs}
+        next={{ href: "/dog-trailers", name: "Dog trailers" }}
+        configureHref="/configure?product=tipper"
       />
     </>
   );

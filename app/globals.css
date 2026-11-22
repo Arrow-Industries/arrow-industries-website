@@ -1,33 +1,33 @@
 @import "tailwindcss";
+@import "./variant-d.css";
 
 /*
  * Arrow design system.
  *
- * Taken from the trucks themselves: the slanted ARROW lettering sets the
- * headings, the side pinstripe is the one decoration, and everything else is
- * black, bone and signal red with square edges and big photographs.
+ * Off-white paper, with the slanted ARROW lettering in black and red for the
+ * headings. The token names are historical: "ink" is the page surface and
+ * "bone" is the text colour, so every component reads correctly on paper.
  */
 @theme {
   /* Surfaces, darkest to lightest */
-  --color-ink: #0a0b0c;
-  --color-ink-2: #131416;
-  --color-ink-3: #1c1e21;
-  --color-ink-4: #2a2c30;
+  --color-ink: #f4f3ef;
+  --color-ink-2: #fbfaf7;
+  --color-ink-3: #ffffff;
+  --color-ink-4: #e9e6df;
 
   /* Hairlines are translucent so they sit correctly on any surface */
-  --color-line: rgb(255 255 255 / 0.16);
-  --color-line-soft: rgb(255 255 255 / 0.1);
+  --color-line: rgb(19 20 22 / 0.2);
+  --color-line-soft: rgb(19 20 22 / 0.12);
 
-  --color-bone: #efece6;
-  --color-mute: #a9a7a2;
+  --color-bone: #131416;
+  --color-mute: #6f6c66;
 
-  --color-accent: #e10600;
-  --color-accent-hover: #c20500;
-  /* Brighter red for accent *text* on dark surfaces. The brand red (#e10600)
-     only reaches 3.99:1 as text and fails WCAG AA; this passes (~6.4:1).
-     Use for labels/asterisks/error copy/links — keep --color-accent for
-     fills, borders and icons. */
-  --color-accent-text: #ff5a52;
+  --color-accent: #d6141c;
+  --color-accent-hover: #b80f16;
+  /* Slightly deeper red for accent *text* on paper, which passes WCAG AA
+     (~5.6:1). Use for labels/asterisks/error copy/links — keep --color-accent
+     for fills, borders, icons and large headings. */
+  --color-accent-text: #c20f17;
 
   --font-sans: var(--font-barlow), "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font-condensed), "Arial Narrow", Impact, sans-serif;
@@ -44,8 +44,8 @@
 
   --ease-mac: cubic-bezier(0.2, 0.7, 0.2, 1);
 
-  --shadow-raised: 0 8px 24px -12px rgb(0 0 0 / 0.6);
-  --shadow-float: 0 24px 48px -16px rgb(0 0 0 / 0.75);
+  --shadow-raised: 0 8px 24px -12px rgb(19 20 22 / 0.18);
+  --shadow-float: 0 24px 48px -16px rgb(19 20 22 / 0.22);
 
   --animate-pop: pop 180ms var(--ease-mac) both;
   --animate-fade: fade 160ms ease-out both;
@@ -92,19 +92,21 @@
 
 @layer base {
   html {
-    color-scheme: dark;
+    color-scheme: light;
     scroll-behavior: smooth;
-    scroll-padding-top: 3.75rem;
+    scroll-padding-top: 5.5rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     text-rendering: optimizeLegibility;
-    scrollbar-color: rgb(255 255 255 / 0.22) transparent;
+    scrollbar-color: rgb(19 20 22 / 0.28) transparent;
   }
   body {
     background-color: var(--color-ink);
     color: var(--color-bone);
     font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.5;
     padding-bottom: env(safe-area-inset-bottom);
   }
   h1,
@@ -115,12 +117,8 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: -0.005em;
-    line-height: 0.95;
+    line-height: 0.92;
     text-wrap: balance;
-  }
-  h3 {
-    font-weight: 700;
-    line-height: 1;
   }
   p {
     text-wrap: pretty;
@@ -152,8 +150,8 @@
 @utility container-page {
   width: 100%;
   margin-inline: auto;
-  max-width: 110rem;
-  padding-inline: max(clamp(1rem, 3vw, 2.5rem), env(safe-area-inset-left));
+  max-width: calc(1340px + 2 * clamp(1rem, 4vw, 3.5rem));
+  padding-inline: max(clamp(1rem, 4vw, 3.5rem), env(safe-area-inset-left));
 }
 
 @layer components {
@@ -223,6 +221,7 @@
     position: relative;
     background-color: var(--color-ink-2);
     border: 1px solid var(--color-line-soft);
+    border-radius: 8px;
   }
   .card-link {
     transition: background-color 200ms ease, border-color 200ms ease;
@@ -239,21 +238,24 @@
     isolation: isolate;
     overflow: hidden;
     border: 1px solid var(--color-line-soft);
+    border-radius: 8px;
     background-color: var(--color-ink-2);
   }
 
   .material {
-    background-color: rgb(10 11 12 / 0.94);
+    background-color: rgb(244 243 239 / 0.92);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
   .popover {
     border: 1px solid var(--color-line);
     box-shadow: var(--shadow-float);
+    border-radius: 8px;
   }
 
   .list-group {
     overflow: hidden;
+    border-radius: 8px;
     background-color: var(--color-ink-2);
     border: 1px solid var(--color-line-soft);
   }
@@ -295,20 +297,31 @@
     width: 2.75rem;
     height: 2.75rem;
     color: var(--color-bone);
+    border-radius: 999px;
     box-shadow: inset 0 0 0 1px var(--color-line);
     transition: background-color 150ms ease;
   }
   .icon-btn:hover {
-    background-color: rgb(255 255 255 / 0.1);
+    background-color: rgb(19 20 22 / 0.07);
   }
   .eyebrow {
-    display: block;
-    font-size: 0.8125rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.71875rem;
     line-height: 1.25rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
+    font-weight: 500;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-accent-text);
+    color: var(--color-mute);
+  }
+  .eyebrow::before {
+    content: "";
+    flex: none;
+    width: 7px;
+    height: 7px;
+    background: var(--color-accent);
   }
   .label {
     display: block;
@@ -326,6 +339,8 @@
     line-height: 1.125rem;
     font-weight: 500;
     color: var(--color-bone);
+    border-radius: 999px;
+    background-color: var(--color-ink-2);
     box-shadow: inset 0 0 0 1px var(--color-line);
   }
   .step-num {
@@ -370,6 +385,7 @@
     min-height: 3rem;
     padding: 0.6875rem 0.875rem;
     border: 1px solid var(--color-line);
+    border-radius: 6px;
     background-color: var(--color-ink-3);
     color: var(--color-bone);
     /* 16px stops iOS zooming the page when a field takes focus. */
@@ -378,10 +394,10 @@
     transition: border-color 140ms ease, box-shadow 140ms ease;
   }
   .field::placeholder {
-    color: rgb(169 167 162 / 0.85);
+    color: rgb(111 108 102 / 0.8);
   }
   .field:hover:not(:disabled):not(:focus) {
-    border-color: rgb(255 255 255 / 0.3);
+    border-color: rgb(19 20 22 / 0.4);
   }
   .field:focus {
     outline: none;
@@ -414,6 +430,7 @@
     padding: 1.25rem;
     background-color: var(--color-ink-2);
     border: 1px solid var(--color-line-soft);
+    border-radius: 8px;
   }
   @media (min-width: 640px) {
     .form-section {

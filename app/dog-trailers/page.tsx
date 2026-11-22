@@ -56,8 +56,8 @@ const recentBuilds = [
     title: "4-Axle Dog Trailer",
   },
   {
-    src: media.truckAndDogDusk.src,
-    alt: media.truckAndDogDusk.alt,
+    src: media.truckAndDog.src,
+    alt: media.truckAndDog.alt,
     title: "Truck & Dog Combination",
   },
 ];
@@ -74,6 +74,11 @@ const trailerType = {
 };
 
 const completeSetup = {
+  heading: (
+    <>
+      One working <span className="red">pair.</span>
+    </>
+  ),
   outcomes: [
     "Truck-and-dog combination performs properly under load",
     "Stable through cornering and reversing",
@@ -88,10 +93,10 @@ const completeSetup = {
 };
 
 const features = [
-  "2-way tailgate systems (air operated)",
+  "2-way tailgate systems, air operated",
   "Heavy-duty drawbars and tow connections",
   "Spreader chains",
-  "Tarp systems (manual or electric)",
+  "Tarp systems, manual or electric",
   "Spray suppression systems",
   "LED lighting and safety systems",
   "Access steps and practical operator features",
@@ -109,7 +114,7 @@ export default function Page() {
         meta,
         hero: {
           badge: "Dog Trailers",
-          subtext: "Dog trailers matched to your tipper, built for balance and real-world work.",
+          subtext: "Matched to your tipper. 3-axle and 4-axle.",
           capability: ["3-axle", "4-axle"],
           image: media.truckAndDogDusk.src,
           imageAlt: media.truckAndDogDusk.alt,
@@ -121,6 +126,27 @@ export default function Page() {
         completeSetup,
         features,
         faqs,
+        facts: [
+          ["3 / 4 axle", "Configurations"],
+          ["Matched", "To your tipper"],
+          ["8–14 wks", "Typical build"],
+          ["PBS", "Compatible builds"],
+        ],
+        points: {
+          heading: (
+            <>
+              Matched to the <span className="red">truck.</span>
+            </>
+          ),
+          note: "Built to match the truck, not bolted on after.",
+          items: [
+            ["3 or 4 axle", "3-axle and 4-axle configurations only."],
+            ["Geometry", "Designed to match the truck in front."],
+            ["Balance", "Load distribution and stability."],
+            ["Payload", "Suited to higher payload and civil work."],
+          ],
+        },
+        next: { href: "/semi-trailers", name: "Semi trailers" },
       }}
     />
   );

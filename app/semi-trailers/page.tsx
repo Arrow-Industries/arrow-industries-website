@@ -58,6 +58,11 @@ const trailerType = {
 };
 
 const completeSetup = {
+  heading: (
+    <>
+      Matched to the <span className="red">prime mover.</span>
+    </>
+  ),
   outcomes: [
     "Combination tracks cleanly through high-speed and cornering",
     "Predictable stability under heavy and uneven loads",
@@ -75,7 +80,7 @@ const features = [
   "Tipping body or flat-deck configuration",
   "Tailgate systems on tipping semis (including 2-way air operated)",
   "Heavy-duty kingpin assemblies and landing gear",
-  "Tarp systems (manual or electric)",
+  "Tarp systems, manual or electric",
   "Spray suppression systems",
   "LED lighting, ABS/EBS and safety systems",
   "Access steps and practical operator features",
@@ -93,17 +98,35 @@ export default function Page() {
         meta,
         hero: {
           badge: "Semi Trailers",
-          subtext: "Semi trailers matched to your prime mover, built for long-term heavy work.",
+          subtext: "Matched to your prime mover. Tipping or flat-deck.",
           capability: ["2-axle", "3-axle"],
-          image: media.bodyPainted.src,
-          imageAlt: media.bodyPainted.alt,
-          imagePosition: "50% 45%",
         },
         recentBuilds,
         trailerType,
         completeSetup,
         features,
         faqs,
+        facts: [
+          ["2 / 3 axle", "Setups"],
+          ["Tipping", "Or flat-deck"],
+          ["10–16 wks", "Typical build"],
+          ["PBS", "B-double and A-double"],
+        ],
+        points: {
+          heading: (
+            <>
+              Built for <span className="red">longer haul.</span>
+            </>
+          ),
+          note: "Higher volume and longer haul work.",
+          items: [
+            ["2 or 3 axle", "2-axle and 3-axle setups."],
+            ["Tipping", "For bulk and quarry work."],
+            ["Flat-deck", "For general freight."],
+            ["PBS", "Compatible builds where access permits apply."],
+          ],
+        },
+        next: { href: "/tipper-truck-bodies", name: "Tipper bodies" },
       }}
     />
   );

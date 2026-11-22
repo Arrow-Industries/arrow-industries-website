@@ -17,14 +17,20 @@ export function Logo({ className }: LogoProps) {
         className,
       )}
     >
-      <Image
-        src="/images/logo-white.png"
-        alt=""
-        width={80}
-        height={80}
-        priority
-        className="h-10 w-10"
-      />
+      {/* The arrow mark, cropped from the full logo, beside the wordmark. */}
+      <span className="relative block h-[31px] w-[34px] overflow-hidden" aria-hidden>
+        <Image
+          src="/images/logo-black.png"
+          alt=""
+          width={112}
+          height={112}
+          priority
+          className="absolute left-[-11px] top-[-4px] h-14 w-14 max-w-none"
+        />
+      </span>
+      <span className="display ml-[11px] text-[1.6875rem] leading-none tracking-[0.02em]" aria-hidden>
+        ARROW
+      </span>
     </Link>
   );
 }

@@ -40,9 +40,20 @@ export default async function TermsPage() {
         ]}
       />
 
-      <section className="section">
-        <Container>
-          <div className="plain-headings max-w-3xl text-base leading-relaxed text-mute">
+      <section className="sec tight">
+        <div className="wrap legal">
+          <nav className="legal-nav scroll" aria-label="Clauses">
+            <p className="mlabel">Clauses</p>
+            {blocks.map((b) =>
+              b.kind === "clause" ? (
+                <a key={b.id} href={`#${b.id}`}>
+                  <span>{b.number}</span>
+                  {b.heading}
+                </a>
+              ) : null,
+            )}
+          </nav>
+          <div className="legal-body text-base leading-relaxed text-mute">
 
             {/* Issuer block */}
             <div className="card mb-3 p-5 text-sm sm:p-6">
@@ -95,7 +106,7 @@ export default async function TermsPage() {
               </Button>
             </div>
 
-            <div className="text-sm leading-relaxed sm:text-base">
+            <div className="terms">
               {blocks.map((b, i) => <Block key={i} b={b} />)}
             </div>
 
@@ -110,7 +121,7 @@ export default async function TermsPage() {
               </p>
             </div>
           </div>
-        </Container>
+        </div>
       </section>
     </>
   );
@@ -128,31 +139,30 @@ function Rich({ text }: { text: string }) {
   );
 }
 
-const indent: Record<1 | 2 | 3, string> = { 1: "", 2: "pl-8", 3: "pl-16" };
-
 function Block({ b }: { b: TermsBlock }) {
   if (b.kind === "clause")
     return (
-      <h2 id={b.id} className="mt-12 first:mt-0 mb-4 scroll-mt-6 font-display text-xl font-semibold text-bone sm:text-[1.375rem]">
-        <span className="text-accent-text">{b.number}.</span> {b.heading}
+      <h2 id={b.id} className="tclause display">
+        <span className="red">{b.number}.</span> {b.heading}
       </h2>
     );
   if (b.kind === "subclause")
     return (
-      <h3 id={b.id} className="mt-6 mb-3 scroll-mt-6 font-display text-base font-semibold text-bone sm:text-lg">
-        <span className="text-accent-text/80">{b.number}</span>{" "}
-        <span className="ml-1">{b.heading}</span>
+      <h3 id={b.id} className="tsub">
+        <span>{b.number}</span> {b.heading}
       </h3>
     );
   if (b.kind === "item")
     return (
-      <div className={`mt-3 grid grid-cols-[2rem_1fr] gap-x-1 ${indent[b.depth]}`}>
-        <span className="text-mute">{b.label}</span>
-        <div><Rich text={b.text} /></div>
+      <div className={`titem d${b.depth}`}>
+        <span>{b.label}</span>
+        <div>
+          <Rich text={b.text} />
+        </div>
       </div>
     );
   return (
-    <p className="mt-4">
+    <p>
       <Rich text={b.text} />
     </p>
   );

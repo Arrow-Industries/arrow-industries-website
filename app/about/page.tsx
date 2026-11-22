@@ -16,6 +16,7 @@ import {
 import { DetailAccordion } from "@/components/DetailAccordion";
 import { Testimonials } from "@/components/Testimonials";
 import { CTASection } from "@/components/CTASection";
+import { Action, Head, PageOpen, Shots, Steps } from "@/components/Blocks";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
@@ -154,41 +155,42 @@ export default function AboutPage() {
     <>
       <JsonLd data={breadcrumbSchema(crumbs)} />
 
-      {/* 1 — Hero */}
-      <ProductHero
+      <PageOpen
         crumbs={crumbs}
-        badge="About"
-        heading="Built by operators, for operators."
-        body="Designed, fabricated and serviced from our Campbellfield workshop, supporting operators across Australia."
-        image={media.truckAndDogDusk.src}
-        imageAlt={media.truckAndDogDusk.alt}
-        imagePosition="70% 55%"
-        actions={
+        long
+        title={
           <>
-            <Button href="/request-a-quote" size="lg">
-              Request a quote
-            </Button>
-            <Button href={site.phoneHref} size="lg" variant="secondary">
-              Call {site.phone}
-            </Button>
+            Built by operators,
+            <br />
+            <span className="red">for operators.</span>
           </>
         }
+        sub="Designed, fabricated and serviced from our Campbellfield workshop."
+        actions={
+          <Action href="/builds" tone="line">
+            See our work
+          </Action>
+        }
+        photo={{ src: media.truckAndDogDusk.src, alt: media.truckAndDogDusk.alt, position: "70% 55%" }}
+        facts={stats.map((s) => [s.value, s.label] as [string, string])}
       />
 
-      {/* 2 — Stats and our story */}
-      <section className="band">
-        <Container>
-          <StatTiles items={stats} />
-        </Container>
-      </section>
-
-      <section>
-        <PhotoBand
-          photo={media.welding}
-          eyebrow="Our story"
-          heading="Built for operators. Built to suit the job."
-          body="Founded by Kon, who ran his own trucks and trailers in civil work. Today, one workshop and one hands-on team supporting operators across Australia."
-        />
+      <section className="sec">
+        <div className="wrap story">
+          <div className="reveal">
+            <p className="mlabel">Our story</p>
+            <h2>
+              Built to suit <span className="red">the job.</span>
+            </h2>
+          </div>
+          <div className="reveal">
+            <p className="lead">Founded by Kon, who ran his own trucks and trailers in civil work.</p>
+            <p>
+              Today it&rsquo;s one workshop and one hands-on team, supporting operators across Australia. Every
+              build starts with the chassis, payload, route and operating conditions.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="section">
@@ -252,130 +254,38 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* 3 — Inside the workshop */}
-      <section className="band">
-        <Container>
-          <SectionHeader eyebrow="Inside the workshop" heading="Same team, start to finish." className="mb-7 lg:mb-11" />
-        </Container>
-        <WorkshopStrip items={workshop} />
-      </section>
-
-      {/* 4 — Milestones */}
-      <section className="section">
-        <Container>
-          <SectionHeader eyebrow="Experience" heading="Built on experience." className="mb-7 lg:mb-11" />
-          <ol className="grid gap-x-6 sm:grid-cols-2 lg:grid-cols-4">
-            {milestones.map((m) => (
-              <li key={m.title} className="border-t border-line py-4">
-                <span className="eyebrow">{m.year}</span>
-                <h3 className="mt-2.5 text-[1.75rem] text-bone">{m.title}</h3>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </section>
-
-      {/* 5 — What we build, why Arrow, industries */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Custom-built"
-            heading="Sized for the job."
-            body="Every Arrow build starts with the chassis, payload, route and operating conditions."
-            className="mb-6"
+      <section className="sec">
+        <div className="wrap">
+          <Head label="Inside the workshop">
+            Same team, <span className="red">start to finish.</span>
+          </Head>
+          <Shots
+            items={workshop.map((w, n) => ({
+              src: w.photo.src,
+              alt: w.photo.alt,
+              title: w.title,
+              tag: String(n + 1).padStart(2, "0"),
+            }))}
           />
-          <Pills items={whatWeBuild.map((b) => b.title)} />
-          <div className="mt-6">
-            <DetailAccordion
-              items={[
-                {
-                  id: "build",
-                  title: "What we build",
-                  content: (
-                    <div className="grid gap-3">
-                      <p className="max-w-3xl text-[1.0625rem] leading-relaxed text-mute">
-                        No catalogue sizes. No compromises. Just a unit
-                        engineered to do the work it&rsquo;s asked to do, year
-                        after year.
-                      </p>
-                      <InfoGrid items={whatWeBuild} />
-                    </div>
-                  ),
-                },
-                {
-                  id: "why-arrow",
-                  title: "Why Arrow",
-                  content: (
-                    <TabIntro
-                      heading="Built for Australian conditions."
-                      body="Decades of fabrication experience, real workshop capability and a refusal to cut corners on steel, welds or hydraulics."
-                    >
-                      <InfoGrid
-                        items={whyChooseArrow.map((f) => ({
-                          title: f.title,
-                          body: f.description,
-                        }))}
-                      />
-                    </TabIntro>
-                  ),
-                },
-                {
-                  id: "industries",
-                  title: "Industries",
-                  content: (
-                    <TabIntro
-                      heading="Built for operators across Australia."
-                      body="Working with operators who rely on equipment that performs — across construction, quarry, transport, waste and fleet operations."
-                    >
-                      <CheckGrid items={industries} />
-                    </TabIntro>
-                  ),
-                },
-                {
-                  id: "experience",
-                  title: "Our experience",
-                  content: (
-                    <InfoGrid
-                      items={milestones.map((m) => ({
-                        title: m.title,
-                        body: m.body,
-                      }))}
-                    />
-                  ),
-                },
-                {
-                  id: "workshop",
-                  title: "Inside the workshop",
-                  content: (
-                    <InfoGrid
-                      items={workshop.map((w) => ({
-                        title: w.title,
-                        body: w.detail,
-                      }))}
-                    />
-                  ),
-                },
-              ]}
-            />
-          </div>
-        </Container>
+        </div>
       </section>
 
-      {/* 6 — Recent builds */}
-      <section className="pt-10 lg:pt-16">
-        <Container className="flex flex-wrap items-end justify-between gap-4 pb-7 lg:pb-11">
-          <SectionHeader eyebrow="Recent work" heading="Recent builds." />
-          <ViewBuildsLink />
-        </Container>
-        <BuildCards builds={recentBuilds} />
+      <section className="sec ruled">
+        <div className="wrap">
+          <Head label="Experience">
+            Built on <span className="red">experience.</span>
+          </Head>
+          <Steps items={milestones.map((m) => [m.title, m.body] as [string, string])} />
+        </div>
       </section>
-
-      {/* 7 — Testimonials and call to action */}
-      <Testimonials />
 
       <CTASection
-        eyebrow="Talk to us"
-        heading="Get a quote for your next build or repair."
+        heading={
+          <>
+            Get a quote for your <span className="red">next build.</span>
+          </>
+        }
+        secondaryCta={{ label: "Configure your build", href: "/configure" }}
       />
     </>
   );

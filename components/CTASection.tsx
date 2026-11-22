@@ -1,55 +1,50 @@
-import { Container } from "@/components/Container";
-import { Button } from "@/components/Button";
-import { PinStripe } from "@/components/PinStripe";
+import type { ReactNode } from "react";
+import { Action } from "@/components/Blocks";
 import { site } from "@/data/site";
 
 interface CTASectionProps {
   eyebrow?: string;
-  heading: string;
+  /** A string has its last word set in red; pass JSX to choose the red part. */
+  heading: ReactNode;
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
 }
 
-/** How every page signs off: one line, the phone number, and the next step. */
+/** How every page signs off: one line, the next step, and the phone number. */
 export function CTASection({
-  eyebrow,
+  eyebrow = "Talk to the workshop",
   heading,
   primaryCta = { label: "Request a quote", href: "/request-a-quote" },
   secondaryCta,
 }: CTASectionProps) {
+  let line: ReactNode = heading;
+  if (typeof heading === "string") {
+    const words = heading.trim().split(" ");
+    const last = words.pop();
+    line = (
+      <>
+        {words.join(" ")} <span className="red">{last}</span>
+      </>
+    );
+  }
   return (
-    <section>
-      <PinStripe />
-      <div className="bg-accent py-12 text-white lg:py-20">
-        <Container>
-          {eyebrow && (
-            <p className="text-[0.8125rem] font-semibold uppercase tracking-[0.14em]">{eyebrow}</p>
-          )}
-          <h2 className="display-md mt-3 max-w-5xl">{heading}</h2>
-          <a
-            href={site.phoneHref}
-            aria-label={`Call ${site.phone}`}
-            className="display mt-6 block whitespace-nowrap text-[17.6vw] leading-[0.9] lg:mt-9 lg:text-[min(16vw,17rem)]"
-          >
+    <section className="cta">
+      <div className="wrap">
+        <p className="mlabel">{eyebrow}</p>
+        <h2>{line}</h2>
+        <div className="row">
+          <div className="actions">
+            <Action href={primaryCta.href}>{primaryCta.label}</Action>
+            {secondaryCta && (
+              <Action href={secondaryCta.href} tone="line-light" arrow={false}>
+                {secondaryCta.label}
+              </Action>
+            )}
+          </div>
+          <a className="tel" href={site.phoneHref} aria-label={`Call ${site.phone}`}>
             {site.phone}
           </a>
-          <div className="mt-7 flex flex-wrap items-center justify-between gap-5 border-t border-white/50 pt-6 lg:mt-10">
-            <p className="font-medium">
-              {site.address.line1}, {site.address.suburb} {site.address.state}{" "}
-              {site.address.postcode}
-            </p>
-            <div className="flex flex-wrap gap-2.5">
-              <Button href={primaryCta.href} size="lg" variant="dark">
-                {primaryCta.label}
-              </Button>
-              {secondaryCta && (
-                <Button href={secondaryCta.href} size="lg" variant="light">
-                  {secondaryCta.label}
-                </Button>
-              )}
-            </div>
-          </div>
-        </Container>
+        </div>
       </div>
     </section>
   );

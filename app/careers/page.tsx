@@ -14,6 +14,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { CareersForm } from "@/components/CareersForm";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { CTASection } from "@/components/CTASection";
+import { Acc, Action, Feat, Head, PageOpen, Pair, Split } from "@/components/Blocks";
 import { Button } from "@/components/Button";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, faqPageSchema } from "@/lib/schema";
@@ -170,244 +171,119 @@ export default function CareersPage() {
       <JsonLd data={[faqPageSchema(careersFAQs), breadcrumbSchema(crumbs)]} />
 
       {/* 1 — Hero */}
-      <ProductHero
+      <PageOpen
         crumbs={crumbs}
-        badge="Careers"
-        heading="Build heavy gear with us."
-        body="We're always looking for reliable tradespeople and apprentices who take pride in their work."
-        image={media.welding.src}
-        imageAlt={media.welding.alt}
-        imagePosition="50% 30%"
-        actions={
+        long
+        title={
           <>
-            <Button href="#apply" size="lg">
-              Apply now
-            </Button>
-            <Button href={site.phoneHref} size="lg" variant="secondary">
-              Call {site.phone}
-            </Button>
+            Build heavy gear
+            <br />
+            <span className="red">with us.</span>
           </>
         }
+        sub="We’re always looking for reliable tradespeople and apprentices who take pride in their work."
+        actions={
+          <>
+            <Action href="#apply">Apply now</Action>
+            <Action href={site.phoneHref} tone="line" arrow={false}>
+              Call {site.phone}
+            </Action>
+          </>
+        }
+        photo={{ src: media.welding.src, alt: media.welding.alt, position: "50% 30%" }}
+        facts={[
+          ["Full-time", "Stable, ongoing work"],
+          ["Mon–Fri", "7:00 AM – 4:00 PM"],
+          ["Family", "Hands-on business"],
+          ["Apprentices", "Welcome"],
+        ]}
       />
 
-      {/* 2 — Why work with Arrow */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Why Arrow"
-            heading="A workshop worth turning up to."
+      <section className="sec">
+        <div className="wrap">
+          <Head label="Why Arrow">
+            Worth turning <span className="red">up to.</span>
+          </Head>
+          <Feat
+            cols={3}
+            items={[
+              ["Real builds", "Every build is different, from tipper bodies to trailers."],
+              ["Stable work", "Full-time roles, consistent hours and a strong pipeline."],
+              ["Family business", "Good work gets noticed by the people running the place."],
+            ]}
           />
-          <ul className="mt-6 grid gap-3 sm:grid-cols-3">
-            {whyArrow.map((item) => {
-              const Icon = item.icon;
-              return (
-                <li
-                  key={item.title}
-                  className="card flex items-center gap-4 p-4 sm:flex-col sm:items-start sm:p-6"
-                >
-                  <span className="icon-tile shrink-0">
-                    <Icon
-                      className="h-5 w-5 text-accent"
-                      strokeWidth={1.5}
-                      aria-hidden
-                    />
-                  </span>
-                  <h3 className="text-[1.75rem] text-bone">
-                    {item.title}
-                  </h3>
-                </li>
-              );
-            })}
-          </ul>
-        </Container>
+        </div>
       </section>
 
-      {/* 3 — The workshop */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="The workshop"
-            heading="Inside the Campbellfield workshop."
-          />
-          <WorkshopStrip items={workshop} />
-        </Container>
-      </section>
-
-      {/* 4 — Roles and the detail behind them */}
-      <section className="section">
-        <Container>
-          <SectionHeader
-            eyebrow="Roles we hire for"
-            heading="The roles that build an Arrow unit."
-            className="mb-5"
-          />
-          <Pills items={roles.map((role) => role.title)} />
-          <div className="mt-6">
-            <DetailAccordion
-              items={[
-                {
-                  id: "roles",
-                  title: "Role descriptions",
-                  content: <InfoGrid items={roles} />,
-                },
-                {
-                  id: "look-for",
-                  title: "What we look for",
-                  content: (
-                    <div className="grid gap-3">
-                      <p className="display text-[1.75rem] text-bone">
-                        The people who fit in here.
-                      </p>
-                      <CheckGrid items={lookFor} />
-                      <p className="text-sm leading-relaxed text-mute">
-                        The more detail you give us, the easier it is to match
-                        you to the right role. Send your details through and
-                        we&rsquo;ll be in touch if your experience matches a
-                        current or upcoming opportunity.
-                      </p>
-                    </div>
-                  ),
-                },
-                {
-                  id: "why-arrow",
-                  title: "Why work at Arrow",
-                  content: (
-                    <div className="grid gap-3">
-                      <p className="text-sm leading-relaxed text-mute">
-                        Family-owned workshop. Steady work. Real builds. Arrow
-                        Industries builds custom tipper bodies, trailers and
-                        heavy vehicle equipment from our Campbellfield workshop.
-                      </p>
-                      <InfoGrid
-                        items={whyArrow.map((item) => ({
-                          title: item.title,
-                          body: item.body,
-                        }))}
-                      />
-                    </div>
-                  ),
-                },
-                {
-                  id: "workshop",
-                  title: "Inside the workshop",
-                  content: (
-                    <InfoGrid
-                      items={workshop.map((item) => ({
-                        title: item.title,
-                        body: item.detail,
-                      }))}
-                    />
-                  ),
-                },
-              ]}
-            />
-          </div>
-        </Container>
-      </section>
-
-      {/* 5 — Application form */}
-      <section
-        id="apply"
-        className="section"
+      <Split
+        label="Roles"
+        heading={
+          <>
+            Where you <span className="red">fit.</span>
+          </>
+        }
+        note="Nothing advertised? Strong applications are kept on file."
       >
-        <Container>
-          <SectionHeader
-            eyebrow="Apply"
-            heading="Apply in under 2 minutes."
-            body="No updated resume? Apply anyway."
-            className="mb-10"
-          />
-          <div className="grid gap-6 lg:grid-cols-12 lg:gap-12">
-            <div className="lg:col-span-7">
-              <CareersForm />
-            </div>
+        <Acc openFirst items={roles.map((r) => ({ q: r.title, a: r.body }))} />
+      </Split>
 
-            <aside className="lg:col-span-5">
-              <div className="sticky top-20 flex flex-col gap-6">
-                {/* Email card */}
-                <div className="card p-6">
-                  <h2 className="text-base font-semibold text-bone">
-                    Prefer to email?
-                  </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-mute">
-                    Send your resume or a quick note directly to our team.
-                  </p>
-                  <a
-                    href={site.emailHref}
-                    className="mt-3 inline-flex min-h-11 items-center gap-2 break-all text-base font-semibold text-accent-text hover:underline"
-                  >
-                    <Mail className="h-5 w-5 shrink-0" aria-hidden />
-                    {site.email}
-                  </a>
-                </div>
-
-                {/* Workshop card */}
-                <div className="card p-6">
-                  <h2 className="text-base font-semibold text-bone">Workshop</h2>
-                  <div className="mt-4 flex items-start gap-3">
-                    <span className="icon-tile">
-                      <MapPin
-                        className="h-[1.125rem] w-[1.125rem] text-accent"
-                        strokeWidth={1.5}
-                        aria-hidden
-                      />
-                    </span>
-                    <a
-                      href={site.address.mapsHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-sm font-medium leading-relaxed text-bone hover:text-accent-text"
-                    >
-                      {site.address.line1}
-                      <br />
-                      {site.address.suburb} {site.address.state}{" "}
-                      {site.address.postcode}
-                    </a>
-                  </div>
-                  <div className="mt-5 flex items-start gap-3 border-t border-line-soft pt-5">
-                    <span className="icon-tile">
-                      <Clock
-                        className="h-[1.125rem] w-[1.125rem] text-accent"
-                        strokeWidth={1.5}
-                        aria-hidden
-                      />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="label">
-                        Hours
-                      </p>
-                      <p className="mt-1.5 text-sm font-medium leading-relaxed text-bone">
-                        {site.hours[0].label}
-                        <br />
-                        {site.hours[0].time}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+      <section className="sec flush" id="apply">
+        <div className="wrap book">
+          <div className="book-card reveal" style={{ alignSelf: "start", position: "sticky", top: 96 }}>
+            <p className="mlabel">Apply</p>
+            <h2>
+              Apply in under <span className="red">2 minutes.</span>
+            </h2>
+            <ul>
+              <li>No updated resume? Apply anyway</li>
+              <li>Apprentices and trade assistants welcome</li>
+              <li>Strong applications are kept on file</li>
+            </ul>
+            <div className="book-meta">
+              <div>
+                <small>Workshop</small>
+                <a href={site.address.mapsHref} target="_blank" rel="noreferrer">
+                  {site.address.line1}
+                  <br />
+                  {site.address.suburb} {site.address.state} {site.address.postcode}
+                </a>
               </div>
-            </aside>
+              <div>
+                <small>Hours</small>
+                {site.hours[0].label}
+                <br />
+                {site.hours[0].time}
+              </div>
+              <div>
+                <small>Prefer to email?</small>
+                <a href={site.emailHref}>{site.email}</a>
+              </div>
+            </div>
           </div>
-        </Container>
+          <div className="min-w-0">
+            <CareersForm />
+          </div>
+        </div>
       </section>
 
-      {/* 6 — FAQ and call to action */}
-      <section className="section">
-        <Container className="max-w-3xl">
-          <SectionHeader
-            eyebrow="FAQ"
-            heading="Working at Arrow"
-            align="center"
-            className="mx-auto"
-          />
-          <div className="mt-10">
-            <FAQAccordion items={careersFAQs} />
-          </div>
-        </Container>
-      </section>
+      <Pair
+        label="What we look for"
+        heading={
+          <>
+            The right <span className="red">attitude.</span>
+          </>
+        }
+        bullets={lookFor}
+        faqs={careersFAQs}
+      />
 
       <CTASection
         eyebrow="Get in touch"
-        heading="Reckon you'd be a good fit?"
+        heading={
+          <>
+            Reckon you&rsquo;d be a <span className="red">good fit?</span>
+          </>
+        }
         primaryCta={{ label: "Apply now", href: "#apply" }}
       />
     </>

@@ -5,6 +5,7 @@ import { CalendarCheck, Check } from "lucide-react";
 import { Container } from "@/components/Container";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { CTASection } from "@/components/CTASection";
+import { Action, Crumbs, Facts, Head, Pair, Split, Steps } from "@/components/Blocks";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { CheckGrid, InfoGrid, ProcessSteps, StatTiles } from "@/components/ProductParts";
 import { DetailAccordion } from "@/components/DetailAccordion";
@@ -197,180 +198,127 @@ export default async function RoadworthyPage() {
         ]}
       />
 
-      <section className="bg-bone pb-10 pt-5 text-ink lg:pb-16 lg:pt-7">
-        <Container>
-          <div className="[&_*]:text-ink/70">
-            <Breadcrumbs crumbs={crumbs} />
-          </div>
-          <p className="mt-7 text-[0.8125rem] font-semibold uppercase tracking-[0.14em] text-[#b80500] lg:mt-10">
+      <section className="p-hero">
+        <div className="wrap">
+          <Crumbs crumbs={crumbs} />
+          <p className="mlabel" style={{ marginTop: 30 }}>
             VicRoads Licensed Vehicle Tester
           </p>
-          <p className="display mt-3 text-[23vw] leading-[0.88] lg:text-[min(23.5vw,21rem)]">EX 12409</p>
-          <div className="mt-7 grid items-end gap-6 border-t-2 border-ink pt-6 lg:grid-cols-[1fr_auto]">
-            <h1 className="display-md">Heavy vehicle &amp; trailer roadworthy inspections.</h1>
-            <div className="flex flex-wrap gap-2.5">
-              <Button href="#book" size="lg">
-                <CalendarCheck className="h-4 w-4" aria-hidden />
-                Book an inspection
-              </Button>
-              <Button href={site.phoneHref} size="lg" variant="light">
+          <p className="ex">
+            EX <span className="red">12409</span>
+          </p>
+          <div className="ex-row">
+            <h1>Heavy vehicle &amp; trailer roadworthy inspections.</h1>
+            <div className="actions">
+              <Action href="#book">Book an inspection</Action>
+              <Action href={site.phoneHref} tone="line" arrow={false}>
                 Call {site.phone}
-              </Button>
+              </Action>
             </div>
           </div>
-        </Container>
+          <Facts items={stats.map((s) => [s.value, s.label] as [string, string])} />
+        </div>
       </section>
 
       {/* Booking request form — feeds the dashboard's approval queue */}
-      <section id="book" className="band">
-        <Container>
-          <div className="grid gap-8 lg:grid-cols-12 lg:gap-x-14">
-            <div className="min-w-0 lg:col-span-5">
-              <div className="lg:sticky lg:top-24">
-                <SectionHeader eyebrow="Request a booking" heading="Pick a day. We'll confirm your time." />
-                <ul className="rule-list mt-7">
-                  {keyPoints.map((point) => (
-                    <li key={point} className="flex items-center gap-3 py-3 text-[1.0625rem] text-bone">
-                      <Check className="h-4 w-4 shrink-0 text-accent-text" strokeWidth={2.5} aria-hidden />
-                      {point}
-                    </li>
+      <section className="sec" id="book">
+        <div className="wrap book">
+          <div className="book-card reveal">
+            <p className="mlabel">Request a booking</p>
+            <h2>
+              Pick a day. We&rsquo;ll confirm <span className="red">your time.</span>
+            </h2>
+            <ul>
+              {keyPoints.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+            <div className="book-meta">
+              <div>
+                <small>Workshop</small>
+                <a href={site.address.mapsHref} target="_blank" rel="noreferrer">
+                  {site.address.line1}
+                  <br />
+                  {site.address.suburb} {site.address.state} {site.address.postcode}
+                </a>
+              </div>
+              <div>
+                <small>Inspection hours, by appointment</small>
+                <dl className="book-hours">
+                  {hoursRows.map((h) => (
+                    <div key={h.label}>
+                      <dt>{h.label}</dt>
+                      <dd>{h.time}</dd>
+                    </div>
                   ))}
-                </ul>
-
-                <div className="mt-8 grid gap-7 sm:grid-cols-2">
-                  <div>
-                    <p className="label">Workshop</p>
-                    <a
-                      href={site.address.mapsHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-1.5 block font-medium leading-snug text-bone hover:text-accent-text"
-                    >
-                      {site.address.line1}
-                      <br />
-                      {site.address.suburb} {site.address.state} {site.address.postcode}
-                    </a>
-                  </div>
-                  <div>
-                    <p className="label">Inspection hours, by appointment</p>
-                    <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-                      {hoursRows.map((h) => (
-                        <div key={h.label} className="contents">
-                          <dt className="text-bone">{h.label}</dt>
-                          <dd className="text-right tabular-nums text-mute">{h.time}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
-                </div>
-
-                <div className="mt-8 hidden items-center gap-4 md:flex">
-                  <div className="shrink-0 bg-white p-2">
-                    <Image
-                      src="/images/lvt/booking-qr-v2.png"
-                      alt="QR code — book a roadworthy inspection at Arrow Industries"
-                      width={160}
-                      height={160}
-                      className="h-24 w-24"
-                      unoptimized
-                    />
-                  </div>
-                  <p className="display text-[2rem]">Scan to book</p>
-                </div>
+                </dl>
               </div>
             </div>
-
-            <div className="min-w-0 lg:col-span-7">
-              <div className="card p-4 sm:p-7">
-                <RoadworthyBookingForm truckTypes={truckTypes} trailerTypes={trailerTypes} axlePrices={showPrices ? axlePrices : null} defectPrice={showPrices ? defectPrice : null} minDate={minDate} openDaysLabel={openDaysLabel} />
-              </div>
+            <div className="qr">
+              <Image
+                src="/images/lvt/booking-qr-v2.png"
+                alt="QR code — book a roadworthy inspection at Arrow Industries"
+                width={160}
+                height={160}
+                unoptimized
+              />
+              <b>Scan to book</b>
             </div>
           </div>
-        </Container>
-      </section>
-
-      <section id="inspect" className="bg-ink-2 py-16 lg:py-24">
-        <Container>
-          <p className="eyebrow">What we inspect</p>
-          <ul className="display display-md mt-4">
-            {inspected.map((item) => (
-              <li key={item} className="border-b border-line py-2.5">
-                {item}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-10">
-            <StatTiles items={stats} />
+          <div className="card p-4 sm:p-7">
+            <RoadworthyBookingForm truckTypes={truckTypes} trailerTypes={trailerTypes} axlePrices={showPrices ? axlePrices : null} defectPrice={showPrices ? defectPrice : null} minDate={minDate} openDaysLabel={openDaysLabel} />
           </div>
-        </Container>
+        </div>
       </section>
 
-      <section id="how" className="band">
-        <Container>
-          <SectionHeader
-            eyebrow="How it works"
-            heading="Four steps."
-            body="The workshop checks the schedule and confirms every booking by email or phone, usually the same business day."
-          />
-          <ProcessSteps steps={process} />
-        </Container>
+      <Split
+        id="inspect"
+        label="Scope"
+        heading={
+          <>
+            What we <span className="red">inspect.</span>
+          </>
+        }
+        note="Inspected by the team that builds tippers and trailers."
+      >
+        <ul className="biglist">
+          {inspected.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </Split>
+
+      <section className="sec ruled" id="how">
+        <div className="wrap">
+          <Head
+            label="How it works"
+            note="The workshop confirms every booking by email or phone, usually the same business day."
+          >
+            Four <span className="red">steps.</span>
+          </Head>
+          <Steps items={process.map((p) => [p.title, p.body] as [string, string])} />
+        </div>
       </section>
 
-      <section id="inspections" className="scroll-mt-8 pb-16 lg:pb-24">
-        <Container>
-          <SectionHeader eyebrow="Inspection details" heading="The full detail." className="mb-7 lg:mb-11" />
-          <DetailAccordion
-            items={[
-              {
-                id: "covered",
-                title: "What's covered",
-                content: (
-                  <>
-                    <p className={panelLead}>
-                      Full inspection scope &mdash; backed by 25+ years of experience building
-                      tippers and trailers ourselves.
-                    </p>
-                    <InfoGrid items={covered} />
-                  </>
-                ),
-              },
-              {
-                id: "types",
-                title: "Inspection types",
-                content: (
-                  <>
-                    <p className={panelLead}>Pick the inspection that suits the job.</p>
-                    <InfoGrid items={inspectionTypes} />
-                  </>
-                ),
-              },
-              {
-                id: "who",
-                title: "Who it's for",
-                content: (
-                  <>
-                    <p className={panelLead}>
-                      If your truck, trailer or fleet vehicle needs a roadworthy certificate, we can help.
-                    </p>
-                    <CheckGrid items={useCases} />
-                  </>
-                ),
-              },
-            ]}
-          />
-        </Container>
-      </section>
-
-      <section id="faq" className="scroll-mt-8 pb-16 lg:pb-24">
-        <Container>
-          <SectionHeader eyebrow="FAQ" heading="Common questions." className="mb-7 lg:mb-11" />
-          <FAQAccordion items={faqs} />
-        </Container>
-      </section>
+      <Pair
+        id="faq"
+        label="Inspection types"
+        heading={
+          <>
+            Pick the <span className="red">inspection.</span>
+          </>
+        }
+        bullets={inspectionTypes.map((t) => t.title)}
+        faqs={faqs}
+      />
 
       <CTASection
         eyebrow="Roadworthy"
-        heading="Book your heavy vehicle or trailer inspection."
+        heading={
+          <>
+            Book your <span className="red">inspection.</span>
+          </>
+        }
         primaryCta={{ label: "Book an inspection", href: "#book" }}
       />
     </>

@@ -5,18 +5,17 @@ import { cn } from "@/lib/utils";
 type Variant = "primary" | "secondary" | "ghost" | "dark" | "light";
 type Size = "sm" | "md" | "lg";
 
-// The slant matches the ARROW lettering; the label is set back upright inside.
 const base =
-  "inline-flex -skew-x-[10deg] select-none items-center justify-center whitespace-nowrap font-semibold transition-colors duration-150 ease-out disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex select-none items-center justify-center whitespace-nowrap rounded-full font-semibold transition-colors duration-150 ease-out disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
   primary: "bg-accent text-white hover:bg-accent-hover",
   secondary:
-    "text-bone shadow-[inset_0_0_0_1.5px_currentColor] hover:bg-white/[0.1]",
-  ghost: "text-bone hover:bg-white/[0.1]",
-  /** For red backgrounds. */
-  dark: "bg-ink text-white hover:bg-black",
-  /** For bone and red backgrounds, an outline in the text colour. */
+    "text-bone shadow-[inset_0_0_0_1.5px_currentColor] hover:bg-bone hover:text-ink hover:shadow-none",
+  ghost: "text-bone hover:bg-black/[0.06]",
+  /** Solid near-black, for paper and red backgrounds. */
+  dark: "bg-[#131416] text-white hover:bg-black",
+  /** An outline in the text colour, for dark and red backgrounds. */
   light: "shadow-[inset_0_0_0_1.5px_currentColor] hover:bg-black/10",
 };
 
@@ -53,9 +52,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = cn(base, variants[variant], sizes[size], className);
-  const label = (
-    <span className="inline-flex skew-x-[10deg] items-center justify-center gap-2">{children}</span>
-  );
+  const label = <span className="inline-flex items-center justify-center gap-2">{children}</span>;
 
   if ("href" in rest && rest.href !== undefined) {
     const { href, ...anchorRest } = rest as LinkProps;
