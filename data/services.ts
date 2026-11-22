@@ -54,7 +54,7 @@ category: "product",
     shortTitle: "Semi Trailers",
     tagline: "ADR-compliant builds designed for long-term use.",
     description:
-      "Tipping and flat-deck semi trailers built to ADR and VicRoads standards — focused on strength, efficiency and long-term use.",
+      "Semi tipper trailers built to ADR and VicRoads standards — focused on strength, efficiency and long-term use.",
     icon: Construction,
 category: "product",
     ctaLabel: "Learn more",

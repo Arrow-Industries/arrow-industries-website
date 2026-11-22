@@ -261,13 +261,13 @@ export const serviceContent: Record<string, ServiceContent> = {
   },
 
   "semi-trailers": {
-    metaTitle: "Semi Trailers — ADR-Compliant Tipping & Flat-Deck Builds",
+    metaTitle: "Semi Tipper Trailers — ADR-Compliant Builds",
     metaDescription:
-      "Tipping and flat-deck semi trailers built to ADR and VicRoads standards. Focused on strength, efficiency and long-term use for bulk haulage and freight operators.",
+      "Semi tipper trailers built to ADR and VicRoads standards. Focused on strength, efficiency and long-term use for bulk haulage operators.",
     h1: "Semi trailers engineered for long-haul performance.",
-    lede: "Tipping and flat-deck semi trailers built to ADR and VicRoads standards — focused on strength, efficiency and long-term use.",
+    lede: "Semi tipper trailers built to ADR and VicRoads standards — focused on strength, efficiency and long-term use.",
     intro:
-      "Our semi trailers are built around the load you'll actually carry. Tipping or flat-deck, single or B-double, we engineer the chassis and body to put your payload on the road safely and cost-effectively.",
+      "Our semi tipper trailers are built around the load you'll actually carry. We engineer the chassis and body to put your payload on the road safely and cost-effectively.",
     keyFeatures: [
       {
         title: "Engineered chassis",
@@ -275,9 +275,9 @@ export const serviceContent: Record<string, ServiceContent> = {
           "Chassis rails sized to combination mass and route demands — strong where it counts, light where it doesn't.",
       },
       {
-        title: "Tipping or flat-deck",
+        title: "Tipping body",
         description:
-          "Tipping semis for bulk and quarry, flat-deck variants for general freight — both engineered around your payload.",
+          "The same Arrow tipping body as our dog trailers, for bulk and quarry work.",
       },
       {
         title: "Running gear and coupling systems",
@@ -305,9 +305,9 @@ export const serviceContent: Record<string, ServiceContent> = {
     ],
     buildOptions: [
       {
-        title: "Tipping or flat-deck",
+        title: "Tipping body",
         description:
-          "Tipping semis for bulk and quarry; flat-deck variants for general freight.",
+          "Tipping semis for bulk and quarry work.",
       },
       {
         title: "Axle configuration",

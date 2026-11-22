@@ -87,9 +87,9 @@ export function TrailerPageTemplate({ config }: { config: TrailerPageConfig }) {
         typePanel={
           hero.image ? undefined : (
             <>
-              Tipping.
+              Semi.
               <br />
-              <em>Flat-deck.</em>
+              <em>Tipper.</em>
             </>
           )
         }

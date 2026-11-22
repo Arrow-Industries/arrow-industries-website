@@ -40,7 +40,7 @@ const products: Product[] = [
     href: "/semi-trailers",
     linkLabel: "See semi trailers",
     photo: media.bodyPainted,
-    facts: ["2-axle", "3-axle", "Tipping", "Flat deck"],
+    facts: ["2-axle", "3-axle", "Tipping", "Prime mover"],
   },
 ];
 

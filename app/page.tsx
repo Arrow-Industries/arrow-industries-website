@@ -128,8 +128,8 @@ export default function HomePage() {
           </div>
           <Link className="semi reveal" href="/semi-trailers">
             <div>
-              <b>Semi trailers</b>
-              <span className="note">Tipping or flat-deck.</span>
+              <b>Semi tipper trailers</b>
+              <span className="note">2-axle and 3-axle, behind your prime mover.</span>
             </div>
             <span className="btn btn-line">
               View <span className="arrow" aria-hidden>→</span>

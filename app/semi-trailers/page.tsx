@@ -9,9 +9,9 @@ const slug = "semi-trailers";
 
 const meta = {
   title:
-    "Semi Trailers — Built for Bulk Haulage and Long-Haul Work",
+    "Semi Tipper Trailers — 2-Axle and 3-Axle, Built for Bulk Haulage",
   description:
-    "Tipping and flat-deck semi trailers built to match your prime mover — 2 and 3 axle setups for higher volume, longer haul and consistent tipping.",
+    "Semi tipper trailers built to match your prime mover — 2 and 3 axle setups for higher volume and consistent tipping.",
 };
 
 export const metadata: Metadata = pageMetadata({
@@ -24,7 +24,7 @@ const faqs = [
   {
     question: "Can you build a semi to suit my prime mover?",
     answer:
-      "Yes. Send us the prime mover make, model, GCM and your typical loads. We'll design a semi with the right axle group, kingpin position and hydraulics to suit.",
+      "Yes. Send us the prime mover make, model, GCM and your typical loads. We'll design a semi tipper with the right axle group, kingpin position and hydraulics to suit.",
   },
   {
     question: "What's the lead time on a new semi trailer?",
@@ -34,12 +34,12 @@ const faqs = [
   {
     question: "Do you offer PBS-compatible builds?",
     answer:
-      "Yes — we build semi trailers to suit B-double, A-double and rigid-and-dog combinations. If you already have the access permit in place we'll engineer to it; if you don't, we can take care of the PBS engineering and certification as part of the build.",
+      "Yes. If you already have the access permit in place we'll engineer to it; if you don't, we can take care of the PBS engineering and certification as part of the build.",
   },
   {
-    question: "Tipping or flat-deck?",
+    question: "How is a semi tipper different from a dog trailer?",
     answer:
-      "Both. Tipping semis for bulk and quarry work, flat-deck variants for general freight — each engineered around your payload and route.",
+      "It carries the same Arrow tipping body as our 4-axle dog trailer. The difference is how it is towed: a semi sits on the prime mover's fifth wheel, where a dog trailer follows a tipper truck on a drawbar.",
   },
 ];
 
@@ -47,11 +47,11 @@ const faqs = [
 const recentBuilds: TrailerRecentBuild[] = [];
 
 const trailerType = {
-  label: "Semi trailers",
-  headline: "Built for higher volume and longer haul work.",
+  label: "Semi tipper trailers",
+  headline: "A tipping body, behind a prime mover.",
   bullets: [
     "2-axle and 3-axle setups",
-    "Built for higher volume and longer haul work",
+    "The same tipping body as our 4-axle dog trailer",
     "Designed for consistent tipping performance",
     "PBS-compatible builds where access permits apply",
   ],
@@ -70,15 +70,15 @@ const completeSetup = {
   ],
   bullets: [
     "Kingpin position and fifth-wheel geometry matched to the prime mover",
-    "Hydraulics for tipping bodies fed from the prime mover circuit",
+    "Hoist hydraulics fed from the prime mover",
     "Brake and ABS/EBS systems configured to combination spec",
     "Electrical harness and ISO connections fully integrated",
   ],
 };
 
 const features = [
-  "Tipping body or flat-deck configuration",
-  "Tailgate systems on tipping semis (including 2-way air operated)",
+  "Steel or aluminium tipping body",
+  "2-way tailgate systems, air operated",
   "Heavy-duty kingpin assemblies and landing gear",
   "Tarp systems, manual or electric",
   "Spray suppression systems",
@@ -97,8 +97,8 @@ export default function Page() {
         service,
         meta,
         hero: {
-          badge: "Semi Trailers",
-          subtext: "Matched to your prime mover. Tipping or flat-deck.",
+          badge: "Semi Tipper Trailers",
+          subtext: "A tipping body behind your prime mover. 2-axle and 3-axle.",
           capability: ["2-axle", "3-axle"],
         },
         recentBuilds,
@@ -108,21 +108,21 @@ export default function Page() {
         faqs,
         facts: [
           ["2 / 3 axle", "Setups"],
-          ["Tipping", "Or flat-deck"],
+          ["Tipping", "Bulk and quarry work"],
           ["10–16 wks", "Typical build"],
-          ["PBS", "B-double and A-double"],
+          ["PBS", "Compatible builds"],
         ],
         points: {
           heading: (
             <>
-              Built for <span className="red">longer haul.</span>
+              A tipper, on a <span className="red">semi.</span>
             </>
           ),
-          note: "Higher volume and longer haul work.",
+          note: "The same Arrow tipping body as our 4-axle dog trailer, behind a prime mover.",
           items: [
             ["2 or 3 axle", "2-axle and 3-axle setups."],
             ["Tipping", "For bulk and quarry work."],
-            ["Flat-deck", "For general freight."],
+            ["Prime mover", "Kingpin and hydraulics matched to yours."],
             ["PBS", "Compatible builds where access permits apply."],
           ],
         },

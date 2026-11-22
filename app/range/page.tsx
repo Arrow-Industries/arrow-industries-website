@@ -29,8 +29,8 @@ const products = [
   {
     href: "/semi-trailers",
     photo: media.bodyPainted,
-    title: "Semi trailers",
-    line: "2-axle and 3-axle. Tipping or flat-deck.",
+    title: "Semi tippers",
+    line: "2-axle and 3-axle, behind your prime mover.",
   },
 ];
 

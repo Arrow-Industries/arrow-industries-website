@@ -107,7 +107,7 @@ const whatWeBuild = [
   },
   {
     title: "Semi trailers",
-    body: "Tipping and flat-deck builds for long-haul performance.",
+    body: "Tipping semi trailers, 2-axle and 3-axle, matched to your prime mover.",
   },
 ];
 
