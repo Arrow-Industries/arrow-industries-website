@@ -107,6 +107,72 @@ export function RealDefs({ floorTop, floorBottom }: { floorTop: number; floorBot
         <rect width="2.2" height="14" fill="#0c0d0e" />
         <path d="M1.1 0 V14" stroke="#34373b" strokeWidth=".7" />
       </pattern>
+      {/* Lenses, lamps and screens */}
+      <radialGradient id="bd-r-amber" cx=".4" cy=".34">
+        <stop offset="0" stopColor="#fff1bd" />
+        <stop offset=".5" stopColor="#ffab1e" />
+        <stop offset="1" stopColor="#d27600" />
+      </radialGradient>
+      <radialGradient id="bd-r-red" cx=".4" cy=".34">
+        <stop offset="0" stopColor="#ff9a8f" />
+        <stop offset=".5" stopColor="#e3140c" />
+        <stop offset="1" stopColor="#96090a" />
+      </radialGradient>
+      <radialGradient id="bd-r-glow">
+        <stop offset="0" stopColor="#ffb020" stopOpacity=".5" />
+        <stop offset="1" stopColor="#ffb020" stopOpacity="0" />
+      </radialGradient>
+      <radialGradient id="bd-r-glowred">
+        <stop offset="0" stopColor="#ff3b30" stopOpacity=".5" />
+        <stop offset="1" stopColor="#ff3b30" stopOpacity="0" />
+      </radialGradient>
+      <radialGradient id="bd-r-optic" cx=".38" cy=".34">
+        <stop offset="0" stopColor="#c4dcff" />
+        <stop offset=".55" stopColor="#2b5fb0" />
+        <stop offset="1" stopColor="#09182f" />
+      </radialGradient>
+      <radialGradient id="bd-r-view">
+        <stop offset="0" stopColor="#6aa4ff" stopOpacity=".3" />
+        <stop offset="1" stopColor="#6aa4ff" stopOpacity=".04" />
+      </radialGradient>
+      <linearGradient id="bd-r-screen" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#a9cdf5" />
+        <stop offset=".5" stopColor="#6f8fa8" />
+        <stop offset=".52" stopColor="#4c5560" />
+        <stop offset="1" stopColor="#23272c" />
+      </linearGradient>
+      {/* Painted, moulded and natural finishes */}
+      <linearGradient id="bd-r-yellow" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#ffe768" />
+        <stop offset=".45" stopColor="#f2c200" />
+        <stop offset="1" stopColor="#c09200" />
+      </linearGradient>
+      <linearGradient id="bd-r-poly" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#ffffff" />
+        <stop offset=".5" stopColor="#e3e9ee" />
+        <stop offset="1" stopColor="#b4c0ca" />
+      </linearGradient>
+      <linearGradient id="bd-r-wood" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stopColor="#8a5a2b" />
+        <stop offset=".4" stopColor="#e2b47f" />
+        <stop offset="1" stopColor="#8f5f2f" />
+      </linearGradient>
+      <linearGradient id="bd-r-flap" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stopColor="#0b0c0d" />
+        <stop offset=".4" stopColor="#303236" />
+        <stop offset="1" stopColor="#0e0f10" />
+      </linearGradient>
+      {/* A pocket let into a panel: dark under its top edge, catching light at the bottom. */}
+      <linearGradient id="bd-r-recess" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#000" stopOpacity=".62" />
+        <stop offset=".5" stopColor="#000" stopOpacity=".38" />
+        <stop offset="1" stopColor="#000" stopOpacity=".2" />
+      </linearGradient>
+      <pattern id="bd-r-chequer" width="6" height="6" patternUnits="userSpaceOnUse">
+        <rect width="6" height="6" fill="#c9cdd1" />
+        <path d="M.8 2.6 L2.6 .8 M3.8 5.6 L5.6 3.8" stroke="#fff" strokeWidth="1.1" strokeLinecap="round" />
+        <path d="M1.2 3 L3 1.2 M4.2 6 L6 4.2" stroke="#6f747a" strokeWidth=".6" strokeLinecap="round" />
+      </pattern>
       <filter id="bd-r-blur" x="-30%" y="-150%" width="160%" height="400%">
         <feGaussianBlur stdDeviation="3" />
       </filter>

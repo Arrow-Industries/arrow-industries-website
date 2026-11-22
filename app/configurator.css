@@ -52,6 +52,8 @@
 .cfg-stage.real .cfg-drawing { padding: 0; }
 .bd.real .bd-s { stroke: rgb(10 11 12 / .5); stroke-width: .9; }
 .bd.real .bd-word { font-size: 25px; letter-spacing: .04em; }
+.bd .bd-mast { font: italic 800 10.5px/1 var(--display); letter-spacing: .1em; }
+.bd .bd-plate { font: italic 800 6.4px/1 var(--display); letter-spacing: .12em; }
 
 /* ---------- The steps ---------- */
 .cfg-steps { min-width: 0; border-top: 2px solid var(--ink); }
