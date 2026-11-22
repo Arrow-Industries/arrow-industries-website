@@ -164,6 +164,8 @@ export function Configurator({ config }: { config: BuildConfig }) {
   const [reference, setReference] = useState("");
   const [openStep, setOpenStep] = useState<string | null>("start");
   const [copied, setCopied] = useState(false);
+  /** The studio look. The plain line drawing is still there at ?look=line. */
+  const [real, setReal] = useState(true);
   /** The last thing changed, so the drawing can point it out. */
   const [touched, setTouched] = useState<{ id: string; label: string; n: number } | null>(null);
   const touchCount = useRef(0);
@@ -190,6 +192,7 @@ export function Configurator({ config }: { config: BuildConfig }) {
   // Product pages link here with their product, and shared links carry a build.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
+    setReal(q.get("look") !== "line");
     const wanted = q.get("product");
     const match = config.categories.find(
       (c) => c.id === q.get("category") || (wanted && productOf(c.name) === wanted),
@@ -464,7 +467,7 @@ export function Configurator({ config }: { config: BuildConfig }) {
     <div className="cfg">
       {/* The build, drawn as it stands */}
       <div className="cfg-side">
-        <div className="cfg-stage">
+        <div className={cn("cfg-stage", real && "real")}>
           <div className="cfg-stage-top">
             <p className="mlabel">Your build</p>
             <button type="button" className="cfg-reset" onClick={resetToStandard}>
@@ -478,6 +481,7 @@ export function Configurator({ config }: { config: BuildConfig }) {
             maxLength={maxLength}
             truckName={truckName}
             spot={spot}
+            real={real}
             className="cfg-drawing"
           />
           {/* Says what just changed, while the drawing points to it. */}

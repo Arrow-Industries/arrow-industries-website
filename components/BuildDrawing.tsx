@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { RealCab, RealDefs, RealFuelTank, RealStage, RealWheel } from "@/components/BuildDrawingReal";
 import type { Anchor, BuildVisual, Glyph } from "@/lib/build-visual";
 
 /**
@@ -19,6 +20,8 @@ interface BuildDrawingProps {
   truckName?: string;
   /** The part to point out, after a change. */
   spot?: { key: string; n: number } | null;
+  /** Draw it as a lit studio model rather than a line drawing. */
+  real?: boolean;
   className?: string;
 }
 
@@ -270,7 +273,7 @@ function GlyphMark({ g }: { g: Glyph }) {
 
 const TRUCK_SIDE: Anchor[] = ["dash", "roof", "mirror", "cabFront", "underCab", "gap"];
 
-export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, spot, className }: BuildDrawingProps) {
+export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, spot, real, className }: BuildDrawingProps) {
   const has = (flag: string) => v.flags.has(flag);
   const tipper = v.product === "tipper";
 
@@ -308,6 +311,16 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
   const onBody = darkBody ? "rgb(255 255 255 / .82)" : "rgb(19 20 22 / .7)";
   const tr = v.wall ? Math.max(6, v.wall * 3 - 5) : 9; // top rail, from the wall plate
   const fb = v.floor ? Math.max(6, v.floor * 2 - 2) : 9; // floor band, from the floor plate
+  // Arrow's own bin, top to bottom: a deep top rail, the flat side with its
+  // pinstripes running into the lettering, a rolled bottom rail, then the
+  // light channel with the marker lamps set into it.
+  const coam = real ? Math.min(20, Math.max(12, H * 0.15)) : 0;
+  const chan = real ? 7 : 0;
+  const stripeSpread = Math.min(26, Math.max(14, (H - coam - fb - chan) * 0.3));
+  const stripeBase = yT + coam + 6 + stripeSpread;
+  const stripeInk = darkBody ? "rgb(255 255 255 / .72)" : "rgb(19 20 22 / .78)";
+  const brush = Math.max(6, Math.min(12, sub - 4));
+  const lampY = real ? yB - chan / 2 : yB - fb - 12;
 
   // The frame is sized for the longest body of this chassis type, so it holds still.
   const maxEnd = bx1 + Math.round(Math.max(maxLength, v.length ?? 0, fallbackLength) / 10);
@@ -320,8 +333,10 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
   const spanStart = front.length ? front[front.length - 1] + R + 8 : v.product === "semi" ? bx1 + 272 : bx1 + 8;
   const spanEnd = rear[0] - R - 8;
   const under: { key: string; w: number }[] = [];
+  const fuelTank = !!real && tipper;
+  if (fuelTank) under.push({ key: "fuel", w: 74 });
   if (v.tank === "side") under.push({ key: "tank", w: 62 });
-  if (v.tank === "partition") under.push({ key: "tank", w: 88 });
+  if (v.tank === "partition" && !fuelTank) under.push({ key: "tank", w: 88 });
   if (has("toolbox")) under.push({ key: "toolbox", w: 62 });
   if (has("waterTank")) under.push({ key: "waterTank", w: 78 });
   if (has("slideLadder")) under.push({ key: "slideLadder", w: 86 });
@@ -333,6 +348,8 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
     slot[u.key] = { x: cursor, w: u.w * fit };
     cursor += (u.w + 8) * fit;
   }
+  // Partitioned hydraulic oil lives in the fuel tank, so that is where to point.
+  const tankSpot = v.tank === "partition" && fuelTank ? slot.fuel : slot.tank;
 
   // ---------- Small fittings ----------
   const used: Partial<Record<Anchor, number>> = {};
@@ -396,22 +413,22 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
     hoist: v.hoist === "well" ? [bx1 + 27, (yT + yB) / 2 + 8] : [bx1 - 15, (CH_TOP + yT) / 2],
     tarp: [mid, yT - 20],
     tarpDrive: [bx1 - 4, yT - 24],
-    lights: [mid, yB - fb - 12],
+    lights: [mid, lampY],
     steps: [bx1 + 49, yB - fb - 40],
     mudflaps: [rearR + 5, G - 40],
     pto: [208, G - 72],
-    tank: v.tank === "rear" ? [235, CH_TOP - 36] : slot.tank ? [slot.tank.x + slot.tank.w / 2, CH_BOT + 22] : [mid, CH_BOT],
+    tank: v.tank === "rear" ? [235, CH_TOP - 36] : tankSpot ? [tankSpot.x + tankSpot.w / 2, CH_BOT + 22] : [mid, CH_BOT],
     couplings: [end - 10, CH_BOT + 34],
     cross: [end + 7, CH_TOP + 6],
     tow: [end + 30, CH_TOP + 12],
     controls: v.controls === "remote" ? [178, G - 160] : [100, G - 228],
     "flag:guards": [rearMid, G - 114],
-    "flag:spray": [rearMid, G - 106],
-    "flag:tailgate": [end + 4, (yT + yB) / 2],
+    "flag:spray": real ? [mid, yB + brush / 2] : [rearMid, G - 106],
+    "flag:tailgate": real ? [end - 8, yT + coam + 23] : [end + 4, (yT + yB) / 2],
     "flag:grainLocks": [end - 12, yB - fb - 9],
     "flag:pushLug": [end + 14, yB + 2],
     "flag:shovel": [bx1 + 16, (yT + yB) / 2],
-    "flag:chrome": [bx1 + L * 0.72, yT + tr + 4],
+    "flag:chrome": real ? [bx1 + L * 0.3, yB - chan / 2] : [bx1 + L * 0.72, yT + tr + 4],
     "flag:fingerGuards": [end + 3, yT - 3],
     "flag:cameraBox": [end - 31, yT + tr + 12],
     "flag:grainDoor": [end + 12, yB - 31],
@@ -445,7 +462,7 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
       viewBox={viewBox}
       role="img"
       aria-label={`Side view of your ${what}`}
-      className={`bd ${className ?? ""}`}
+      className={`bd ${real ? "real" : ""} ${className ?? ""}`}
       style={{ aspectRatio: `${maxX - minX} / 420` }}
     >
       <defs>
@@ -499,19 +516,56 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
         <filter id="bd-soft" x="-10%" y="-200%" width="120%" height="500%">
           <feGaussianBlur stdDeviation="6" />
         </filter>
+        {real && <RealDefs floorTop={G} floorBottom={454} />}
+        {real && (
+          <mask id="bd-r-fade" maskUnits="userSpaceOnUse" x={minX} y={G} width={maxX - minX} height={80}>
+            <rect x={minX} y={G} width={maxX - minX} height={80} fill="url(#bd-r-fadeg)" />
+          </mask>
+        )}
       </defs>
 
       {/* Floor */}
-      <ellipse cx={(axles[0] + end) / 2} cy={G + 5} rx={(end - (axles[0] ?? bx1)) / 2 + 70} ry={9} fill="rgb(19 20 22 / .22)" filter="url(#bd-soft)" />
-      <path d={`M${minX + 10} ${G} H${maxX - 10}`} stroke="rgb(19 20 22 / .22)" strokeWidth="1.4" />
+      {real ? (
+        <>
+          <RealStage minX={minX} maxX={maxX} top={34} bottom={454} from={axles[0] ?? bx1} to={end} />
+          {/* The vehicle, mirrored faintly in the floor. */}
+          <g mask="url(#bd-r-fade)" opacity=".5">
+            <g transform={`translate(0 ${2 * G + 2}) scale(1 -1)`}>
+              <use href="#bd-vehicle" />
+            </g>
+          </g>
+        </>
+      ) : (
+        <>
+          <ellipse cx={(axles[0] + end) / 2} cy={G + 5} rx={(end - (axles[0] ?? bx1)) / 2 + 70} ry={9} fill="rgb(19 20 22 / .22)" filter="url(#bd-soft)" />
+          <path d={`M${minX + 10} ${G} H${maxX - 10}`} stroke="rgb(19 20 22 / .22)" strokeWidth="1.4" />
+        </>
+      )}
 
+      <g id="bd-vehicle">
       {/* Chassis */}
-      <Box x={tipper ? 200 : v.product === "dog" ? bx1 - 6 : bx1 + 30} y={CH_TOP} w={end + 6 - (tipper ? 200 : v.product === "dog" ? bx1 - 6 : bx1 + 30)} h={20} rx={2} fill={DARK} />
+      <Box x={tipper ? 200 : v.product === "dog" ? bx1 - 6 : bx1 + 30} y={CH_TOP} w={end + 6 - (tipper ? 200 : v.product === "dog" ? bx1 - 6 : bx1 + 30)} h={20} rx={2} fill={real ? "url(#bd-r-rail)" : DARK} />
+      {real && (
+        <g>
+          {/* Suspension between the rear axles, and the frame's fixings */}
+          {rear.slice(1).map((x, i) => {
+            const cx = (x + rear[i]) / 2;
+            return <path key={i} d={`M${cx - 17} ${CH_BOT} H${cx + 17} L${cx + 9} ${G - 54} H${cx - 9} Z`} fill="url(#bd-r-plastic)" stroke="#000" strokeOpacity=".5" strokeWidth=".7" />;
+          })}
+          <Box x={rear[0] - 20} y={G - 62} w={rear[rear.length - 1] - rear[0] + 40} h={6} rx={2} className="" fill="#101112" />
+          {Array.from({ length: Math.max(0, Math.floor((end - bx1) / 46)) }, (_, i) => (
+            <circle key={i} cx={bx1 + 20 + i * 46} cy={CH_TOP + 12} r={1.5} fill="#6a6d72" />
+          ))}
+          <Box x={bx1} y={CH_TOP + 0.6} w={end - bx1} h={1} className="" fill="rgb(255 255 255 / .22)" />
+        </g>
+      )}
 
       {v.product === "dog" && (
         <g>
-          <path d={`M9 ${G - 84} L${front[0] - 46} ${G - 100} L${front[0] - 46} ${G - 80} Z`} fill={DARK} className="bd-s" />
-          <circle cx={0} cy={G - 83} r={9} fill="none" stroke="#131416" strokeWidth="4" />
+          <path d={`M9 ${G - 84} L${front[0] - 46} ${G - 100} L${front[0] - 46} ${G - 80} Z`} fill={real ? "url(#bd-r-rail)" : DARK} className="bd-s" />
+          {real && <path d={`M12 ${G - 85.4} L${front[0] - 46} ${G - 99}`} stroke="rgb(255 255 255 / .3)" strokeWidth="1" />}
+          <circle cx={0} cy={G - 83} r={9} fill="none" stroke={real ? "#8d9196" : "#131416"} strokeWidth="4" />
+          {real && <circle cx={0} cy={G - 83} r={11} fill="none" stroke="rgb(0 0 0 / .5)" strokeWidth=".8" />}
           <rect x={front[0] - 52} y={CH_BOT} width={front[front.length - 1] - front[0] + 104} height={9} rx={3} fill="#3a3d42" className="bd-s" />
         </g>
       )}
@@ -530,6 +584,11 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
       {has("extEbs") && <Pop><Box x={230} y={CH_TOP + 13.9} w={end - 226} h={2.6} rx={1.3} className="" fill="#4d8ef0" /></Pop>}
 
       {/* Under the chassis */}
+      {slot.fuel && (
+        <At x={slot.fuel.x} y={CH_BOT + 4}>
+          <RealFuelTank w={slot.fuel.w} partition={v.tank === "partition"} />
+        </At>
+      )}
       {slot.tank && (
         <Pop>
           <At x={slot.tank.x} y={CH_BOT + 4}>
@@ -585,7 +644,7 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
 
       {/* Subframe */}
       <Box x={bx1} y={yB} w={L} h={sub} rx={1.5} fill={v.subframeColour ?? "#34373c"} />
-      <Box x={bx1} y={yB} w={L} h={sub} className="" fill="url(#bd-shade)" />
+      <Box x={bx1} y={yB} w={L} h={sub} className="" fill={real ? "url(#bd-r-tube)" : "url(#bd-shade)"} />
 
       {/* Hoist, mounted ahead of the body */}
       {v.hoist === "front" && (
@@ -602,7 +661,37 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
       <Box x={bx1} y={yT} w={L} h={H} rx={2.5} fill={bodyFill} />
       <g clipPath="url(#bd-clip)">
         {v.customColour && <Box x={bx1} y={yT} w={L} h={H} className="" fill="url(#bd-hatch)" />}
-        <Box x={bx1} y={yT} w={L} h={H} className="" fill="url(#bd-shade)" />
+        <Box x={bx1} y={yT} w={L} h={H} className="" fill={real ? "url(#bd-r-gloss)" : "url(#bd-shade)"} />
+        {real && (
+          <g>
+            {/* The deep top rail, stepping back to the side sheet */}
+            <Box x={bx1} y={yT} w={L} h={coam} className="" fill="rgb(0 0 0 / .17)" />
+            <Box x={bx1} y={yT + coam - 1.2} w={L} h={1.2} className="" fill="rgb(0 0 0 / .32)" />
+            <Box x={bx1} y={yT + coam} w={L} h={1.1} className="" fill="rgb(255 255 255 / .38)" />
+            {/* Pinstripes, drawing together as they run back to the lettering */}
+            {Array.from({ length: 7 }, (_, i) => {
+              const t = i / 6;
+              const x2 = Math.max(bx1 + 60, end - 98);
+              return (
+                <path
+                  key={i}
+                  d={`M${bx1 + 18} ${round(stripeBase - stripeSpread * (1 - t))} L${x2} ${round(stripeBase - 4 * (1 - t))}`}
+                  stroke={stripeInk}
+                  strokeWidth={round(0.6 + t * 1.2)}
+                />
+              );
+            })}
+            {/* The rolled bottom rail and the light channel under it */}
+            <Box x={bx1} y={yB - chan - fb} w={L} h={fb} className="" fill="url(#bd-r-tube)" />
+            <Box x={bx1} y={yB - chan - fb - 1} w={L} h={1} className="" fill="rgb(0 0 0 / .28)" />
+            <Box x={bx1} y={yB - chan} w={L} h={chan} className="" fill={has("chrome") ? "url(#bd-r-alloy)" : "rgb(0 0 0 / .5)"} />
+            <Box x={bx1} y={yB - chan} w={L} h={0.9} className="" fill="rgb(0 0 0 / .4)" />
+            {/* Corner posts */}
+            <Box x={bx1} y={yT} w={13} h={H} className="" fill="url(#bd-r-post)" />
+            <Box x={end - 16} y={yT} w={16} h={H} className="" fill="url(#bd-r-post)" />
+            <Box x={end - 16} y={yT} w={1} h={H} className="" fill="rgb(0 0 0 / .3)" />
+          </g>
+        )}
         {planks.map((y) => (
           <path key={y} d={`M${bx1} ${y} H${end}`} stroke={darkBody ? "rgb(255 255 255 / .2)" : "rgb(19 20 22 / .2)"} strokeWidth="1.2" />
         ))}
@@ -615,11 +704,17 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
             </At>
           </Pop>
         )}
-        <Box x={bx1} y={yB - fb} w={L} h={fb} className="" fill="rgb(0 0 0 / .26)" />
+        {!real && <Box x={bx1} y={yB - fb} w={L} h={fb} className="" fill="rgb(0 0 0 / .26)" />}
       </g>
       <Box x={bx1 - 3} y={yT - 3} w={L + 6} h={tr} rx={2} fill={bodyFill} />
-      <Box x={bx1 - 3} y={yT - 3} w={L + 6} h={tr} rx={2} className="" fill="rgb(0 0 0 / .2)" />
-      <At x={end - 22} y={yT + tr + Math.min(46, H * 0.42)}>
+      <Box x={bx1 - 3} y={yT - 3} w={L + 6} h={tr} rx={real ? tr / 2 : 2} className="" fill={real ? "url(#bd-r-tube)" : "rgb(0 0 0 / .2)"} />
+      {real && <Box x={bx1} y={yB + sub} w={L} h={6} className="" fill="rgb(0 0 0 / .28)" />}
+      <At x={end - 22} y={real ? stripeBase + 4 : yT + tr + Math.min(46, H * 0.42)}>
+        {real && (
+          <text textAnchor="end" x={1} y={1.2} className="bd-word" fill={darkBody ? "rgb(0 0 0 / .45)" : "rgb(255 255 255 / .6)"}>
+            ARROW
+          </text>
+        )}
         <text textAnchor="end" className="bd-word" fill={onBody}>
           ARROW
         </text>
@@ -634,22 +729,29 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
       )}
 
       {/* On the side of the body */}
-      {has("chrome") && (
+      {has("chrome") && !real && (
         <Pop>
           <Box x={bx1 + 2} y={yT + tr + 1} w={L - 4} h={3.4} rx={1.7} className="" fill="url(#bd-chrome)" stroke="rgb(19 20 22 / .4)" strokeWidth=".6" />
           <Box x={bx1 + 2} y={yB - fb - 4} w={L - 4} h={3.4} rx={1.7} className="" fill="url(#bd-chrome)" stroke="rgb(19 20 22 / .4)" strokeWidth=".6" />
         </Pop>
       )}
       {lightsAt.map((x, i) => (
-        <At key={i} x={x} y={yB - fb - 12}>
-          <rect x={-5} y={-3} width={10} height={6} rx={2.5} fill={i === lightsAt.length - 1 ? "#e3140c" : "#ffab1e"} className="bd-s bd-in" />
+        <At key={i} x={x} y={lampY}>
+          {real ? (
+            <g className="bd-in">
+              <rect x={-7} y={-2.9} width={14} height={5.8} rx={2.4} fill="url(#bd-r-alloy)" stroke="#000" strokeOpacity=".45" strokeWidth=".5" />
+              <rect x={-5} y={-1.7} width={10} height={3.4} rx={1.6} fill={i === lightsAt.length - 1 ? "#e3140c" : "#ffa01c"} />
+            </g>
+          ) : (
+            <rect x={-5} y={-3} width={10} height={6} rx={2.5} fill={i === lightsAt.length - 1 ? "#e3140c" : "#ffab1e"} className="bd-s bd-in" />
+          )}
         </At>
       ))}
       {v.steps > 0 && (
         <At x={bx1 + 34} y={yB - fb}>
           {Array.from({ length: v.steps }, (_, i) => (
             <g key={i} className="bd-in">
-              <rect x={0} y={-24 - i * 25} width={30} height={6} rx={2} fill={METAL} className="bd-s" />
+              <rect x={0} y={-24 - i * 25} width={30} height={6} rx={2} fill={real ? "#141516" : METAL} className="bd-s" />
               <path d={`M4 ${-18 - i * 25} v5 M26 ${-18 - i * 25} v5`} className="bd-s" />
             </g>
           ))}
@@ -679,7 +781,32 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
 
       {/* The tailgate and the rear of the body */}
       <Box x={end} y={yT - 3} w={8} h={H + 3} rx={2} fill={bodyFill} />
-      <Box x={end} y={yT - 3} w={8} h={H + 3} rx={2} className="" fill="rgb(0 0 0 / .3)" />
+      <Box x={end} y={yT - 3} w={8} h={H + 3} rx={2} className="" fill={real ? "url(#bd-r-post)" : "rgb(0 0 0 / .3)"} />
+      {real && <Box x={end} y={yT - 3} w={8} h={H + 3} rx={2} className="" fill="rgb(0 0 0 / .16)" />}
+      {real && (
+        <g>
+          <At x={end} y={yT}>
+            <path d="M-8 0 C-8 -21 15 -21 15 -3 V9" fill="none" stroke="rgb(0 0 0 / .55)" strokeWidth="8.4" strokeLinecap="round" />
+            <path d="M-8 0 C-8 -21 15 -21 15 -3 V9" fill="none" stroke={bodyFill} strokeWidth="6.6" strokeLinecap="round" />
+            <path d="M-9.6 -4 C-8 -19 10 -20 13.4 -8" fill="none" stroke="rgb(255 255 255 / .35)" strokeWidth="1.3" strokeLinecap="round" />
+            <circle cx={15} cy={9} r={3.6} fill="url(#bd-r-dome)" stroke="#000" strokeOpacity=".5" strokeWidth=".6" />
+          </At>
+          <At x={end} y={yB}>
+            <path d="M3 -12 h10 q5 0 5 5 q0 6 -7 8 q-5 1 -8 -3 Z" fill={bodyFill} stroke="rgb(0 0 0 / .5)" strokeWidth=".8" />
+            <path d="M11 0 q7 13 1 27" fill="none" stroke="#d3d5d8" strokeWidth="2.6" strokeDasharray="3.4 2.4" strokeLinecap="round" />
+            {/* Warning decals, low at the rear as on every body */}
+            <g transform={`translate(-52 ${-chan - fb - 15})`}>
+              <rect width={13} height={10} rx={1.2} fill="#f7f6f2" />
+              <rect width={13} height={3.4} rx={1.2} fill="#d6141c" />
+              <rect x={15} width={13} height={10} rx={1.2} fill="#f7f6f2" />
+              <rect x={15} width={13} height={3.4} rx={1.2} fill="#d6141c" />
+            </g>
+          </At>
+          <At x={bx1 + L * 0.7} y={yT + coam + (H - coam - chan - fb) * 0.62}>
+            <path d="M0 0 h11 M0 0 v15 h11" fill="none" stroke="rgb(0 0 0 / .78)" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          </At>
+        </g>
+      )}
       <At x={end} y={yT}>
         <circle cx={4} cy={3} r={3.4} fill={METAL} className="bd-s" />
         {has("fingerGuards") && (
@@ -688,7 +815,15 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
             <path d="M-3 -9 l-4 9 M5 -9 l-4 9 M13 -9 l-4 9" stroke="#131416" strokeWidth="1.6" />
           </Pop>
         )}
-        {has("tailgate") && (
+        {has("tailgate") && real && (
+          <Pop>
+            {/* The air ram that works the two-way tailgate, on the rear post */}
+            <rect x={-11.5} y={coam + 8} width={7} height={30} rx={3} fill="url(#bd-metal)" stroke="#000" strokeOpacity=".45" strokeWidth=".6" />
+            <path d={`M-8 ${coam + 38} v9`} stroke="#d9dbdd" strokeWidth="2.2" strokeLinecap="round" />
+            <path d={`M-8 ${coam + 8} q0 -6 -7 -6`} stroke="#4d8ef0" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          </Pop>
+        )}
+        {has("tailgate") && !real && (
           <Pop>
             <rect x={-104} y={tr + 5} width={40} height={8} rx={3.5} fill="url(#bd-metal)" className="bd-s" />
             <path d={`M-64 ${tr + 9} H-4`} stroke="#131416" strokeWidth="2.4" strokeLinecap="round" />
@@ -738,8 +873,12 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
           {v.tarp.type === "bow" ? (
             <g>
               <path d={tarpPath} style={{ d: `path("${tarpPath}")` } as React.CSSProperties} fill={v.tarp.colour} className="bd-s bd-fill bd-shape" />
+              {real && <path d={tarpPath} fill="url(#bd-r-tube)" opacity=".5" />}
               {[0.14, 0.3, 0.46, 0.62, 0.78, 0.92].map((t) => (
-                <path key={t} d={`M${bx1 + 4 + (L - 8) * t} ${yT - 2} V${bow(t) + 1}`} stroke="rgb(255 255 255 / .28)" strokeWidth="1.3" />
+                <g key={t}>
+                  <path d={`M${bx1 + 4 + (L - 8) * t} ${yT - 2} V${bow(t) + 1}`} stroke="rgb(255 255 255 / .28)" strokeWidth="1.3" />
+                  {real && <path d={`M${bx1 + 6.5 + (L - 8) * t} ${yT - 2} V${bow(t) + 2}`} stroke="rgb(0 0 0 / .35)" strokeWidth="2.4" />}
+                </g>
               ))}
               <Box x={bx1 - 8} y={yT - 16} w={17} h={14} rx={3.5} fill={DARK} />
             </g>
@@ -753,6 +892,20 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
               <At x={end - 12} y={yT}>
                 <rect y={-15} width={4.5} height={16} rx={2} fill={METAL} className="bd-s" />
               </At>
+            </g>
+          )}
+          {real && (
+            <g>
+              <At x={bx1} y={yT}>
+                <path d="M-8 -3 V-15 Q-6 -31 22 -33 L60 -33 Q86 -31 98 -3 Z" fill={bodyFill} stroke="rgb(0 0 0 / .5)" strokeWidth=".8" />
+                <path d="M-8 -3 V-15 Q-6 -31 22 -33 L60 -33 Q86 -31 98 -3 Z" fill="url(#bd-r-gloss)" />
+                <path d="M-2 -22 Q2 -29 22 -30 H58" fill="none" stroke="rgb(255 255 255 / .5)" strokeWidth="1.2" strokeLinecap="round" />
+              </At>
+              {Array.from({ length: Math.max(0, Math.floor((L - 130) / 74)) }, (_, i) => (
+                <At key={i} x={bx1 + 122 + i * 74} y={yT}>
+                  <rect x={-4} y={-6.5} width={8} height={5} rx={1.4} fill="#101112" />
+                </At>
+              ))}
             </g>
           )}
           {v.tarp.electric === true && (
@@ -790,7 +943,7 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
       {/* Cab, and what is fitted to it */}
       {tipper && (
         <g>
-          <Cab />
+          {real ? <RealCab /> : <Cab />}
           {v.pto && (
             <Pop>
               <path
@@ -861,7 +1014,12 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
           <Box x={rearL + 8} y={G - 121} w={rearR - rearL - 16} h={7} rx={1.5} fill="url(#bd-chequer)" />
         </Pop>
       )}
-      {has("spray") && (
+      {has("spray") && real && (
+        <Pop>
+          <Box x={bx1 + 3} y={yB} w={L - 6} h={brush} className="" fill="url(#bd-r-brush)" />
+        </Pop>
+      )}
+      {has("spray") && !real && (
         <Pop>
           {Array.from({ length: Math.floor((rearR - rearL - 16) / 5) }, (_, i) => (
             <path key={i} d={`M${rearL + 10 + i * 5} ${G - 110} v8`} stroke="#131416" strokeWidth="1.3" strokeLinecap="round" />
@@ -879,9 +1037,15 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
           <rect width={7} height={54} rx={2} fill="#1d1e20" className="bd-s bd-in" />
         </At>
       )}
-      {axles.map((x, i) => (
-        <Wheel key={i} x={x} />
-      ))}
+      {axles.map((x, i) =>
+        real ? (
+          <At key={i} x={x} y={G - R}>
+            <RealWheel steer={tipper && i < front.length} trailer={!tipper} />
+          </At>
+        ) : (
+          <Wheel key={i} x={x} />
+        ),
+      )}
 
       {/* The rear of the chassis */}
       <At x={end}>
@@ -954,6 +1118,8 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
           </Pop>
         </At>
       ))}
+
+      </g>
 
       {/* Dimensions */}
       <g className="bd-dims">

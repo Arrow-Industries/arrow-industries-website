@@ -47,6 +47,12 @@
 .bd .bd-ring { fill: rgb(214 20 28 / .14); stroke: var(--red); stroke-width: 1.6; transform-box: fill-box; transform-origin: center; animation: bd-ring 1.1s var(--ease-out) 2; }
 .bd .bd-spot { animation: bd-spot 3.2s ease both; pointer-events: none; }
 
+/* ---------- The studio look ---------- */
+.cfg-stage.real { background: #edebe7; }
+.cfg-stage.real .cfg-drawing { padding: 0; }
+.bd.real .bd-s { stroke: rgb(10 11 12 / .5); stroke-width: .9; }
+.bd.real .bd-word { font-size: 25px; letter-spacing: .04em; }
+
 /* ---------- The steps ---------- */
 .cfg-steps { min-width: 0; border-top: 2px solid var(--ink); }
 .cfg-step { border-bottom: 1px solid var(--line); }
