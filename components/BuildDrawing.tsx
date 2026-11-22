@@ -491,8 +491,19 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
     v.lights === 1 ? mid : bx1 + 16 + (i * (L - 32)) / (v.lights - 1),
   );
   const planks = v.material === "aluminium" ? Array.from({ length: Math.floor((H - tr - fb - 8) / 15) }, (_, i) => yT + tr + 12 + i * 15) : [];
-  const bow = (t: number) => yT - 2 + 2 * t * (1 - t) * -38;
-  const tarpPath = `M${bx1 + 4} ${yT - 2} Q${mid} ${yT - 40} ${end - 4} ${yT - 2} Z`;
+  // Trailers carry the tarp under a rounded bow cover, so it rises from the
+  // front rail. On a truck it runs straight off the mast at full height and
+  // only rolls down at the tailgate.
+  const tarpX0 = bx1 + (mast ? 30 : 4);
+  const tarpW = end - 4 - tarpX0;
+  const bow = (t: number) => {
+    if (!mast) return yT - 2 + 2 * t * (1 - t) * -38;
+    const roll = t > 0.88 ? Math.sqrt(Math.max(0, 1 - ((t - 0.88) / 0.12) ** 2)) : 1;
+    return yT - 2 - 21 * (1 - 0.14 * t) * roll;
+  };
+  const tarpPath = mast
+    ? `M${tarpX0} ${yT - 2} ${Array.from({ length: 33 }, (_, i) => `L${(tarpX0 + (tarpW * i) / 32).toFixed(1)} ${bow(i / 32).toFixed(1)}`).join(" ")} Z`
+    : `M${bx1 + 4} ${yT - 2} Q${mid} ${yT - 40} ${end - 4} ${yT - 2} Z`;
   const what = `${v.setup} ${tipper ? "tipper body" : `${v.product} trailer`}`;
 
   return (
@@ -1034,8 +1045,8 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
               {real && <path d={tarpPath} fill="url(#bd-r-tube)" opacity=".5" />}
               {[0.14, 0.3, 0.46, 0.62, 0.78, 0.92].map((t) => (
                 <g key={t}>
-                  <path d={`M${bx1 + 4 + (L - 8) * t} ${yT - 2} V${bow(t) + 1}`} stroke="rgb(255 255 255 / .28)" strokeWidth="1.3" />
-                  {real && <path d={`M${bx1 + 6.5 + (L - 8) * t} ${yT - 2} V${bow(t) + 2}`} stroke="rgb(0 0 0 / .35)" strokeWidth="2.4" />}
+                  <path d={`M${tarpX0 + tarpW * t} ${yT - 2} V${bow(t) + 1}`} stroke="rgb(255 255 255 / .28)" strokeWidth="1.3" />
+                  {real && <path d={`M${tarpX0 + 2.5 + tarpW * t} ${yT - 2} V${bow(t) + 2}`} stroke="rgb(0 0 0 / .35)" strokeWidth="2.4" />}
                 </g>
               ))}
               <Box x={bx1 - 8} y={yT - 16} w={17} h={14} rx={3.5} fill={DARK} />
@@ -1057,15 +1068,15 @@ export function BuildDrawing({ visual: v, fallbackLength, maxLength, truckName, 
           )}
           {real && (
             <g>
-              {v.tarp.type === "bow" && (
-                <At x={bx1 + (mast ? 38 : 0)} y={yT}>
+              {v.tarp.type === "bow" && !mast && (
+                <At x={bx1} y={yT}>
                   <path d="M-8 -3 V-15 Q-6 -31 22 -33 L60 -33 Q86 -31 98 -3 Z" fill={bodyFill} stroke="rgb(0 0 0 / .5)" strokeWidth=".8" />
                   <path d="M-8 -3 V-15 Q-6 -31 22 -33 L60 -33 Q86 -31 98 -3 Z" fill="url(#bd-r-gloss)" />
                   <path d="M-2 -22 Q2 -29 22 -30 H58" fill="none" stroke="rgb(255 255 255 / .5)" strokeWidth="1.2" strokeLinecap="round" />
                 </At>
               )}
-              {Array.from({ length: Math.max(0, Math.floor((L - (mast ? 168 : 130)) / 74)) }, (_, i) => (
-                <At key={i} x={bx1 + (mast ? 160 : 122) + i * 74} y={yT}>
+              {Array.from({ length: Math.max(0, Math.floor((L - (mast ? 92 : 130)) / 74)) }, (_, i) => (
+                <At key={i} x={bx1 + (mast ? 84 : 122) + i * 74} y={yT}>
                   <rect x={-4} y={-6.5} width={8} height={5} rx={1.4} fill="#101112" />
                 </At>
               ))}
